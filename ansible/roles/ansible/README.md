@@ -5,8 +5,9 @@ pip install --user -r requirements.txt --upgrade
 ```
 
 requirements:
-jinja2
 cryptography
+jinja2
+paramiko
 PyYAML
 
 ### Clone Ansible repo

@@ -1,7 +1,9 @@
 ---
 
-- hosts: broker
+- hosts: mqttbroker-servers
+
   remote_user: pi
+
   roles:
-    - common
-    - broker
+    - docker
+#    - broker

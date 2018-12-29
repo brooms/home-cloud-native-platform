@@ -14,3 +14,5 @@ packages: [
   python-dev,
   python3-dev
 ]
+
+repo: git://github.com/ansible/ansible.git

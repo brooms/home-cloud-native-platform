@@ -1,0 +1,13 @@
+---
+
+- name: Install packages
+  apt:
+    name: "{{ packages }}"
+    state: latest
+
+# Install modules within a user home directory.
+- name: Install modules
+  pip:
+    extra_args: --user
+    name: "{{ modules }}"
+    state: latest

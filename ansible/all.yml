@@ -1,0 +1,9 @@
+---
+
+- hosts: all
+
+  remote_user: pi
+  
+  tasks:
+    - name: test connection
+      ping:

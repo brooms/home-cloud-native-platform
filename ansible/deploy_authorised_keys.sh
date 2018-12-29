@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+#ansible-playbook -i hosts deploy_authorised_keys.yml --ask-become-pass --ask-pass --extra-vars='pubkey="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDntOqluObLHK0SE1XXzrI+JEt1fom1zVi7DxFXil/IbkStYM/7HSKdPVeborL9Oqo5NhID5G22NPIzmFPgfnsfPL7bcguDsDOFAes38rDSncQRRAVQclXT+o3IVd5+KqgiV+MEiUZ0U+c8lpF+L7zU26V6FsVSp6YXUjYjkiLpnmC4mAEpCblJ+//1sGJmZuxyaqeLdhJmu1dzQ4YHiXSUCZAcjHndZX/ubcmWNd9ePSPSLn48qaVc0H+65PJFlD2jqZDekwEaVvVMHAGKRWIZOy8N5j1nN4kFwCHhxV6sMWxbPGVFtSZxOECyyP8imWq1czVRdGd/eXVPi1Djpg1R philip@emilia-laptop" user="pi" host="gogss-servers"'
+
+ansible-playbook -i hosts deploy_authorised_keys.yml --ask-become-pass --ask-pass --extra-vars='pubkey="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD4TPQ6kt2LgMHVlhDa8CLnJqycHit+ZCvcw6u4x5weXaUh8r2ccLy40xQX1DHv9Kw+qR2METWAVGaJXeqNDfq/uufIedDFt+h0PVEtfrZfwHcWeOnei8GX2IwTub1LxMiKRzFoUbpaHWhOqNJUWXyeAX6y+OGYOWE5kn95LzWazTCu4QBj+ZzlMZxp8U8IXZljrY6HxZTv67sMS8YTnpQ7h3cZxVdJSNTzEfWgPnlfH2EFlyfUeM1fCLL7+JZEyzyiWF5InKJvM7RO8htAkE2s/Op1euMzoopiuPVN50x+G48b++hDGMCoDF/6woPflvv3wEeinZPvKYw52JQim8T7 access to pi, yummy" user="pi" host="gogs-servers"'

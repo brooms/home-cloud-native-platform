@@ -1,0 +1,8 @@
+---
+
+- hosts: home-assistant-servers
+
+  remote_user: pi
+
+  roles:
+    - home-assistant

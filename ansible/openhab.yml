@@ -1,0 +1,8 @@
+---
+
+- hosts: openhab-servers
+
+  remote_user: openhabian
+
+  roles:
+    - openhab

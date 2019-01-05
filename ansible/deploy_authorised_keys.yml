@@ -4,12 +4,12 @@
 
   remote_user: "{{ user }}"
 
-  become: true
+ # become: true
 
-  become_user: "{{ user }}"
+ # become_user: "{{ user }}"
 
   tasks:
-  - name: make direcotry
+  - name: make directory
     file:
       path: "/home/{{ user }}/.ssh"
       state: directory

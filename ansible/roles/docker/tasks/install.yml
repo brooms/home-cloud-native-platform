@@ -1,0 +1,22 @@
+---
+
+# curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
+
+- name: Get install script
+  get_url:
+    url: get.docker.com
+    dest: /tmp/get-docker.sh
+
+- name: Run install script
+  shell: /tmp/get-docker.sh >> /tmp/get-docker.log
+
+- name: Ensure group "docker" exists
+  group:
+    name: docker
+    state: present
+
+- name: Install modules
+  pip:
+    extra_args: --user
+    name: "{{ modules }}"
+    state: latest

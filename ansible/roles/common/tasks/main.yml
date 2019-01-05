@@ -1,0 +1,6 @@
+---
+
+- name: Update host
+  become: true
+  import_tasks: update-via-apt.yml
+  when: ansible_pkg_mgr == 'apt'

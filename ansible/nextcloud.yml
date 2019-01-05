@@ -1,6 +1,6 @@
 ---
 
-- hosts: nextcloud-servers
+- hosts: nextcloud-nodes
 
   remote_user: pi
 

@@ -1,38 +1,10 @@
 ---
 
-- name: Download file
-  get_url:
-    url: get.docker.com
-    dest: /tmp/get-docker.sh
+- name: install docker
+  import_tasks: install.yml
 
-# - name: Execute the command in remote shell; stdout goes to the specified file on the remote.
-#   shell: /tmp/get-docker.sh >> /tmp/get-docker.log
+- name: configure user
+  import_tasks: configure-user.yml
 
-- name: Ensure group "docker" exists
-  group:
-    name: docker
-    state: present
-
-- name: starting at version 2.6, modify user, remove expiry time
-  user:
-    name: pi
-    groups: docker
-    append: yes
-
-- name: Install modules
-  pip:
-    extra_args: --user
-    name: "{{ modules }}"
-    state: latest
-
-# https://www.portainer.io/installation/
-# docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
-- name: Run Portainer
-    docker_container:
-      name: portainer
-      image: portainer/portainer:arm
-      published_ports:
-        - 9000:9000
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-        - portainer_data:/data
+- name: start services
+  import_tasks: start-services.yml

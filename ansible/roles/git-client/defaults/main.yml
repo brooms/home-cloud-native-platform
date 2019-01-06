@@ -1,0 +1,14 @@
+---
+
+config:
+  user:
+    name: greenthegarden
+    email: 'greenthegarden@gmail.com'
+  http:
+    sslVerify: false
+  credential:
+    helper: store
+
+packages: [
+  git
+]

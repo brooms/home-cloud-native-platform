@@ -1,0 +1,23 @@
+---
+
+# consider replacing with a configuration file
+
+# See https://git-scm.com/docs/git-config for options
+
+- name: "configure user.name to {{ config.user.name }}"
+  git_config:
+    name: user.mame
+    scope: global
+    value: "{{ config.user.name }}"
+
+- name: "configure user.email to {{ config.user.email }}"
+  git_config:
+    name: user.email
+    scope: global
+    value: "{{ config.user.email }}"
+
+- name: "set credential.helper to {{ config.credential.helper }}"
+  git_config:
+    name: credential.helper
+    scope: global
+    value: "{{ config.credential.helper }}"

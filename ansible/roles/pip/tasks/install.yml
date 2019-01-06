@@ -14,8 +14,8 @@
     dest: "{{ pip_download_dest }}"
   when: pip_install_check.rc != 0
 
-- name: install "{{ pip }}"
-  command: "{{ python }} --user /{{ pip_download_dest }}/get-pip.py"
+- name: "install {{ pip }}"
+  command: "{{ python }} --user {{ pip_download_dest }}/get-pip.py"
   when: pip_install_check.rc != 0
 
 - name: delete get-pip.py
@@ -24,6 +24,9 @@
     state: absent
   when: pip_install_check.rc != 0
 
-# - name: upgrade pip if installed
-#   pip:
-    
+- name: "upgrade {{ pip }} if installed"
+  pip:
+    name: "{{ pip }}"
+    extra_args: --user
+    state: latest
+  when: pip_install_check.rc == 0

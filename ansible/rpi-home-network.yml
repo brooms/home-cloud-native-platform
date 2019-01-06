@@ -1,0 +1,9 @@
+---
+
+- hosts: rpi-home-network-nodes
+ 
+  roles:
+    - common
+    - git-client
+    - pip
+    - docker

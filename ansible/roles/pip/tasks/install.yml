@@ -1,32 +1,29 @@
 ---
 # file: roles/pip/tasks/install.yml
 
-- name: Check if "{{ pip }}" is installed
-  command: "{{ pip }} --version"
-  ignore_errors: true
-  changed_when: false # read-only task
-  check_mode: no
-  register: pip_install_check
+# based on: https://pip.pypa.io/en/stable/installing/
 
 - name: download get-pip.py
   get_url:
     url: "{{ pip_source_url }}"
     dest: "{{ pip_download_dest }}"
-  when: pip_install_check.rc != 0
 
 - name: "install {{ pip }}"
-  command: "{{ python }} --user {{ pip_download_dest }}/get-pip.py"
-  when: pip_install_check.rc != 0
+  command: "{{ python }} {{ pip_download_dest }}/get-pip.py --user"
 
 - name: delete get-pip.py
   file:
     path: "{{ pip_download_dest }}/get-pip.py"
     state: absent
-  when: pip_install_check.rc != 0
 
-- name: "upgrade {{ pip }} if installed"
-  pip:
-    name: "{{ pip }}"
-    extra_args: --user
-    state: latest
-  when: pip_install_check.rc == 0
+- name: add path to ~/.profile
+  blockinfile:
+    path: "/home/{{ ansible_user }}/.profile" # required. The file to modify.,Before 2.3 this option was only usable as I(dest), I(destfile) and I(name).
+    backup: yes # not required. Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly.
+    create: yes # not required. Create a new file if it doesn't exist.
+    state: present # not required. choices: absent;present. Whether the block should be there or not.
+    block: |
+      if [ -d "$HOME/.local/bin" ] ; then
+        PATH="$HOME/.local/bin:$PATH"
+      fi
+    marker: "# {mark} ANSIBLE MANAGED BLOCK pip path"

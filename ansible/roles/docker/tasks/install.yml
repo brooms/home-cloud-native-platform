@@ -4,12 +4,13 @@
 
 - name: Get install script
   get_url:
-    url: get.docker.com
-    dest: /tmp/get-docker.sh
+    url: "{{ docker_source_url }}"
+    dest: "{{ docker_download_dest }}"
 
 - name: Run install script
   become: true
-  shell: /tmp/get-docker.sh >> /tmp/get-docker.log
+  shell: "{{ docker_download_dest }}"
+#    >> /tmp/get-docker.log"
   notify: restart docker
 
 - name: Ensure Docker is started and enabled at boot.

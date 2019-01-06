@@ -6,3 +6,7 @@ pip: pip
 python: python
 pip_download_dest: /tmp
 pip_source_url: 'https://bootstrap.pypa.io/get-pip.py'
+pip_path: '# include path for pip\n
+if [ -d "$HOME/.local/bin" ] ; then\n
+  PATH="$HOME/.local/bin:$PATH"\n
+fi\n'

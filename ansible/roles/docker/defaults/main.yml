@@ -1,5 +1,8 @@
 ---
 
+docker_download_dest: /tmp/get-docker.sh
+docker_source_url: 'http://get.docker.com'
+
 docker_package_state: present
 docker_restart_on_package_change: true
 

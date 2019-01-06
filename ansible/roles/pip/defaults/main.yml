@@ -1,0 +1,8 @@
+---
+# file: roles/pip/defaults/main.yml
+
+# Pip configuration
+pip: pip
+python: python
+pip_download_dest: /tmp
+pip_source_url: 'https://bootstrap.pypa.io/get-pip.py'

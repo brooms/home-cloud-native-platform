@@ -4,7 +4,7 @@
   import_tasks: install.yml
 
 - name: configure user
-  import_tasks: configure-user.yml
+  import_tasks: configure-users.yml
 
 - name: start services
   import_tasks: start-services.yml

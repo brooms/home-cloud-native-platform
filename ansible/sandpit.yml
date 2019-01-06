@@ -4,5 +4,6 @@
  
   roles:
     - common
+    - git-client
     - pip
     - docker

@@ -1,8 +1,9 @@
 ---
 
-- name: added in 2.4, previously you used 'include'
-  import_tasks: redhat.yml
-  when: ansible_facts['os_family']|lower == 'redhat'
+- name: Install git
+  import_tasks: install-via-apt.yml
+  when: ansible_pkg_mgr == 'apt'
 
-- import_tasks: debian.yml
-  when: ansible_facts['os_family']|lower == 'debian'
+- name: Configure git
+  import_tasks: configure.yml
+  

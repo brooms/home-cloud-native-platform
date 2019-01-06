@@ -15,8 +15,7 @@
   when: pip_install_check.rc != 0
 
 - name: install "{{ pip }}"
-  become: true
-  command: "{{ python }} /{{ pip_download_dest }}/get-pip.py"
+  command: "{{ python }} --user /{{ pip_download_dest }}/get-pip.py"
   when: pip_install_check.rc != 0
 
 - name: delete get-pip.py
@@ -24,3 +23,7 @@
     path: "{{ pip_download_dest }}/get-pip.py"
     state: absent
   when: pip_install_check.rc != 0
+
+# - name: upgrade pip if installed
+#   pip:
+    

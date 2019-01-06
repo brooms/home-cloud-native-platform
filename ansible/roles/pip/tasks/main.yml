@@ -1,4 +1,8 @@
 ---
 # file: roles/pip/tasks/main.yml
 
-- include_tasks: install.yml tags=pip
+- name: Install pip
+  include_tasks: install.yml
+  tags:
+    - pip
+    

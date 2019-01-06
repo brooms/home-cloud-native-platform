@@ -1,10 +1,27 @@
 ---
 
+- name: "Check if {{ docker }} is installed"
+  command: "{{ docker }} --version"
+  ignore_errors: true
+  changed_when: false # read-only task
+  check_mode: no
+  register: docker_install_check
+
 - name: install docker
   import_tasks: install.yml
+  tags:
+    - installation
+    - docker
+  when: docker_install_check.rc != 0
 
 - name: configure user
   import_tasks: configure-users.yml
+  tags:
+    - configuration
+    - docker
 
 - name: start services
   import_tasks: start-services.yml
+  tags:
+    - services
+    - docker

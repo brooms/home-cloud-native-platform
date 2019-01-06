@@ -1,5 +1,7 @@
 ---
 
+docker: docker
+
 docker_download_dest: /tmp/get-docker.sh
 docker_source_url: 'http://get.docker.com'
 

@@ -1,5 +1,7 @@
 ---
 
+git: git
+
 config:
   user:
     name: greenthegarden

@@ -1,9 +1,18 @@
 ---
 
+- name: "Check if {{ git }} is installed"
+  command: "{{ git }} --version"
+  ignore_errors: true
+  changed_when: false # read-only task
+  check_mode: no
+  register: git_install_check
+
 - name: Install git
   import_tasks: install-via-apt.yml
-  when: ansible_pkg_mgr == 'apt'
+  tags:
+    - installation
+    - docker
+  when: (git_install_check.rc != 0 and ansible_pkg_mgr == 'apt')
 
 - name: Configure git
   import_tasks: configure.yml
-  

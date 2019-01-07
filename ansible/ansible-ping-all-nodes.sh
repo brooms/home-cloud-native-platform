@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-ansible all -m ping
+ansible all --module-name=ping

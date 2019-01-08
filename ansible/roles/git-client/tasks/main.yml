@@ -11,7 +11,7 @@
   import_tasks: install-via-apt.yml
   tags:
     - installation
-    - docker
+    - git
   when: (git_install_check.rc != 0 and ansible_pkg_mgr == 'apt')
 
 - name: Configure git

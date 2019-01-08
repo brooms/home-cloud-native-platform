@@ -1,0 +1,17 @@
+---
+
+- name: Create directory for storage
+  file:
+    name: "{{ storage }}"
+    state: directory
+
+- name: Run nextcloud container
+  docker_container:
+    name: "{{ container.name }}"
+    image: arm32v7/nextcloud
+    state: latest
+    recreate: yes
+    published_ports:
+      - "{{ container.ports.http }}:80"
+    volumes:
+      - "{{ storage }}:/var/www/html"

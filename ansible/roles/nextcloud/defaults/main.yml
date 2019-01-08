@@ -1,0 +1,9 @@
+---
+
+storage: /home/pi/nextcloud-storage
+
+container:
+  namme: nextcloud
+  image: "arm32v7/nextcloud"
+  ports:
+    http: 8080

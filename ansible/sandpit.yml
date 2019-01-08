@@ -1,7 +1,7 @@
 ---
 
-- hosts: sandpit-nodes
- 
+- hosts: sandpit
+
   roles:
     - common
     - git-client

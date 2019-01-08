@@ -2,19 +2,19 @@
 
 # https://github.com/gogs/gogs/tree/master/docker
 
-- name: Create local directory for volume
+- name: "Create local directory at {{ gogs.volumes.data }} for data"
   file:
-    path: /var/gogs
+    path: "{{ gogs.volumes.data }}"
     state: directory
     mode: 0777
 
 # docker run --name=gogs -p 10022:22 -p 10080:3000 -v /var/gogs:/data gogs/gogs-rpi
-- name: Run Portainer
+- name: "Run image {{ gogs.container.image }} as container {{ gogs.container.name }}"
   docker_container:
-    name: gogs
-    image: gogs/gogs-rpi
+    name: "{{ gogs.container.name }}"
+    image: "{{ gogs.container.image }}"
     published_ports:
-      - 10022:22
-      - 10080:3000
+      - "{{ gogs.container.ports.https }}:22"
+      - "{{ gogs.container.ports.http }}:3000"
     volumes:
-      - /var/gogs:/data
+      - "{{ gogs.volumes.data }}:/data"

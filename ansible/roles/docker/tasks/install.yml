@@ -27,7 +27,6 @@
     state: present
 
 - name: "Install pip modules {{ docker_python_module.modules }}"
-  become: true
   pip:
     extra_args: --user
     name: "{{ docker_python_module.modules }}"

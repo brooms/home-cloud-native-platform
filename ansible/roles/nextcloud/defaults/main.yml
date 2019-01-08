@@ -1,9 +1,11 @@
 ---
 
-storage: /home/pi/nextcloud-storage
+nextcloud:
+  volumes:
+    data: /home/pi/nextcloud-storage
 
-container:
-  namme: nextcloud
-  image: "arm32v7/nextcloud"
-  ports:
-    http: 8080
+  container:
+    namme: nextcloud
+    image: "arm32v7/nextcloud"
+    ports:
+      http: 8080

@@ -16,9 +16,9 @@
     path: "{{ pip_download_dest }}/get-pip.py"
     state: absent
 
-- name: add path to ~/.profile
+- name: add path to ~/.bashrc
   blockinfile:
-    path: "/home/{{ ansible_user }}/.profile" # required. The file to modify.,Before 2.3 this option was only usable as I(dest), I(destfile) and I(name).
+    path: "/home/{{ ansible_user }}/.bashrc" # required. The file to modify.,Before 2.3 this option was only usable as I(dest), I(destfile) and I(name).
     backup: yes # not required. Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly.
     create: yes # not required. Create a new file if it doesn't exist.
     state: present # not required. choices: absent;present. Whether the block should be there or not.

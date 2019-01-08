@@ -1,5 +1,9 @@
 ---
 
+- name: Print user
+  debug:
+    var: ansible_user
+
 - name: Update host
   become: true
   import_tasks: update-via-apt.yml

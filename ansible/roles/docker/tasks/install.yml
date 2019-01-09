@@ -10,6 +10,3 @@
 - name: Run install script
   become: true
   command: "/bin/sh {{ docker_download_dest }}"
-#  shell: "{{ docker_download_dest }}"
-#    >> /tmp/get-docker.log"
-  notify: restart docker

@@ -38,9 +38,3 @@
     extra_args: --user
     name: "{{ docker_python_module.modules }}"
     state: latest
-
-- name: start services
-  import_tasks: start-services.yml
-  tags:
-    - services
-    - docker

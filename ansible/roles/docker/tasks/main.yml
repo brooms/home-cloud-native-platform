@@ -14,11 +14,30 @@
     - docker
   when: docker_install_check.rc != 0
 
-- name: configure user
-  import_tasks: configure-users.yml
-  tags:
-    - configuration
-    - docker
+- name: Ensure Docker is started and enabled at boot
+  become: true
+  service:
+    name: docker
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
+
+- name: Ensure group "docker" exists
+  group:
+    name: docker
+    state: present
+
+- name: Ensure current user is in docker group
+  become: true
+  user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: yes
+
+- name: "Ensure pip modules {{ docker_python_module.modules }} are installed"
+  pip:
+    extra_args: --user
+    name: "{{ docker_python_module.modules }}"
+    state: latest
 
 - name: start services
   import_tasks: start-services.yml

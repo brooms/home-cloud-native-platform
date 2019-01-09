@@ -3,6 +3,6 @@
 consul:
   container:
     name: consul
-    image: "armhf/consul"
+    image: consul
     ports:
       http: 9000

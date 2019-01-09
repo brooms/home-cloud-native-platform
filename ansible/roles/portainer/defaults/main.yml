@@ -3,7 +3,7 @@
 portainer:
   container:
     name: portainer
-    image: "portainer/portainer:arm"
+    image: "portainer/portainer"
     ports:
       http: 9000
   volumes:

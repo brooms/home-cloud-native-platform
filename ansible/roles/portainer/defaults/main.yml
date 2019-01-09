@@ -1,11 +1,10 @@
 ---
 
 portainer:
-  volumes:
-    data: portainer_data
-
   container:
     name: portainer
     image: "portainer/portainer:arm"
     ports:
       http: 9000
+  volumes:
+    data: portainer_data

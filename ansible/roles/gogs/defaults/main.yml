@@ -1,12 +1,11 @@
 ---
 
 gogs:
-  volumes:
-    data: /var/gogs
-
   container:
     name: gogs
     image: "gogs/gogs-rpi"
     ports:
       http: 10080
       https: 10022
+  volumes:
+    data: /var/gogs

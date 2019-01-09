@@ -1,3 +1,13 @@
+---
+
 packages: [
   mosquitto
 ]
+
+broker:
+  container:
+    name: broker
+    image: "armhf/eclipse-mosquitto"
+    ports:
+      http: 1883
+      https: 9001

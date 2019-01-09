@@ -5,7 +5,7 @@ gogs:
     data: /var/gogs
 
   container:
-    namme: gogs
+    name: gogs
     image: "gogs/gogs-rpi"
     ports:
       http: 10080

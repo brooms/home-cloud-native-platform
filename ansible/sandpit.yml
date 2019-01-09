@@ -3,8 +3,9 @@
 - hosts: sandpit
 
   roles:
-    - common
-    - git-client
-    - pip
-    - docker
+    # - common
+    # - git-client
+    # - pip
+    # - docker
+    - portainer
     - gogs

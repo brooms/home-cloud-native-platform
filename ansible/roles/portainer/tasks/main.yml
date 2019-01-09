@@ -2,12 +2,14 @@
 
 # https://www.portainer.io/installation/
 # docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
-- name: Run Portainer
+- name: "Run image {{ portainer.container.image }} as container {{ portainer.container.name }}"
   docker_container:
-    name: portainer
-    image: portainer/portainer:arm
+    name: "{{ portainer.container.name }}"
+    image: "{{ portainer.container.image }}"
     published_ports:
-      - 9000:9000
+      - "{{ portainer.container.ports.http }}:9000"
+    recreate: yes
+    state: started
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - "{{ portainer.volumes.data }}:/data"

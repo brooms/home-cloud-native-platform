@@ -3,6 +3,7 @@
 # https://github.com/gogs/gogs/tree/master/docker
 
 - name: "Create local directory at {{ gogs.volumes.data }} for data"
+  become: true
   file:
     path: "{{ gogs.volumes.data }}"
     state: directory
@@ -16,5 +17,7 @@
     published_ports:
       - "{{ gogs.container.ports.https }}:22"
       - "{{ gogs.container.ports.http }}:3000"
+    recreate: yes
+    state: started
     volumes:
       - "{{ gogs.volumes.data }}:/data"

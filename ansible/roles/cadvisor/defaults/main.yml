@@ -1,0 +1,8 @@
+---
+
+cadvisor:
+  container:
+    image: openhab/cadvisor
+    name: cadvisor
+    ports:
+      http: 8090

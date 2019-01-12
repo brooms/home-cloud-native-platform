@@ -1,0 +1,17 @@
+---
+
+- name: "Run image {{ cadvisor.container.image }} as container {{ cadvisor.container.name }}"
+  docker_container:
+    name: "{{ cadvisor.container.name }}"
+    image: "{{ cadvisor.container.image }}"
+    publish)ports:
+      - "{{ cadvisor.ports.http }}:8080"
+    recreate: yes
+    restart: always
+    state: started
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro

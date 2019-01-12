@@ -8,7 +8,7 @@
     image: "{{ portainer.container.image }}"
     published_ports:
       - "{{ portainer.container.ports.http }}:9000"
-    recreate: yes
+    restart_policy: always
     state: started
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

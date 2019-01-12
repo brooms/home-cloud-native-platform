@@ -2,6 +2,7 @@
 
 # sudo useradd -r -s /sbin/nologin openhab
 - name: Create user
+  become: true
   user:
     name: "{{ openhab.user }}"
     create_home: no
@@ -10,26 +11,31 @@
 
 # usermod -a -G openhab <user>
 - name: Add user to openhab group
+  become: true
   user:
     name: "{{ ansible_user }}"
-    group: "{{ openhab.group }}"
+    groups: "{{ openhab.group }}"
     append: yes
 
 # Create directories
 - name: Create base directories
+  become: true
   file:
     name: "{{ openhab.directories.base }}"
     state: directory
     owner: "{{ openhab.user }}"
-    mode: 0664
+    group: "{{ openhab.group }}"
+    mode: 0755
 
 # Create data directories
 - name: Create data directories
+  become: true
   file:
     name: "{{ openhab.directories.base }}/{{ item }}"
     state: directory
     owner: "{{ openhab.user }}"
-    mode: 0664
+    group: "{{ openhab.group }}"
+    mode: 0755
   loop: "{{ openhab.directories.data }}"
 
   # Run openhab container

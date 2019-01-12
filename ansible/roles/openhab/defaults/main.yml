@@ -1,0 +1,13 @@
+---
+
+openhab:
+  user: openhab
+  group: openhab
+  directories:
+    base: /opt/openhab
+    data: [
+      conf
+      userdata
+      addons
+    ]
+    

@@ -8,4 +8,4 @@
     # - pip
     # - docker
     - portainer
-    - gogs
+    # - gogs

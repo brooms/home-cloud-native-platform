@@ -49,6 +49,13 @@
     mode: 0755
   loop: "{{ openhab.directories.data }}"
 
+# Clone configureation
+- name: Clone configuration
+  git:
+    repo: 'https://github.com/greenthegarden/openhab2-configuration.git'
+    dest: "{{ openhab.directories.data }}/config"
+    update: yes
+
 # docker run --name=gogs -p 10022:22 -p 10080:3000 -v /var/gogs:/data gogs/gogs-rpi
 - name: "Run image {{ openhab.container.image }} as container {{ openhab.container.name }}"
   docker_container:

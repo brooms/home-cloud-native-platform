@@ -8,12 +8,3 @@
   become: true
   import_tasks: update-via-apt.yml
   when: ansible_pkg_mgr == 'apt'
-
-- name: Run docker
-  import_role:
-      name: docker # required. The name of the role to be executed.
-      allow_duplicates: yes # not required. Overrides the role's metadata setting to allow using a role more than once with the same parameters.
-      tasks_from: main # not required. File to load from a role's C(tasks/) directory.
-      vars_from: main # not required. File to load from a role's C(vars/) directory.
-      defaults_from: main # not required. File to load from a role's C(defaults/) directory.
-      private: no # not required. This option is a no op, and the functionality described in previous versions was not implemented. This option will be removed in Ansible v2.8.

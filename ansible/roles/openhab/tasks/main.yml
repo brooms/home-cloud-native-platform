@@ -50,11 +50,21 @@
   loop: "{{ openhab.directories.data }}"
 
 # Clone configureation
-- name: Clone configuration
+- name: "Clone configuration into {{ openhab.directories.base }}/config"
+  become: true
   git:
     repo: 'https://github.com/greenthegarden/openhab2-configuration.git'
-    dest: "{{ openhab.directories.data }}/config"
+    dest: "{{ openhab.directories.base }}/config"
     update: yes
+
+- name: "Set permissions on {{ openhab.directories.base }}/config"
+  become: true
+  file:
+    dest: "{{ openhab.directories.base }}/config"
+    owner: "{{ openhab.user.name }}"
+    group: "{{ openhab.group.name }}"
+    mode: 0755
+    recurse: yes
 
 # docker run --name=gogs -p 10022:22 -p 10080:3000 -v /var/gogs:/data gogs/gogs-rpi
 - name: "Run image {{ openhab.container.image }} as container {{ openhab.container.name }}"

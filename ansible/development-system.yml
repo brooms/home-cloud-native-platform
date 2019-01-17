@@ -2,16 +2,18 @@
 
 - hosts: development-system
 
-  remote_user: philip
+  # remote_user: philip
 
-  vars:
-     data_dir:            /var/nextcloud/data
+  # vars:
+  #    data_dir:            /var/nextcloud/data
      # database:            "{{ DATABASE | default('sqlite') }}"
      # mysql_root_password: "{{ MYSQL_ROOT_PASSWORD }}"
      # ncuser_password:     "{{ NCUSER_PASSWORD }}"
 
   roles:
     - common
-    - consul
+    - git-client
     - docker
-    - git
+    # - consul
+    - portainer
+    - openhab

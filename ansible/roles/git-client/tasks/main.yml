@@ -7,12 +7,14 @@
   check_mode: no
   register: git_install_check
 
-- name: Install git
-  import_tasks: install-via-apt.yml
+- name: Install {{ git }}
+  package:
+    name: "{{ packages }}"
+    state: latest
   tags:
     - installation
     - git
-  when: (git_install_check.rc != 0 and ansible_pkg_mgr == 'apt')
+  when: git_install_check.rc != 0
 
 - name: Configure git
   import_tasks: configure.yml

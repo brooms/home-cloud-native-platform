@@ -1,12 +1,10 @@
----
+- name: Include distribution-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "vars/{{ ansible_distribution|lower }}.yml"
+    - "vars/{{ ansible_os_family|lower }}.yml"
+  tags:
+   - dnsmasq
 
-# https://hub.docker.com/_/consul
-# docker run -d consul
-- name: "Run image {{ consul.container.image }} as container {{ consul.container.name }}"
-  docker_container:
-    name: "{{ consul.container.name }}"
-    image: "{{ consul.container.image }}"
-    published_ports:
-      - "{{ consul.container.ports.http }}:9000"
-    recreate: yes
-    state: started
+- include: dnsmasq.yml
+- include: consul.yml

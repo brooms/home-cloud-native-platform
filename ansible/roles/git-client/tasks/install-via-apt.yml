@@ -1,7 +1,0 @@
----
-
-- name: Install packages
-  become: true
-  apt:
-    name: "{{ packages }}"
-    state: latest

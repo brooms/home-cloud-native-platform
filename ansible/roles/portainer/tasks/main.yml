@@ -6,6 +6,8 @@
   docker_container:
     name: "{{ portainer.container.name }}"
     image: "{{ portainer.container.image }}"
+    command:
+      - --no-auth
     published_ports:
       - "{{ portainer.container.ports.http }}:9000"
     restart_policy: always

@@ -50,17 +50,17 @@
   loop: "{{ openhab.directories.data }}"
 
 # Clone configureation
-- name: "Clone configuration into {{ openhab.directories.base }}/config"
+- name: "Clone configuration into {{ openhab.directories.base }}/conf"
   become: true
   git:
     repo: 'https://github.com/greenthegarden/openhab2-configuration.git'
-    dest: "{{ openhab.directories.base }}/config"
+    dest: "{{ openhab.directories.base }}/conf"
     update: yes
 
-- name: "Set permissions on {{ openhab.directories.base }}/config"
+- name: "Set permissions on {{ openhab.directories.base }}/conf"
   become: true
   file:
-    dest: "{{ openhab.directories.base }}/config"
+    dest: "{{ openhab.directories.base }}/conf"
     owner: "{{ openhab.user.name }}"
     group: "{{ openhab.group.name }}"
     mode: 0755
@@ -94,6 +94,6 @@
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      - /opt/openhab/addons:/openhab/addons
-      - /opt/openhab/conf:/openhab/conf
-      - /opt/openhab/userdata:/openhab/userdata
+      - "{{ openhab.directories.base }}/addons:/openhab/addons"
+      - "{{ openhab.directories.base }}/conf:/openhab/conf"
+      - "{{ openhab.directories.base }}/userdata:/openhab/userdata"

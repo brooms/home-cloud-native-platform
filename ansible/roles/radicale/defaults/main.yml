@@ -10,4 +10,5 @@ radicale:
     ports:
       http: 5232 
     tag: latest
+  storage: "/home/{{ ansible_user_id }}/.hcnp/radicale"
     

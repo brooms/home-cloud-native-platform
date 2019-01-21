@@ -1,15 +1,3 @@
-[server]
-# Bind all addresses
-hosts = 0.0.0.0:5232
-
-[auth]
-type = htpasswd
-htpasswd_filename = /path/to/users
-htpasswd_encryption = bcrypt
-
-[storage]
-filesystem_folder = ~/.var/lib/radicale/collections
-
 # -*- mode: conf -*-
 # vim:ft=cfg
 
@@ -131,7 +119,7 @@ hosts = 0.0.0.0:5232
 
 # Threshold for the logger
 # Value: debug | info | warning | error | critical
-#level = warning
+level = debug
 
 # Don't include passwords in logs
 #mask_passwords = True

@@ -1,0 +1,13 @@
+---
+
+radicale:
+  project:
+    src: https://github.com/Kozea/Radicale
+    url: https://radicale.org/
+  container:
+    image: radicale
+    name: radicale
+    ports:
+      http: 5232 
+    tag: latest
+    

@@ -16,4 +16,5 @@
     - docker
     # - consul
     - portainer
-    - openhab
+    # - openhab
+    - radicale

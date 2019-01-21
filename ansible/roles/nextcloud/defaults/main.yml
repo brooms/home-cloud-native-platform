@@ -3,7 +3,8 @@
 nextcloud:
   container:
     namme: nextcloud
-    image: "arm32v7/nextcloud"
+    # image: "arm32v7/nextcloud"
+    image: "nextcloud"
     ports:
       http: 8080
   volumes:

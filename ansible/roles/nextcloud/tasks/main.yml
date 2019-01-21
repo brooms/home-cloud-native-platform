@@ -8,7 +8,7 @@
 - name: Run nextcloud container
   docker_container:
     name: "{{ container.name }}"
-    image: arm32v7/nextcloud
+    image: nextcloud
     state: latest
     recreate: yes
     published_ports:

@@ -1,8 +1,8 @@
 ---
 
-- name: Print user
+- name: Introduction message
   debug:
-    var: ansible_user
+    msg: "Running Home Cloud-Native Platform installation on host {{ ansible_host }} with address {{ ansible_host_id ] as user {{ ansible_user }}"
 
 - name: Update host
   become: true

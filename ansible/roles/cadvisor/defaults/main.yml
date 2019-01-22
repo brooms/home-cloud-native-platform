@@ -5,6 +5,8 @@ cadvisor:
     name: cadvisor
     ports:
       http: 8090
+    restart:
+      policy: always
   image:
     name: google/cadvisor
     tag: latest

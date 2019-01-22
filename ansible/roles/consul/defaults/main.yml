@@ -8,13 +8,14 @@ consul:
     name: consul
     ports:
       dns: 53
+      http: 8500
     restart:
       policy: always
   datacenter: hcnp
-  dns_recursor: true
+  dns_recursor: 8.8.8.8
   interfaces:
-    bind:
-    client:
+    bind: eth0
+    client: eth0
   network_mode: host
   project:
     src: https://github.com/gliderlabs/registrator
@@ -24,5 +25,5 @@ consul:
     attempts: -1
     interval: 12000
   volumes:
-    configuration: 
-    data: 
+    configuration: consul_config
+    data: consul_data

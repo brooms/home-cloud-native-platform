@@ -14,10 +14,10 @@
   docker_container:
     name: "{{ cadvisor.container.name }}"
     image: "{{ cadvisor.image.name }}:{{ cadvisor.image.tag }}"
-    publish_ports:
+    published_ports:
       - "{{ cadvisor.container.ports.http }}:8080"
     recreate: yes
-    restart: "{{ cadvisor.container.restart.policy }}"
+    restart_policy: "{{ cadvisor.container.restart.policy }}"
     state: started
     volumes:
       - /:/rootfs:ro
@@ -25,3 +25,4 @@
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
+  register: cadvisor_container_launched

@@ -8,7 +8,7 @@ openhab:
     name: openhab
     id: 9001
   directories:
-    base: /opt/openhab
+    base: "{{ ansible_user }}/hcnp/openhab"
     data: [
       addons,
       userdata

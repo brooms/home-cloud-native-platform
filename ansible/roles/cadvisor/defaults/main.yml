@@ -2,7 +2,9 @@
 
 cadvisor:
   container:
-    image: openhab/cadvisor
     name: cadvisor
     ports:
       http: 8090
+  image:
+    name: google/cadvisor
+    tag: latest

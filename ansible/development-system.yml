@@ -17,5 +17,6 @@
     # - consul
     # - registrator
     - portainer
+    - cadvisor
     # - openhab
     # - radicale

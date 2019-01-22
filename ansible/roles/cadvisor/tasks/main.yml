@@ -1,13 +1,23 @@
 ---
 
-- name: "Run image {{ cadvisor.container.image }} as container {{ cadvisor.container.name }}"
+# sudo docker run \
+  # --volume=/:/rootfs:ro \
+  # --volume=/var/run:/var/run:ro \
+  # --volume=/sys:/sys:ro \
+  # --volume=/var/lib/docker/:/var/lib/docker:ro \
+  # --volume=/dev/disk/:/dev/disk:ro \
+  # --publish=8080:8080 \
+  # --detach=true \
+  # --name=cadvisor \
+  # google/cadvisor:latest
+- name: "Run image {{ cadvisor.image.name }}:{{ cadvisor.image.tag }} as container {{ cadvisor.container.name }}"
   docker_container:
     name: "{{ cadvisor.container.name }}"
-    image: "{{ cadvisor.container.image }}"
-    publish)ports:
-      - "{{ cadvisor.ports.http }}:8080"
+    image: "{{ cadvisor.image.name }}:{{ cadvisor.image.tag }}"
+    publish_ports:
+      - "{{ cadvisor.container.ports.http }}:8080"
     recreate: yes
-    restart: always
+    restart: "{{ cadvisor.container.restart.policy }}"
     state: started
     volumes:
       - /:/rootfs:ro

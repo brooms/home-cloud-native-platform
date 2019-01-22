@@ -1,10 +1,97 @@
-- name: Include distribution-specific variables
-  include_vars: "{{ item }}"
-  with_first_found:
-    - "vars/{{ ansible_distribution|lower }}.yml"
-    - "vars/{{ ansible_os_family|lower }}.yml"
-  tags:
-   - dnsmasq
+- name: Consul configuration volume
+  docker_volume:
+    name: "{{ consul.volumes.configuration }}"
 
-- include: dnsmasq.yml
-- include: consul.yml
+- name: Consul data volume
+  docker_volume:
+    name: "{{ consul.volumes.data }}"
+
+- name: run consul container as controller bootstrap
+  docker_container:
+    name: "{{ consul.container.name }}-{{ ansibe_hostname }}"
+    image: "{{ consul.image.name }}:{{ consul.image.tag }}"
+    command:
+      - agent
+      - -bind="{{ host.ip }}"
+      - -bootstrap-expect=1
+      - -client=0.0.0.0
+      - -datacenter="{{ consul.datacenter }}"
+      - -dns-port="{{ consul.container.ports.dns }}"
+      # - -recursor="{{ consul.dns_recursor }}"
+      - -server
+      - -ui
+      - -config-dir=/consul/config
+      - -data-dir=/consul/data
+    detach: true
+    env:
+      CONSUL_ALLOW_PRIVILEGED_PORTS:
+      CONSUL_BIND_INTERFACE: "{{ consul.interfaces.bind }}"
+      CONSUL_CLIENT_INTERFACE: "{{ consul.interfaces.client }}"
+    hostname: "consul-{{ ansible_hostname }}"
+    network_mode: "{{ consul.network_mode }}"
+    published_ports:
+     - 8300:8300
+     - 8301:8301
+     - 8301:8301/udp
+     - 8302:8302
+     - 8302:8302/udp
+     - 8400:8400
+     - 8500:8500
+     - 8600:8600
+     - "{{ host.ip }}:{{consul.container.ports.dns}}:8600/udp"
+    state: started
+    recreate: yes
+    restart_policy: "{{ consul.container.restart.policy }}"
+    volumes:
+      - "{{ consul.volumes.configuration }}:/consul/config"
+      - "{{ consul.volumes.data }}:/consul/data"
+    # command: -server -advertise "{{consul_advertise}}" -bootstrap-expect "{{consul_bootstrap_expect}}" -ui-dir /ui
+  register: consul_container_launched
+  when: consul_mode == "server"
+
+- name: run consul container as node
+  docker_container:
+    name: "{{ consul.container.name }}-{{ ansibe_hostname }}"
+    image: "{{ consul_image }}"
+    command:
+      - agent
+      - -bind="{{ host.ip }}"
+      - -client=0.0.0.0
+      - -datacenter="{{ consul.datacenter }}"
+      - -dns-port="{{ consul.container.ports.dns }}"
+      - -recursor="{{ consul.dns_recursor }}"
+      - -retry-join="{{ controller_name }}"
+      - -config-dir=/consul/config
+      - -data-dir=/consul/data
+    detach: true
+    env:
+      CONSUL_ALLOW_PRIVILEGED_PORTS:
+      CONSUL_BIND_INTERFACE: "{{ consul.interfaces.client }}"
+      CONSUL_CLIENT_INTERFACE: "{{ consul.interfaces.client }}"
+    hostname: "consul-{{ ansible_hostname }}"
+    network_mode: host
+    published_ports:
+     - 8300:8300
+     - 8301:8301
+     - 8301:8301/udp
+     - 8302:8302
+     - 8302:8302/udp
+     - 8400:8400
+     - 8500:8500
+     - 8600:8600
+     - "{{ host.ip }}:{{consul.container.ports.dns}}:8600/udp"
+    state: started
+    recreate: yes
+    restart_policy: "{{ consul.container.restart.policy }}"
+    volumes:
+      - "{{ consul.volumes.config }}:/consul/config"
+      - "{{ consul.volumes.data }}:/consul/data"
+    # command: -server -advertise "{{consul_advertise}}" -bootstrap-expect "{{consul_bootstrap_expect}}" -ui-dir /ui
+  register: consul_container_launched
+  when: (consul_mode is not defined or consul_mode != "server")
+
+- name: Wait for consul to launch
+  wait_for:
+    port: "{{ consul.container.ports.http }}"
+    delay: 5
+  when: consul_container_lauched

@@ -1,21 +1,13 @@
 ---
 
-consul:
+registrator:
   image:
-    name: consul
-    tag: latest
+    name: registrator
+    tag: master
   container:
-    name: consul
-    ports:
-      dns: 53
+    name: registrator
     restart:
       policy: always
-  datacenter: hcnp
-  dns_recursor: true
-  interfaces:
-    bind:
-    client:
-  network_mode: host
   project:
     src: https://github.com/gliderlabs/registrator
     url: https://github.com/gliderlabs/registrator
@@ -23,6 +15,3 @@ consul:
   retry:
     attempts: -1
     interval: 12000
-  volumes:
-    configuration: 
-    data: 

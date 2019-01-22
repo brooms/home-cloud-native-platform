@@ -14,7 +14,6 @@
     recreate: yes
     state: started
 
-
 - name: run consul container with bootstrap
   docker_container:
     name: "{{ consul.container.name }}-{{ ansibe_hostname }}"

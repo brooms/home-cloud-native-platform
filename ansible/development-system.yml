@@ -15,6 +15,7 @@
     - git-client
     - docker
     # - consul
+    # - registrator
     - portainer
     # - openhab
-    - radicale
+    # - radicale

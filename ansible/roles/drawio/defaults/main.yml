@@ -10,7 +10,7 @@ drawio:
       http: 8888
       https: 8443
     restart:
-      policy: on-failure
+      policy: unless-stopped
   project:
     src: https://github.com/fjudith/docker-draw.io.git
     url: https://github.com/fjudith/docker-draw.io

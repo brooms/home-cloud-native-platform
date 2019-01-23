@@ -3,5 +3,5 @@
 - hosts: development-system
 
   roles:
-    - openhab
     - radicale
+    # - openhab

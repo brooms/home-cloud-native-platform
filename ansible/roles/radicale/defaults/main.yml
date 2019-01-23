@@ -4,10 +4,14 @@ radicale:
   project:
     src: https://github.com/Kozea/Radicale
     url: https://radicale.org/
+    version: master
   container:
-    image: radicale
     name: radicale
     ports:
-      http: 5232 
+      http: 5232
+    restart:
+      policy: always
+  image:
+    name: radicale
     tag: latest
-  storage: "/home/{{ ansible_user_id }}/.hcnp/radicale"
+  storage: "{{ storage_base }}/radicale"

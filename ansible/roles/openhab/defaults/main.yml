@@ -8,16 +8,18 @@ openhab:
     name: openhab
     id: 9001
   directories:
-    base: "{{ ansible_user }}/hcnp/openhab"
+    base: "{{ storage_base }}/openhab"
     data: [
       addons,
       userdata
     ]
   container:
-    image: openhab/openhab
     name: openhab
     ports:
       http: 8888    # the HTTP port of the web interface
       https: 8843   # the HTTPS port of the web interface
       ssh: 8101     # the SSH port of the Console (since openHAB 2.0.0)
       lsp: 5007     # the LSP port for validating rules (since openHAB 2.2.0)
+  image:
+    name: openhab/openhab
+    tag: latest

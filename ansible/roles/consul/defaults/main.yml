@@ -4,18 +4,19 @@ consul:
   image:
     name: consul
     tag: latest
+  bind: "{{ ansible_default_ipv4.address }}"
   container:
     name: consul
     ports:
-      dns: 53
+      dns: 8600
       http: 8500
     restart:
       policy: always
   datacenter: hcnp
   dns_recursor: 8.8.8.8
   interfaces:
-    bind: eth0
-    client: eth0
+    bind: "{{ ansible_default_ipv4.interface }}"
+    client: "{{ ansible_default_ipv4.interface }}"
   network_mode: host
   project:
     src: https://github.com/gliderlabs/registrator

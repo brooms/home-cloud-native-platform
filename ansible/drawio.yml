@@ -3,5 +3,4 @@
 - hosts: development-system
 
   roles:
-    - openhab
-    - radicale
+    - drawio

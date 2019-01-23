@@ -36,4 +36,4 @@
     state: started
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
-  register: registartor_container_launched
+  register: registrator_container_launched

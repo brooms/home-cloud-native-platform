@@ -4,4 +4,4 @@
 
   roles:
     - radicale
-    # - openhab
+    - openhab

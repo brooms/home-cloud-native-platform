@@ -20,6 +20,8 @@
   docker_container:
     name: "{{ frontail.container.name }}"
     image: "{{ frontail.image.name }}:{{ frontail.image.tag }}"
+    command:
+      - /log/syslog
     dns_servers:
       - "{{ consul_server }}"
     dns_search_domains:
@@ -31,5 +33,7 @@
     recreate: yes
     restart_policy: "{{ frontail.container.restart.policy }}"
     state: started
+    volumes:
+      - /var/log:/log
   register: frontail_container_launched
   

@@ -4,5 +4,5 @@
 
   roles:
     - frontail
-    - radicale
-    - openhab
+    # - radicale
+    # - openhab

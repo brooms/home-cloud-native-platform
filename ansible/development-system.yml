@@ -3,5 +3,6 @@
 - hosts: development-system
 
   roles:
+    - frontail
     - radicale
     - openhab

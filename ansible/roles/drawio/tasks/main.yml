@@ -16,10 +16,10 @@
 
 # docker run -it --rm --name="draw" -p 8080:8080 -p 8443:8443 fjudith/draw.io
 # go to http://localhost:8080/?offline=1&https=0 or https://localhost:8443/?offline=1
-- name: "Run image {{ drawio.image.name }}:{{ drawio.image.tag}} as container {{ drawio.container.name }}"
+- name: "Run image {{ drawio.image.name }}:{{ drawio.image.tag }} as container {{ drawio.container.name }}"
   docker_container:
     name: "{{ drawio.container.name }}"
-    image: "{{ drawio.image.name }}:{{ drawio.image.tag}}"
+    image: "{{ drawio.image.name }}:{{ drawio.image.tag }}"
     dns_servers:
       - "{{ consul_server }}"
     dns_search_domains:

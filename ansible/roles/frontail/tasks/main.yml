@@ -27,8 +27,7 @@
     hostname: "{{ frontail.container.name }}"
     network_mode: host
     published_ports:
-      - "{{ frontail.container.ports.http }}:8080"
-      - "{{ frontail.container.ports.https }}:8443"
+      - "{{ frontail.container.ports.http }}:9001"
     recreate: yes
     restart_policy: "{{ frontail.container.restart.policy }}"
     state: started

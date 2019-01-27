@@ -1,0 +1,12 @@
+---
+
+- hosts: all
+
+  roles:
+    - common
+    - git-client
+    - docker
+    - consul
+    - registrator
+    - portainer
+    - cadvisor

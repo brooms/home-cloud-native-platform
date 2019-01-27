@@ -1,17 +1,33 @@
+---
+
+- name: "Remove container {{ consul.container.name }}-{{ ansible_hostname }} and associated volumes"
+  docker_container:
+    name: "{{ consul.container.name }}-{{ ansible_hostname }}"
+    keep_volumes: no
+    state: absent
+
 - name: Consul configuration volume
   docker_volume:
     name: "{{ consul.volumes.configuration }}"
+    force: yes
 
 - name: Consul data volume
   docker_volume:
     name: "{{ consul.volumes.data }}"
+    force: yes
 
-- name: run consul container as controller bootstrap
+- name: "Run {{ consul.image.name }}:{{ consul.image.tag }} as container {{ consul.container.name }}-{{ ansible_hostname }} as server"
   docker_container:
-    name: "{{ consul.container.name }}-{{ ansibe_hostname }}"
+    name: "{{ consul.container.name }}-{{ ansible_hostname }}"
     image: "{{ consul.image.name }}:{{ consul.image.tag }}"
     command:
       - agent
+      - -bind="{{ consul.bind }}"
+      - -bootstrap-expect=1
+      - -client=0.0.0.0
+      - -datacenter="{{ consul.datacenter }}"
+      - -dns-port="{{ consul.container.ports.dns }}"
+      - -recursor="{{ consul.dns_recursor }}"
       - -server
       - -ui
       - -client=127.0.0.1 # default is 127.0.0.1
@@ -50,13 +66,13 @@
   register: consul_container_launched
   when: consul_mode == "server"
 
-- name: run consul container as node
+- name: "Run {{ consul.image.name }}:{{ consul.image.tag }} as container {{ consul.container.name }}-{{ ansible_hostname }} as node"
   docker_container:
-    name: "{{ consul.container.name }}-{{ ansibe_hostname }}"
-    image: "{{ consul_image }}"
+    name: "{{ consul.container.name }}-{{ ansible_hostname }}"
+    image: "{{ consul.image.name }}:{{ consul.image.tag }}"
     command:
       - agent
-      - -bind="{{ host.ip }}"
+      - -bind="{{ consul.bind }}"
       - -client=0.0.0.0
       - -datacenter="{{ consul.datacenter }}"
       - -dns-port="{{ consul.container.ports.dns }}"
@@ -80,7 +96,7 @@
      - 8400:8400
      - 8500:8500
      - 8600:8600
-     - "{{ host.ip }}:{{consul.container.ports.dns}}:8600/udp"
+     - "{{ ansible_host }}:{{consul.container.ports.dns}}:8600/udp"
     state: started
     recreate: yes
     restart_policy: "{{ consul.container.restart.policy }}"
@@ -95,4 +111,15 @@
   wait_for:
     port: "{{ consul.container.ports.http }}"
     delay: 5
-  when: consul_container_lauched
+  when: consul_container_launched
+
+- name: "Register {{ ansible_host }} with Consul DNS"
+  uri:
+    url: "http://{{ consul_server }}:{{ consul.container.ports.http }}/v1/catalog/register"
+    method: PUT
+    body: '{"Datacenter": "{{ consul.datacenter }}", "Node": "hcnp-hosts", "Address": "{{ ansible_default_ipv4.interface }}", "Service": {"ID": "{{ ansible_host }}", "Service": "{{ ansible_host }}", "Address": "{{ ansible_default_ipv4.interface }}", "Port": 80}}'
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+    status_code: 200, 201, 204
+  when: consul_container_launched

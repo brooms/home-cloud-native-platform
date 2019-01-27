@@ -1,17 +1,19 @@
 ---
 
-# - name: Get source
-#   git:
-#     repo: "{{ radicale.project.src }}"
-#     dest: "/tmp/radicale"
-#     update: yes
+- name: Get source
+  git:
+    repo: "{{ radicale.project.src }}"
+    dest: "/tmp/radicale"
+    update: yes
+  register: radicale_source
 
 - name: Build image
   docker_image:
     # path: /tmp/radicale
     path: ~/radicale
-    name: "{{ radicale.container.image }}:{{ radicale.container.tag}}"
-    tag: latest
+    name: "{{ radicale.image.name }}"
+    tag: "{{ radicale.image.tag}}"
+  # when: radicale_source.changed
 
 - name: Create directory for radicale configuration
   file:
@@ -22,12 +24,12 @@
   copy:
     dest: "{{ radicale.storage }}/{{ item }}"
     src: "{{ item }}"
-    backup: yes # not required. Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly.
+    backup: yes
   loop:
     - config
     - logging
 
-- name: Create directory for radicale logging
+- name: Create directories for radicale data and logging
   become: true
   file:
     path: "{{ radicale.storage }}/{{ item }}"
@@ -36,18 +38,20 @@
     - data
     - logs
 
-# docker run --name=gogs -p 10022:22 -p 10080:3000 -v /var/gogs:/data gogs/gogs-rpi
-- name: "Run image {{ radicale.container.image }}:{{ radicale.container.tag}} as container {{ radicale.container.name }}"
+- name: "Run image {{ radicale.image.name }}:{{ radicale.image.tag }} as container {{ radicale.container.name }}"
   docker_container:
     name: "{{ radicale.container.name }}"
-    image: "{{ radicale.container.image }}:{{ radicale.container.tag}}"
-    # command:
-    #   - radicale
-      # - --hosts
-      # - 0.0.0.0:5232
+    image: "{{ radicale.image.name }}:{{ radicale.image.tag}}"
     published_ports:
-      - 5232:5232
+      - "{{ radicale.container.ports.http }}:5232"
+    dns_servers:
+      - "{{ consul_server }}"
+    dns_search_domains:
+      - service.consul
+    hostname: "{{ radicale.container.name }}"
+    network_mode: host
     recreate: yes
+    restart_policy: "{{ radicale.container.restart.policy }}"
     state: started
     volumes:
       - "{{ radicale.storage }}/config:/etc/radicale"

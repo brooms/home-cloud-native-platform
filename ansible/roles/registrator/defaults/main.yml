@@ -11,6 +11,7 @@ registrator:
   project:
     src: https://github.com/gliderlabs/registrator
     url: https://github.com/gliderlabs/registrator
+    version: master
   resync: 120
   retry:
     attempts: -1

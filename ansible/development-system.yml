@@ -9,6 +9,7 @@
     - consul
     # - registrator
     - portainer
+    - frontail
     # - cadvisor
     # - openhab
-    # - radicale
+ 

@@ -5,12 +5,14 @@
     repo: "{{ registrator.project.src }}"
     dest: "/tmp/registrator"
     update: yes
+  register: registrator_source
 
 - name: Build image
   docker_image:
     path: /tmp/registrator
     name: "{{ registrator.image.name }}"
     tag: "{{ registrator.image.tag}}"
+  when: registrator_source.changed
 
 # docker run -d --name=registrator --net=host --volume=/var/run/docker.sock:/tmp/docker.sock gliderlabs/registrator:latest consul://localhost:8500
 - name: "Run image {{ registrator.image.name }}:{{ registrator.image.tag}} as container {{ registrator.container.name }}"
@@ -34,4 +36,4 @@
     state: started
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
-  register: registartor_container_launched
+  register: registrator_container_launched

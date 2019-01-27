@@ -7,7 +7,7 @@
     - git-client
     - docker
     - consul
-    - registrator
+    # - registrator
     - portainer
     # - cadvisor
     # - openhab

@@ -16,7 +16,6 @@ consul:
   interfaces:
     bind: eth0
     client: eth0
-  network_mode: host
   project:
     src: https://github.com/gliderlabs/registrator
     url: https://github.com/gliderlabs/registrator

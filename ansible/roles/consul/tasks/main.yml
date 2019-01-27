@@ -12,23 +12,24 @@
     image: "{{ consul.image.name }}:{{ consul.image.tag }}"
     command:
       - agent
-      - -bind="{{ host.ip }}"
-      - -bootstrap-expect=1
-      - -client=0.0.0.0
-      - -datacenter="{{ consul.datacenter }}"
-      - -dns-port="{{ consul.container.ports.dns }}"
-      # - -recursor="{{ consul.dns_recursor }}"
       - -server
       - -ui
+      - -client=127.0.0.1 # default is 127.0.0.1
+      - -advertise="{{ host.ip }}"
+      - -bootstrap-expect=1
+      # - -bind=0.0.0.0 # default is 0.0.0.0
+      # # - -bind="{{ host.ip }}"
+      # # - -datacenter="{{ consul.datacenter }}"
+      # # - -dns-port="{{ consul.container.ports.dns }}"
+      # # # - -recursor="{{ consul.dns_recursor }}"
       - -config-dir=/consul/config
       - -data-dir=/consul/data
     detach: true
     env:
-      CONSUL_ALLOW_PRIVILEGED_PORTS:
       CONSUL_BIND_INTERFACE: "{{ consul.interfaces.bind }}"
       CONSUL_CLIENT_INTERFACE: "{{ consul.interfaces.client }}"
     hostname: "consul-{{ ansible_hostname }}"
-    network_mode: "{{ consul.network_mode }}"
+    network_mode: host
     published_ports:
      - 8300:8300
      - 8301:8301

@@ -28,11 +28,11 @@
     image: "{{ consul.image.name }}:{{ consul.image.tag }}"
     command:
       - agent
-      # - -advertise="{{ ansible_default_ipv4.address }}"
-      # - -bind=127.0.0.1
-      - -bind={{ ansible_default_ipv4.address }}
+      - -advertise="{{ ansible_default_ipv4.address }}"
+      - -bind=0.0.0.0
+      # - -bind={{ ansible_default_ipv4.address }}
       - -bootstrap-expect=1
-      # - -client=0.0.0.0
+      - -client=127.0.0.1
       - -datacenter="{{ consul.datacenter }}"
       # - -dns-port="{{ consul.container.ports.dns }}"
       # - -recursor="{{ consul.dns_recursor }}"

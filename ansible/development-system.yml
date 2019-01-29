@@ -12,4 +12,5 @@
     # - frontail
     # - cadvisor
     # - openhab
+    - traefik
  

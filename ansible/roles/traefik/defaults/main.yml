@@ -1,0 +1,17 @@
+---
+
+traefik:
+  project:
+    src: https://github.com/containous/traefik
+    url: https://traefik.io/
+    version: master
+  container:
+    name: traefik
+    ports:
+      http: 80
+    restart:
+      policy: always
+  image:
+    name: traefik
+    tag: latest
+  storage: "{{ storage_base }}/traefik"

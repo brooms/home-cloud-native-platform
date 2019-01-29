@@ -6,12 +6,12 @@
     keep_volumes: no
     state: absent
 
-- name: Consul configuration volume
+- name: "Create configuration volume {{ consul.volumes.configuration }}"
   docker_volume:
     name: "{{ consul.volumes.configuration }}"
     force: yes
 
-- name: Consul data volume
+- name: "Create data volume {{ consul.volumes.data }}"
   docker_volume:
     name: "{{ consul.volumes.data }}"
     force: yes
@@ -120,13 +120,13 @@
     delay: 5
   when: consul_container_launched
 
-- name: "Register {{ ansible_host }} with Consul DNS"
-  uri:
-    url: "http://{{ consul_server }}:{{ consul.container.ports.http }}/v1/catalog/register"
-    method: PUT
-    body: '{"Datacenter": "{{ consul.datacenter }}", "Node": "hcnp-hosts", "Address": "{{ ansible_default_ipv4.interface }}", "Service": {"ID": "{{ ansible_host }}", "Service": "{{ ansible_host }}", "Address": "{{ ansible_default_ipv4.interface }}", "Port": 80}}'
-    body_format: json
-    headers:
-      Content-Type: "application/json"
-    status_code: 200, 201, 204
-  when: consul_container_launched
+# - name: "Register {{ ansible_host }} with Consul DNS"
+#   uri:
+#     url: "http://{{ consul_server }}:{{ consul.container.ports.http }}/v1/catalog/register"
+#     method: PUT
+#     body: '{"Datacenter": "{{ consul.datacenter }}", "Node": "hcnp-hosts", "Address": "{{ ansible_default_ipv4.interface }}", "Service": {"ID": "{{ ansible_host }}", "Service": "{{ ansible_host }}", "Address": "{{ ansible_default_ipv4.interface }}", "Port": 80}}'
+#     body_format: json
+#     headers:
+#       Content-Type: "application/json"
+#     status_code: 200, 201, 204
+#   when: consul_container_launched

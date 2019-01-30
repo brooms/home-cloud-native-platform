@@ -1,0 +1,10 @@
+---
+
+- name: Copy job to /tmp
+  copy:
+    src: job.nomad
+    dest: /tmp/job.nomad
+
+- name: Run job
+  command: nomad job run /tmp/job.nomad
+  register: nomad_job_submitted

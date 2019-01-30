@@ -3,14 +3,15 @@
 - hosts: development-system
 
   roles:
-    - common
-    - git-client
-    - docker
-    - consul-container
-    # - registrator
-    - portainer
-    # - frontail
-    # - cadvisor
+    # - common
+    # - git-client
+    # - docker
+    # - consul-container
+    # # - registrator
+    # - traefik
+    # - portainer
+    # # - frontail
+    - cadvisor
     # - openhab
-    - traefik
+    # - test
  

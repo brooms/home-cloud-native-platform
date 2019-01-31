@@ -1,7 +1,7 @@
-datacenter = "dc1"
+datacenter = "hcnp"
 
 # use /tmp to support Docker for Mac
-data_dir = "/var.lib/nomad"
+data_dir = "/home/philip/.hcnp/nomad"
 
 # bind to $host instead of default (0.0.0.0 prod, 127.0.0.1 dev)
 bind_addr = "$host"

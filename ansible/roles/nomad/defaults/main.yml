@@ -1,0 +1,8 @@
+---
+
+# nomad:
+nomad_version: 0.8.7
+nomad_dest: "/tmp/nomad"
+nomad_pkg_url: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64.zip"
+nomad_sha256sum_url: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_SHA256SUMS"
+nomad_pkg_compressed_file_name: "{{ nomad_pkg_url | basename }}"

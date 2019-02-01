@@ -1,0 +1,26 @@
+---
+
+# sudo mkdir --parents /etc/nomad.d
+# sudo touch /etc/nomad.d/nomad.hcl
+# sudo chown --recursive nomad:nomad /etc/nomad.d
+# sudo chmod 640 /etc/nomad.d/nomad.hcl
+
+- name: Make configuration directory /etc/nomad.d
+  file:
+    path: /etc/nomad.d
+    state: directory
+    owner: nomad
+    group: nomad
+    recurse: yes
+    
+- name: Copy configuration file common-configuration.hcl
+  copy:
+    src: common-configuration.hcl
+    dest: /etc/nomad.d/nomad.hcl
+    mode: 0640
+
+- name: Copy configuration file server-configuration.hcl
+  copy:
+    src: server-configuration.hcl
+    dest: /etc/nomad.d/server.hcl
+    mode: 0640

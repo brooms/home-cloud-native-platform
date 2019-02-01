@@ -1,0 +1,41 @@
+---
+
+# NOMAD_VERSION="0.8.4"
+# curl --silent --remote-name https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/nomad_${NOMAD_VERSION}_linux_amd64.zip
+# curl --silent --remote-name https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/nomad_${NOMAD_VERSION}_SHA256SUMS
+# curl --silent --remote-name https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/nomad_${NOMAD_VERSION}_SHA256SUMS.sig
+# Unzip the downloaded package and move the nomad binary to /usr/local/bin/. Check nomad is available on the system path.
+
+# unzip nomad_${NOMAD_VERSION}_linux_amd64.zip
+# sudo chown root:root nomad
+# sudo mv nomad /usr/local/bin/
+# nomad --version
+
+# The nomad command features opt-in autocompletion for flags, subcommands, and arguments (where supported). Enable autocompletion.
+
+# nomad -autocomplete-install
+# complete -C /usr/local/bin/nomad nomad
+
+# Create a unique, non-privileged system user to run Nomad and create its data directory.
+
+# sudo useradd --system --home /etc/nomad.d --shell /bin/false nomad
+# sudo mkdir --parents /opt/nomad
+# sudo chown --recursive nomad:nomad /opt/nomad
+
+- set_fact:
+    # pkg_url: "https://releases.hashicorp.com/nomad/{{ nomad.version }}/nomad_{{nomad.version}}_linux_amd64.zip"
+    # sha256sum_url: "https://releases.hashicorp.com/nomad/{{ nomad.version }}/nomad_{{ nomad.version }}_SHA256SUMS"
+    sha256sum_value: "{{ lookup('url', nomad_sha256sum_url) }}"
+
+- debug:
+    var: sha256sum_value
+
+- debug:
+    var: nomad_pkg_compressed_file_name
+
+- name: Download binary package 
+  get_url:
+    dest: "{{ nomad_dest }}"
+    url: "{{ nomad_pkg_url }}"
+    checksum:  "sha256:{{ sha256sum_value }}"
+    # tmp_dest: undefined

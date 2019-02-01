@@ -5,13 +5,14 @@
   roles:
     # - common
     # - git-client
+    - nomad
     # - docker
     # - consul-container
     # # - registrator
     # - traefik
     # - portainer
     # # - frontail
-    - cadvisor
+    # - cadvisor
     # - openhab
     # - test
  

@@ -1,0 +1,6 @@
+---
+
+vagrant_version: 
+vagrant_pkg: 
+vagrant_checksum:
+  vagrant_pkg_local: true

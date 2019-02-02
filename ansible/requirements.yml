@@ -1,0 +1,16 @@
+---
+
+- name: brianshumate.consul
+  cms: git
+  src: git+https://github.com/brianshumate/ansible-consul.git
+  version: origin/master
+
+- name: brianshumate.nomad
+  cms: git
+  src: git+https://github.com/brianshumate/ansible-nomad.git
+  version: origin/master
+
+# - name: indigo-dc.consul
+#   cms: git
+#   src: git+https://github.com/indigo-dc/ansible-role-consul.git
+#   version: origin/master

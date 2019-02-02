@@ -1,0 +1,20 @@
+---
+
+virtualbox_version:
+virtualbox_pkg_url: https://download.virtualbox.org/virtualbox/6.0.4/virtualbox-6.0_6.0.4-128413~Ubuntu~bionic_amd64.deb
+
+
+nomad_version: "{{ lookup('env','NOMAD_VERSION') | default('0.8.7', true) }}"
+nomad_architecture_map:
+  amd64: amd64
+  x86_64: amd64
+  armv7l: arm
+  aarch64: arm64
+  32-bit: "386"
+  64-bit: amd64
+nomad_architecture: "{{ nomad_architecture_map[ansible_architecture] }}"
+nomad_pkg_url: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_{{ nomad_architecture }}.zip"
+nomad_checksum_url: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_SHA256SUMS"
+nomad_pkg_file: "{{ nomad_pkg_url | basename }}"
+
+nomad_dest: "/tmp/nomad"

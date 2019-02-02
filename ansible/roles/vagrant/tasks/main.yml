@@ -1,0 +1,6 @@
+---
+
+- name: Install vagrant
+  import_tasks: install.yml
+
+  

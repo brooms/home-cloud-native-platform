@@ -1,0 +1,8 @@
+---
+
+- name: Download vagrant package
+  get_url:
+
+- name: Install a .deb package
+  apt:
+    deb: "{{ vagrant_pkg_deb }}"

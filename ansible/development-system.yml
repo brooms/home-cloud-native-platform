@@ -2,10 +2,13 @@
 
 - hosts: development-system
 
+  become: true
+
   roles:
     # - common
     # - git-client
-    - nomad
+    - brianshumate.nomad
+    # - indigo-dc.consul
     # - docker
     # - consul-container
     # # - registrator

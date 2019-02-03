@@ -2,18 +2,19 @@
 
 - hosts: development-system
 
-  become: true
+#   become: true
 
   roles:
     # - common
     # - git-client
-    - brianshumate.nomad
+    # - brianshumate.nomad
     # - indigo-dc.consul
     # - docker
     # - consul-container
     # # - registrator
     # - traefik
     # - portainer
+    - radicale
     # # - frontail
     # - cadvisor
     # - openhab

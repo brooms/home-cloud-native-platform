@@ -30,7 +30,7 @@
     - logging
 
 - name: Create directories for radicale data and logging
-  become: true
+  # become: true
   file:
     path: "{{ radicale.storage }}/{{ item }}"
     state: directory
@@ -42,14 +42,14 @@
   docker_container:
     name: "{{ radicale.container.name }}"
     image: "{{ radicale.image.name }}:{{ radicale.image.tag}}"
+    # dns_servers:
+    #   - "{{ consul_server }}"
+    # dns_search_domains:
+    #   - service.consul
+    # hostname: "{{ radicale.container.name }}"
+    # network_mode: host
     published_ports:
       - "{{ radicale.container.ports.http }}:5232"
-    dns_servers:
-      - "{{ consul_server }}"
-    dns_search_domains:
-      - service.consul
-    hostname: "{{ radicale.container.name }}"
-    network_mode: host
     recreate: yes
     restart_policy: "{{ radicale.container.restart.policy }}"
     state: started

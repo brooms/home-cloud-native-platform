@@ -14,9 +14,9 @@
     # # - registrator
     # - traefik
     # - portainer
-    - radicale
+    # - radicale
     # # - frontail
     # - cadvisor
-    # - openhab
+    - openhab
     # - test
  

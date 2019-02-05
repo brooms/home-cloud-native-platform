@@ -1,8 +1,25 @@
 ---
 
-- hosts: openhab-servers
+- hosts: openhab-nodes
 
-  remote_user: openhabian
+  remote_user: pi
 
-  roles:
-    - openhab
+  tasks:
+  
+    - import_role:
+        name: traefik
+      tags:
+        - services
+        - common
+
+    - import_role:
+        name: radicale
+      tags:
+        - services
+        - radicale
+
+    - import_role:
+        name: openhab
+      tags:
+        - services
+        - openhab

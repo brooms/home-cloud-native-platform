@@ -2,10 +2,18 @@
 
 - hosts: openhab-nodes
 
-  remote_user: pi
-
   tasks:
+
+    - import_role:
+        name: common
+      tags:
+        - upgrade
   
+    - import_role:
+        name: docker
+      tags:
+        - docker
+        
     - import_role:
         name: traefik
       tags:

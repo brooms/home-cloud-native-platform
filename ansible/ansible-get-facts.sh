@@ -3,5 +3,5 @@
 echo "Enter remote host address:"
 read remote_host
 
-ansible ${remote_host} -m setup
+ansible ${remote_host} -i hosts.yml -m setup
 

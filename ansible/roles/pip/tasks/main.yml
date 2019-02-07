@@ -18,7 +18,7 @@
 - name: "upgrade {{ pip }} if installed"
   pip:
     name: "{{ pip }}"
-    extra_args: --user
+    # extra_args: --user
     state: latest
   tags:
     - upgrade

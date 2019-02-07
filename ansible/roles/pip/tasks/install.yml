@@ -9,21 +9,26 @@
     dest: "{{ pip_download_dest }}"
 
 - name: "install {{ pip }}"
-  command: "{{ python }} {{ pip_download_dest }}/get-pip.py --user"
+  become: true
+  command: "{{ python }} {{ pip_download_dest }}/get-pip.py"
 
 - name: delete get-pip.py
   file:
     path: "{{ pip_download_dest }}/get-pip.py"
     state: absent
 
-- name: add path to ~/.bashrc
-  blockinfile:
-    path: "/home/{{ ansible_user }}/.bashrc" # required. The file to modify.,Before 2.3 this option was only usable as I(dest), I(destfile) and I(name).
-    backup: yes # not required. Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly.
-    create: yes # not required. Create a new file if it doesn't exist.
-    state: present # not required. choices: absent;present. Whether the block should be there or not.
-    block: |
-      if [ -d "$HOME/.local/bin" ] ; then
-        PATH="$HOME/.local/bin:$PATH"
-      fi
-    marker: "# {mark} ANSIBLE MANAGED BLOCK pip path"
+# - name: set path file
+#   set_fact:
+#     var_file: "{{ ansible_user_dir }}/.profile"
+
+# - name: "add path to {{ ansible_user_dir }}/.profile"
+#   blockinfile:
+#     path: "{{ ansible_user_dir }}/.profile" # required. The file to modify.,Before 2.3 this option was only usable as I(dest), I(destfile) and I(name).
+#     backup: yes # not required. Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly.
+#     create: yes # not required. Create a new file if it doesn't exist.
+#     state: present # not required. choices: absent;present. Whether the block should be there or not.
+#     block: |
+#       if [ -d "$HOME/.local/bin" ] ; then
+#         PATH="$HOME/.local/bin:$PATH"
+#       fi
+#     marker: "# {mark} ANSIBLE MANAGED BLOCK pip path"

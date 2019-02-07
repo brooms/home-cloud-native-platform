@@ -17,17 +17,17 @@
     - import_role:
         name: traefik
       tags:
-        - services
         - common
+        - services
 
     - import_role:
         name: radicale
       tags:
-        - services
         - radicale
+        - services
 
     - import_role:
         name: openhab
       tags:
-        - services
         - openhab
+        - services

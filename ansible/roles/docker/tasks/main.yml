@@ -34,7 +34,9 @@
     append: yes
 
 - name: "Ensure pip modules {{ docker_python_module.modules }} are installed"
+  become: true
   pip:
-    extra_args: --user
+    # executable: pip3
+    # extra_args: --user
     name: "{{ docker_python_module.modules }}"
     state: latest

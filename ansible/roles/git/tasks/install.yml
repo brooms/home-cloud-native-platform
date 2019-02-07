@@ -1,0 +1,10 @@
+---
+
+- name: Install {{ git }}
+  become: true
+  package:
+    name: "{{ packages }}"
+    state: latest
+  tags:
+    - installation
+    - git

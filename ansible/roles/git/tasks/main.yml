@@ -7,13 +7,8 @@
   check_mode: no
   register: git_install_check
 
-- name: Install {{ git }}
-  package:
-    name: "{{ packages }}"
-    state: latest
-  tags:
-    - installation
-    - git
+- name: Install git
+  import_tasks: install.yml
   when: git_install_check.rc != 0
 
 - name: Configure git

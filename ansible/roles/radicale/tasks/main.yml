@@ -9,11 +9,10 @@
 
 - name: Build image
   docker_image:
-    # path: /tmp/radicale
-    path: ~/radicale
+    path: /tmp/radicale
     name: "{{ radicale.image.name }}"
     tag: "{{ radicale.image.tag}}"
-  # when: radicale_source.changed
+  when: radicale_source.changed
 
 - name: Create directory for radicale configuration
   file:

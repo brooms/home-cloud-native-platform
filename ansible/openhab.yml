@@ -2,6 +2,16 @@
 
 - hosts: openhab-nodes
 
+  vars_prompt:
+
+    - name: "github_user"
+      prompt: "Enter github username"
+      private: no
+
+    - name: "github_password"
+      prompt: "Enter github password"
+      private: yes
+
   tasks:
 
     - import_role:

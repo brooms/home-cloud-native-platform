@@ -1,0 +1,12 @@
+---
+
+- hosts: docker-nodes
+
+  remote_user: pi
+
+  vars:
+     docker_upgrade: false
+
+  roles:
+    - upgrade
+    - docker

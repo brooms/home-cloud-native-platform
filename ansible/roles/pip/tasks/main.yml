@@ -9,6 +9,7 @@
   register: pip_install_check
 
 - name: Install pip
+  become: true
   import_tasks: install.yml
   tags:
     - installation
@@ -16,6 +17,7 @@
   when: pip_install_check.rc != 0
 
 - name: "upgrade {{ pip }} if installed"
+  become: true
   pip:
     name: "{{ pip }}"
     # extra_args: --user

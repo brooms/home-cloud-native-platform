@@ -12,7 +12,18 @@
   tags:
     - installation
     - docker
-  when: docker_install_check.rc != 0
+  when: docker_install_check.rc != 0 or docker_upgrade
+
+- name: 'Add any additional docker startup options via the daemon.json config file'
+  become: true
+  copy:
+    src: "docker/daemon.json"
+    dest: '/etc/docker/daemon.json'
+    owner: 'root'
+    group: 'root'
+    backup: yes
+    mode: '0600'
+  # notify: 'docker-restart-service'
 
 - name: Ensure Docker is started and enabled at boot
   become: true
@@ -20,6 +31,14 @@
     name: docker
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
+
+- name: 'Ensure that the docker service is functional'
+  docker_ping:
+    register: result
+    retries: 5
+    delay: 10
+  until: result|success
+  when: 0
 
 - name: Ensure group "docker" exists
   group:

@@ -14,16 +14,47 @@
     - docker
   when: docker_install_check.rc != 0 or docker_upgrade
 
-- name: 'Add any additional docker startup options via the daemon.json config file'
+- name: Create Docker configuration directories
+  file:
+    path: "{{ item }}"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  loop:
+    - "/etc/docker"
+    - "/etc/systemd/system/docker.service.d"
+
+- name: Configure Docker daemon options (json)
   become: true
   copy:
-    src: "docker/daemon.json"
-    dest: '/etc/docker/daemon.json'
-    owner: 'root'
-    group: 'root'
+    src: "daemon.json"
+    dest: "/etc/docker/daemon.json"
+    owner: root
+    group: root
     backup: yes
-    mode: '0600'
-  # notify: 'docker-restart-service'
+    mode: 0644
+  register: docker_daemon_options 
+  notify: docker-restart-service
+
+- name: Configure Docker service
+  become: true
+  copy:
+    src: "docker.conf"
+    dest: "/etc/systemd/system/docker.service.d/docker.conf"
+    owner: root
+    group: root
+    backup: yes
+    mode: 0644
+  register: docker_service 
+  notify: docker-restart-service
+
+  - name: Reload systemd daemon
+  systemd:
+    daemon_reload: true
+  when: (docker_daemon_options is changed or
+         docker_service is changed)
+  notify: docker-restart-service
 
 - name: Ensure Docker is started and enabled at boot
   become: true

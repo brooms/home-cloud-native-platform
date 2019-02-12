@@ -49,11 +49,10 @@
   register: docker_service 
   notify: docker-restart-service
 
-  - name: Reload systemd daemon
+- name: Reload systemd daemon
   systemd:
     daemon_reload: true
-  when: (docker_daemon_options is changed or
-         docker_service is changed)
+  when: (docker_daemon_options is changed or docker_service is changed)
   notify: docker-restart-service
 
 - name: Ensure Docker is started and enabled at boot

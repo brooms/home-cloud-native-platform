@@ -1,0 +1,10 @@
+---
+
+kerberos:
+  container:
+    name: kerberos
+    image: "kerberos/kerberos"
+    ports:
+      web: 81
+      livestream: 8889
+    tag: latest

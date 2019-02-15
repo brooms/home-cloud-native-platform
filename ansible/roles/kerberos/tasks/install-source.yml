@@ -5,6 +5,7 @@
   become: true
   file:
     path: /var/www/web
+    state: directory
     owner: www-data
     group: www-data
 
@@ -12,16 +13,16 @@
 - name:
   get_url:
     dest: /tmp/web.tar.gz
-    repo: https://github.com/kerberos-io/web/releases/download/v2.5.1/web.tar.gz
+    url: https://github.com/kerberos-io/web/releases/download/v2.5.1/web.tar.gz
 
-- name: Extract foo.tgz into /var/lib/foo
+- name: Extract /tmp/web.tar.gz into /var/www/web
   become: true
   unarchive:
     src: /tmp/web.tar.gz
     dest: /var/www/web
+    remote_src: yes
     owner: www-data
     group: www-data
-
 
   # sudo chown www-data -R storage bootstrap/cache config/kerberos.php
 # sudo chmod -R 775 storage bootstrap/cache

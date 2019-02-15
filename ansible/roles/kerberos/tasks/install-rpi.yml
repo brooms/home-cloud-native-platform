@@ -93,4 +93,4 @@
   become: true
   systemd:
     name: nginx
-    state: retarted
+    state: restarted

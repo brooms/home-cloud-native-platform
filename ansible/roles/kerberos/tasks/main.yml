@@ -2,3 +2,6 @@
 
 - include_tasks:
     file: install-rpi.yml
+
+- include_tasks:
+    file: install-source.yml

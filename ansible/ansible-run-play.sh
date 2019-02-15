@@ -21,6 +21,6 @@ if [ -f ${inventory} ] && [ -f ${playbook} ] ; then
   echo "Running playbook ${playbook} with inventory ${inventory}"
   ansible-playbook -i ${inventory} ${options} ${playbook}""
 else
-  echo "key file ${key_file_dir}/${key_file} not found!"
+  echo "Check inventory and playbook files"
   exit
 fi

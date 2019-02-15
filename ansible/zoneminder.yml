@@ -1,6 +1,6 @@
 ---
 
-- hosts: kerberos-nodes
+- hosts: zoneminder-nodes
 
   # remote_user: "{{ ansible_user }}"
 
@@ -12,5 +12,5 @@
      # ncuser_password:     "{{ NCUSER_PASSWORD }}"
 
   roles:
-    # - upgrade
-    - kerberos
+    - upgrade
+    - zoneminder

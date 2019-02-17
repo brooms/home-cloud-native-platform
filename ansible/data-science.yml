@@ -1,0 +1,7 @@
+---
+
+- hosts: data-science-systems
+
+  roles:
+    # - upgrade
+    - data-science

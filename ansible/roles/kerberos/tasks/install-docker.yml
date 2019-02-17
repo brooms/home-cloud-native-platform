@@ -1,5 +1,7 @@
 ---
 
+# Based on https://doc.kerberos.io/2.0/installation/Docker
+
 # docker run --name=kerberos -p 10022:22 -p 10080:3000 -v /var/kerberos:/data kerberos/kerberos-rpi
 - name: "Run image {{ kerberos.container.image }} as container {{ kerberos.container.name }}"
   docker_container:

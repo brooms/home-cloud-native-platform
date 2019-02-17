@@ -13,4 +13,5 @@
 
   roles:
     # - upgrade
+    - pijuice
     - kerberos

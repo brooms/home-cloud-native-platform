@@ -1,28 +1,13 @@
 ---
-# file: roles/pip/tasks/main.yml
 
-- name: Check if "{{ pip }}" is installed
-  command: "{{ pip }} --version"
-  ignore_errors: true
-  changed_when: false # read-only task
-  check_mode: no
-  register: pip_install_check
+- name: Install or upgrade pip
+  include_tasks:
+    file: install.yml
+  loop:
+    - { python: 'python2', pip: 'pip2' }
+    - { python: 'python3', pip: 'pip3' }
 
-- name: Install pip
-  become: true
-  import_tasks: install.yml
-  tags:
-    - installation
-    - pip
-  when: pip_install_check.rc != 0
-
-- name: "upgrade {{ pip }} if installed"
-  become: true
-  pip:
-    name: "{{ pip }}"
-    # extra_args: --user
-    state: latest
-  tags:
-    - upgrade
-    - pip
-  when: pip_install_check.rc == 0
+- name: delete get-pip.py
+  file:
+    path: "{{ pip_download_dest }}/get-pip.py"
+    state: absent

@@ -49,3 +49,10 @@
     mode: 0600
   loop:
     - /var/www/web/config/kerberos.php
+
+# sudo service nginx restart
+- name: Restart nginx service
+  become: true
+  systemd:
+    name: nginx
+    state: restarted

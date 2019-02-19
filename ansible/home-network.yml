@@ -4,8 +4,8 @@
  
   roles:
     - upgrade
-    - git-client
+    - git
     - pip
-    - docker
+    # - docker
     - brianshumate.consul
     - brianshumate.nomad

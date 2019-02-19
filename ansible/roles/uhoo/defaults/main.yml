@@ -1,0 +1,8 @@
+---
+
+uhoo_username:
+uhoo_password:
+
+uhoo_python_mpdules: [
+  pyuhooair,
+]

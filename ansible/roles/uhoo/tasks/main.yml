@@ -1,0 +1,10 @@
+---
+
+- name: Install Python modules
+  become: true
+  pip:
+    name: "{{ item }}"
+    state: latest
+    executable: pip3
+  loop: "{{ uhoo_python_modules }}"
+  

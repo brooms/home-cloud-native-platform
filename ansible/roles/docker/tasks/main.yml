@@ -6,6 +6,9 @@
   changed_when: false # read-only task
   check_mode: no
   register: docker_install_check
+  tags:
+    - installation
+    - docker
 
 - name: install docker
   import_tasks: install.yml
@@ -15,6 +18,7 @@
   when: docker_install_check.rc != 0 or docker_upgrade
 
 - name: Create Docker configuration directories
+  become: true
   file:
     path: "{{ item }}"
     state: "directory"
@@ -24,6 +28,9 @@
   loop:
     - "/etc/docker"
     - "/etc/systemd/system/docker.service.d"
+  tags:
+    - configuration
+    - docker
 
 - name: Configure Docker daemon options (json)
   become: true
@@ -35,7 +42,10 @@
     backup: yes
     mode: 0644
   register: docker_daemon_options 
-  notify: docker-restart-service
+  notify: 'restart docker'
+  tags:
+    - configuration
+    - docker
 
 - name: Configure Docker service
   become: true
@@ -48,12 +58,18 @@
     mode: 0644
   register: docker_service 
   notify: docker-restart-service
+  tags:
+    - configuration
+    - docker
 
 - name: Reload systemd daemon
   systemd:
     daemon_reload: true
   when: (docker_daemon_options is changed or docker_service is changed)
   notify: docker-restart-service
+  tags:
+    - configuration
+    - docker
 
 - name: Ensure Docker is started and enabled at boot
   become: true
@@ -61,6 +77,9 @@
     name: docker
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
+  tags:
+    - configuration
+    - docker
 
 - name: 'Ensure that the docker service is functional'
   docker_ping:
@@ -68,12 +87,19 @@
     retries: 5
     delay: 10
   until: result|success
+  tags:
+    - configuration
+    - docker
   when: 0
 
 - name: Ensure group "docker" exists
+  become: true
   group:
     name: docker
     state: present
+  tags:
+    - configuration
+    - docker
 
 - name: Ensure current user is in docker group
   become: true
@@ -81,6 +107,9 @@
     name: "{{ ansible_user_id }}"
     groups: docker
     append: yes
+  tags:
+    - configuration
+    - docker
 
 - name: "Ensure pip modules {{ docker_python_module.modules }} are installed"
   become: true
@@ -89,3 +118,6 @@
     # extra_args: --user
     name: "{{ docker_python_module.modules }}"
     state: latest
+  tags:
+    - configuration
+    - docker

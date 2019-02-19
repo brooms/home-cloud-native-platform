@@ -1,0 +1,33 @@
+---
+
+- hosts: local-system
+
+  tasks:
+
+    - import_role:
+        name: upgrade
+      tags:
+        - upgrade
+
+    - import_role:
+        name: consul
+      tags:
+        - consul
+      when: 0
+
+    - import_role:
+        name: vault
+      tags:
+        - vault
+      when: 0
+
+    - import_role:
+        name: vault-init
+      tags:
+        - vault
+      when: 0
+
+    - import_role:
+        name: vault-unseal
+      tags:
+        - vault

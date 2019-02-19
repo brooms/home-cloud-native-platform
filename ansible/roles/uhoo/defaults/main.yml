@@ -3,6 +3,6 @@
 uhoo_username:
 uhoo_password:
 
-uhoo_python_mpdules: [
+uhoo_python_modules: [
   pyuhooair,
 ]

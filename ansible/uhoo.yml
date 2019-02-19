@@ -1,0 +1,15 @@
+---
+
+- hosts: local-system
+
+  tasks:
+
+    - import_role:
+        name: upgrade
+      tags:
+        - upgrade
+
+    - import_role:
+        name: uhoo
+      tags:
+        - uhoo

@@ -1,6 +1,9 @@
 job "cadvisor" {
+
   region = "global"
+  
   datacenters = ["dc1"]
+  
   type = "service"
 
   group "app" {

@@ -35,7 +35,9 @@ job "cadvisor" {
 
       service {
         name = "cadvisor"
-
+        tags = [
+          "metrics"
+        ]
         port = "http"
 
         check {
@@ -51,7 +53,7 @@ job "cadvisor" {
         memory = 100
 
         network {
-          port "http" { }
+          port "http" { static = "8080" }
         }
       }
     }

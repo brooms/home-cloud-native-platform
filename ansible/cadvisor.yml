@@ -1,0 +1,12 @@
+---
+
+- hosts: local-system
+
+  tasks:
+
+    - import_role:
+        name: cadvisor
+        tasks_from: nomad.yml
+      tags:
+        - cadvisor
+        - services

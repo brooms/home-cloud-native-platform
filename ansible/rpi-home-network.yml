@@ -83,4 +83,12 @@
         - docker
       when: 0
 
-      
+
+# Run up Cadvisor
+- hosts: local-system
+
+  tasks:
+
+    - import_role:
+        name: cadvisor
+        tasks_from: nomad.yml

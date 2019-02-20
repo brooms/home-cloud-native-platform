@@ -27,12 +27,3 @@
       - /dev/disk/:/dev/disk:ro
   register: cadvisor_container_launched
   when: 0
-
-- name: Copy job to /tmp
-  copy:
-    src: cadvisor.nomad
-    dest: /tmp/cadvisor.nomad
-
-- name: Run job
-  command: nomad job run /tmp/cadvisor.nomad
-  register: nomad_cadvisor_job_submitted

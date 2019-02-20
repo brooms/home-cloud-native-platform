@@ -19,13 +19,11 @@
         name: vault
       tags:
         - vault
-      when: 0
 
     - import_role:
         name: vault-init
       tags:
         - vault
-      when: 0
 
     - import_role:
         name: vault-unseal

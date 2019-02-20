@@ -1,11 +1,84 @@
 ---
 
+# Common base tasks expacted to run on all nodes
 - hosts: local-system #rpi-home-network-nodes
  
-  roles:
-    - upgrade
-    - git-client
-    - pip
-    - docker
-    - brianshumate.consul
-    - brianshumate.nomad
+  tasks:
+
+    - import_role:
+        name: upgrade
+      tags:
+        - upgrade
+        - common
+
+    - import_role:
+        name: git
+      tags:
+        - git
+        - common
+
+    - import_role:
+        name: pip
+      tags:
+        - pip
+        - common
+
+
+# Install and configure consul
+- hosts: consul_instances
+
+  become: true
+
+  tasks:
+
+    - import_role:
+        name: brianshumate.consul
+      tags:
+        - consul
+
+
+# Install and configure vault
+- hosts: vault_instances
+
+  tasks:
+
+    - import_role:
+        name: vault
+      tags:
+        - vault
+
+    - import_role:
+        name: vault-init
+      tags:
+        - vault
+      when: 0
+      
+    - import_role:
+        name: vault-unseal
+      tags:
+        - vault
+
+
+# Install and configure nomad
+- hosts: nomad_instances
+
+  become: true
+
+  tasks:
+
+    - import_role:
+        name: brianshumate.nomad
+      tags:
+        nomad
+
+
+# Install and configure docker
+- hosts: docker_instances
+
+  tasks:
+
+    - import_role:
+        name: docker
+      tags:
+        - docker
+      when: 0

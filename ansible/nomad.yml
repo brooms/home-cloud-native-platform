@@ -1,0 +1,17 @@
+---
+
+- hosts: consul_instances
+
+  become: true
+  
+  tasks:
+
+    - import_role:
+        name: upgrade
+      tags:
+        - upgrade
+
+    - import_role:
+        name: brianshumate.nomad
+      tags:
+        - nomad

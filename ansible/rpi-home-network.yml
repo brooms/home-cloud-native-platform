@@ -5,6 +5,9 @@
  
   tasks:
 
+    - debug:
+        msg: "Running common tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
+
     - import_role:
         name: upgrade
       tags:
@@ -31,6 +34,9 @@
 
   tasks:
 
+    - debug:
+        msg: "Installing and configuring consul on {{ anaible_host }} at {{ ansible_default_ipv4.interface }} as user {{ ansible_user }}"
+  
     - import_role:
         name: brianshumate.consul
       tags:

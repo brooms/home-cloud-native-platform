@@ -16,7 +16,7 @@ job "cadvisor" {
       driver = "docker"
 
       config {
-        image = "google/cadvisor:v0.29.0"
+        image = "google/cadvisor:latest"
         force_pull = true
         volumes = [
       	  "/:/rootfs:ro",

@@ -34,9 +34,6 @@
 
   tasks:
 
-    - debug:
-        msg: "Installing and configuring consul on {{ anaible_host }} at {{ ansible_default_ipv4.interface }} as user {{ ansible_user }}"
-  
     - import_role:
         name: brianshumate.consul
       tags:
@@ -57,7 +54,6 @@
         name: vault-init
       tags:
         - vault
-      when: 0
 
     - import_role:
         name: vault-unseal
@@ -69,6 +65,10 @@
 - hosts: nomad_instances
 
   become: true
+
+  vars:
+    nomad_use_consul: true
+    nomad_docker_enable: true
 
   tasks:
 

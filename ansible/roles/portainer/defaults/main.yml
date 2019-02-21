@@ -3,8 +3,9 @@
 portainer:
   container:
     name: portainer
-    image: "portainer/portainer"
     ports:
       http: 9000
-  volumes:
-    data: portainer_data
+  image:
+    name: "portainer/portainer"
+    tag: latest
+  storage: portainer_data

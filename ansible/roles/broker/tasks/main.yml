@@ -8,10 +8,10 @@
 
 # https://hub.docker.com/_/eclipse-mosquitto
 # docker run -it -p 1883:1883 -p 9001:9001 -v mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto
-- name: "Run image {{ broker.container.image }} as container {{ broker.container.name }}"
+- name: "Run image {{ broker.image.name }}:{{ broker.image.tag }} as container {{ broker.container.name }}"
   docker_container:
     name: "{{ broker.container.name }}"
-    image: "{{ broker.container.image }}"
+    image: "{{ broker.image.name }}:{{ broker.image.tag }}"
     published_ports:
       - "{{ broker.container.ports.http }}:1883"
       - "{{ broker.container.ports.https }}:9001"

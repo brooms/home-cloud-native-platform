@@ -3,10 +3,11 @@
 gogs:
   container:
     name: gogs
-    image: "gogs/gogs-rpi"
     ports:
       http: 10080
       https: 10022
+  image: 
+    name: "gogs/gogs-rpi"
     tag: latest
-  volumes:
-    data: /var/gogs
+  storage: "{{ storage_base }}/gogs"
+  

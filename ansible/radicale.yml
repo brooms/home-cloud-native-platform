@@ -1,0 +1,11 @@
+---
+
+- hosts: local-system
+
+  tasks:
+
+    - import_role:
+        name: radicale
+      tags:
+        - radicale
+        - services

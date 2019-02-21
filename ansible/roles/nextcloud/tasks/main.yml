@@ -2,16 +2,16 @@
 
 - name: Create directory for storage
   file:
-    name: "{{ storage }}"
+    name: "{{ nextcloud.storage }}"
     state: directory
 
 - name: Run nextcloud container
   docker_container:
-    name: "{{ container.name }}"
-    image: nextcloud
-    state: latest
+    name: "{{ nextcloud.container.name }}"
+    image: "{{ nextcloud.image.name }}:{{ nextcloud.image.tag }}"
+    state: started
     recreate: yes
     published_ports:
-      - "{{ container.ports.http }}:80"
+      - "{{ nextcloud.container.ports.http }}:80"
     volumes:
-      - "{{ storage }}:/var/www/html"
+      - "{{ nextcloud.storage }}:/var/www/html"

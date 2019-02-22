@@ -13,6 +13,8 @@ openhab:
       addons,
       userdata
     ]
+  configuration:
+    repo: 'github.com/greenthegarden/openhab2-configuration.git'
   container:
     name: openhab
     ports:

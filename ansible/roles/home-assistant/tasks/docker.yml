@@ -1,0 +1,20 @@
+---
+
+# docker run -d --name="home-assistant" -v /PATH_TO_YOUR_CONFIG:/config -v /etc/localtime:/etc/localtime:ro --net=host homeassistant/home-assistant
+
+- set_fact:
+    homeassistant_image_name: "{{ homeassistant.image.name.rpi if (ansible_distribution == 'Raspbian') else homeassistant.image.name.linux }}"
+
+- debug:
+    var: homeassistant_image_name
+
+- name: "Run image {{ homeassistant.image.name }}:{{ homeassistant.image.tag }} as container {{ homeassistant.container.name }}"
+  docker_container:
+    name: "{{ homeassistant.container.name }}"
+    image: "{{ homeassistant_image_name }}:{{ homeassistant.image.tag }}"
+    network_mode: host
+    recreate: yes
+    state: started
+    volumes:
+      - "{{ homeassistant.storage }}:/config"
+      - /etc/localtime:/etc/localtime:ro

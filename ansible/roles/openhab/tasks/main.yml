@@ -53,7 +53,7 @@
 - name: "Clone configuration into {{ openhab.directories.base }}/conf"
   become: true
   git:
-    repo: 'https://{{ github_user | urlencode }}:{{ github_password | urlencode }}@github.com/greenthegarden/openhab2-configuration.git'
+    repo: 'https://{{ github_user | urlencode }}:{{ github_password | urlencode }}@{{ openhab.configuration.repo }}'
     # repo: 'https://github.com/greenthegarden/openhab2-configuration.git'
     dest: "{{ openhab.directories.base }}/conf"
     force: yes

@@ -1,0 +1,13 @@
+---
+
+homeassistant:
+  configuration:
+    repo: 'github.com/greenthegarden/home-assistant-configuration.git'
+  container:
+    name: home-assistant
+  image:
+    name:
+      linux: "homeassistant/home-assistant"
+      rpi: "homeassistant/raspberrypi3-homeassistant"
+    tag: latest
+  storage: "{{ storage_base }}/home-assistant"

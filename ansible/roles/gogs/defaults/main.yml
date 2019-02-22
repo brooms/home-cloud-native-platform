@@ -7,7 +7,9 @@ gogs:
       http: 10080
       https: 10022
   image: 
-    name: "gogs/gogs-rpi"
+    name:
+      linux: "gogs/gogs"
+      rpi: "gogs/gogs-rpi"
     tag: latest
   storage: "{{ storage_base }}/gogs"
   

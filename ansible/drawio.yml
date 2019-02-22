@@ -1,6 +1,6 @@
 ---
 
-- hosts: development-system
+- hosts: drawio-nodes
 
   roles:
     - drawio

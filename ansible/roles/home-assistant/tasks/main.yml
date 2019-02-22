@@ -1,0 +1,27 @@
+---
+
+# When running for first time to create a configuration file
+- name: "Create configuration directory {{ homeassistant.storage }}"
+  file:
+    path: "{{ homeassistant.storage }}"
+    state: directory
+  
+# Clone configureation
+- name: "Clone configuration into {{ homeassistant.storage }}"
+  git:
+    repo: 'https://{{ github_user | urlencode }}:{{ github_password | urlencode }}@{{ homeassistant.configuration.repo }}'
+    # repo: 'hhttps://github.com/greenthegarden/home-assistant-configuration.git'
+    dest: "{{ homeassistant.storage }}"
+    force: yes
+    update: yes
+  register: homeassistant_source
+  when: 0
+  
+- name: "Set permissions on {{ homeassistant.storage }}"
+  file:
+    dest: "{{ homeassistant.storage }}"
+    mode: 0755
+    recurse: yes
+  when: 0
+
+- include_tasks: docker.yml

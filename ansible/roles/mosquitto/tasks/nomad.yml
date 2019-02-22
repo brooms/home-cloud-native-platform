@@ -1,8 +1,8 @@
 ---
 
 - name: Copy job to /tmp
-  copy:
-    src: mosquitto.nomad
+  template:
+    src: mosquitto.nomad.j2
     dest: /tmp/mosquitto.nomad
 
 - name: Run job

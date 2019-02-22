@@ -2,5 +2,11 @@
 
 - hosts: mqttbroker-nodes
 
-  roles:
-    - mosquitto
+  tasks:
+
+    - import_role:
+        name: mosquitto
+        tasks_from: nomad.yml
+      tags:
+        - mosquitto
+        - services

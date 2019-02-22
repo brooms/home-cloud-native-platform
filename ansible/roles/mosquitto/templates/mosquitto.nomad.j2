@@ -1,0 +1,53 @@
+job "mosquitto" {
+
+  region = "global"
+  
+  datacenters = ["dc1"]
+  
+  type = "service"
+
+  group "app" {
+    // count = 1
+
+    // restart {
+    //   attempts = 3
+    //   delay    = "20s"
+    //   mode     = "delay"
+    // }
+
+    task "mosquitto" {
+      driver = "docker"
+
+      config {
+        image = "{{ mosquitto.image.name }}:{{ mosquitto.image.tag }}"
+        port_map {
+          http = 1883,
+          https = 9001
+        }
+      }
+
+      // service {
+      //   name = "mosquitto"
+
+      //   port = "http"
+
+      //   check {
+      //     type = "http"
+      //     path = "/"
+      //     interval = "10s"
+      //     timeout = "2s"
+      //   }
+      // }
+
+      resources {
+        network {
+          port "http" {}
+          port "https" {}
+        }
+      }
+  
+    }
+
+  }
+
+}

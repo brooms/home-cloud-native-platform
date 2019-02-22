@@ -1,9 +1,6 @@
 ---
 
-- hosts: mqttbroker-servers
-
-  remote_user: pi
+- hosts: mqttbroker-nodes
 
   roles:
-    - docker
-#    - broker
+    - mosquitto

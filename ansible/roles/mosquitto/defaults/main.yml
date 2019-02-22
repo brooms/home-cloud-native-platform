@@ -4,9 +4,9 @@ packages: [
   mosquitto
 ]
 
-broker:
+mosquitto:
   container:
-    name: broker
+    name: mosquitto
     ports:
       http: 1883
       https: 9001

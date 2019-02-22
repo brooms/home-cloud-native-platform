@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
 
-ansible all --list-hosts
+extension="yml"
+inventory="hosts"
+
+read -p "Enter inventory file name [${inventory}]: " inventory_input
+inventory="${inventory_input:-${inventory}}.${extension}"
+
+ansible all -i ${inventory} --list-hosts

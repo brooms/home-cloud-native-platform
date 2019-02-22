@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-echo "Enter remote host address:"
-read remote_host
+extension="yml"
+inventory="hosts"
+remote_host="localhost"
 
-ansible ${remote_host} -i hosts.yml -m setup
+read -p "Enter inventory file name [${inventory}]: " inventory_input
+inventory="${inventory_input:-${inventory}}.${extension}"
 
+read -p "Enter remote host [${remote_host}]: " remote_host_input
+remote_host="${remote_host_input:-${remote_host}}"
+
+ansible ${remote_host} -i ${inventory} -m setup

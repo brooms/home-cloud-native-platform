@@ -3,7 +3,8 @@
 gogs_distribution_image_map:
   debian: gogs
   raspbian: 'gogs-rpi'
-gogs_image: "{{ gogs_distribution_image_map[ansible_distribution|lower] }}"
+  ubuntu: gogs
+gogs_image: "gogs/{{ gogs_distribution_image_map[ansible_distribution|lower] }}"
 
 gogs:
   container:

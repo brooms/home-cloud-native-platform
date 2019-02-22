@@ -1,0 +1,12 @@
+---
+
+- hosts: local-system
+
+  tasks:
+
+    - import_role:
+        name: portainer
+        tasks_from: nomad.yml
+      tags:
+        - portainer
+        - services

@@ -1,0 +1,34 @@
+job "portainer" {
+
+  datacenters = ["dc1"]
+
+  group "app" {
+
+    task "portainer-container" {
+
+      driver = "docker"
+
+      config {
+        image = "{{ portainer.image.name }}:{{ portainer.image.tag }}"
+        args  = [ "--no-auth" ]
+        port_map {
+          http = 9000
+        }
+        volumes = [
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "{{ portainer.storage }}:/data"
+        ]
+      }
+
+      resources {
+        memory = 128
+        network {
+          port "http" {}
+        }
+      }
+
+    }
+
+  }
+
+}

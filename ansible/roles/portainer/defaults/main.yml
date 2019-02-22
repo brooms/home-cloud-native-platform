@@ -7,5 +7,5 @@ portainer:
       http: 9000
   image:
     name: "portainer/portainer"
-    tag: latest
+    tag: '1.20.1'
   storage: portainer_data

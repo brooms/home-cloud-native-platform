@@ -11,6 +11,7 @@ drawio:
   image:
     name: drawio
     tag: latest
+    base: debian
   project:
     src: https://github.com/fjudith/docker-draw.io.git
     url: https://github.com/fjudith/docker-draw.io

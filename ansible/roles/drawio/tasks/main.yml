@@ -9,7 +9,7 @@
 
 - name: Build image
   docker_image:
-    path: /tmp/drawio/alpine
+    path: "/tmp/drawio/{{ drawio.image.base | default(debian) }}"
     name: "{{ drawio.image.name }}"
     tag: "{{ drawio.image.tag}}"
   when: drawio_source.changed
@@ -20,12 +20,12 @@
   docker_container:
     name: "{{ drawio.container.name }}"
     image: "{{ drawio.image.name }}:{{ drawio.image.tag }}"
-    dns_servers:
-      - "{{ consul_server }}"
-    dns_search_domains:
-      - service.consul
-    hostname: "{{ drawio.container.name }}"
-    network_mode: host
+    # dns_servers:
+    #   - "{{ consul_server }}"
+    # dns_search_domains:
+    #   - service.consul
+    # hostname: "{{ drawio.container.name }}"
+    # network_mode: host
     published_ports:
       - "{{ drawio.container.ports.http }}:8080"
       - "{{ drawio.container.ports.https }}:8443"

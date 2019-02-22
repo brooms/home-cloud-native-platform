@@ -10,7 +10,8 @@
     mode: 0777
 
 - set_fact:
-    image_name: "{{ gogs.image.name.rpi if (ansible_distribution == 'Raspbian') else gogs.image.name.linux }}"
+    # image_name: "{{ gogs.image.name.rpi if (ansible_distribution == 'Raspbian') else gogs.image.name.linux }}"
+    image_name: "{{ (ansible_distribution == 'Raspbian') | ternary( {{gogs.image.name.rpi}} , gogs.image.name.linux) }}"
 
 - debug:
     var: image_name

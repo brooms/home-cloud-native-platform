@@ -1,5 +1,10 @@
 ---
 
+gogs_distribution_image_map:
+  debian: gogs
+  raspbian: 'gogs-rpi'
+gogs_image: "{{ gogs_distribution_image_map[ansible_distribution|lower] }}"
+
 gogs:
   container:
     name: gogs
@@ -7,9 +12,7 @@ gogs:
       http: 10080
       https: 10022
   image: 
-    name:
-      linux: "gogs/gogs"
-      rpi: "gogs/gogs-rpi"
+    name: "{{ gogs_image }}"
     tag: latest
   storage: "{{ storage_base }}/gogs"
   

@@ -1,0 +1,12 @@
+---
+
+- hosts: local-system
+
+  tasks:
+
+    - import_role:
+        name: registry
+        tasks_from: nomad.yml
+      tags:
+        - registry
+        - services

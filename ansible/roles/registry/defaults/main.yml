@@ -1,0 +1,10 @@
+---
+
+registry:
+  container:
+    name: registry
+    ports:
+      http: 5000
+  image:
+    name: registry
+    tag: '2'

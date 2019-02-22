@@ -1,0 +1,29 @@
+job "registry" {
+
+  datacenters = ["dc1"]
+
+  group "app" {
+
+    task "registry-container" {
+
+      driver = "docker"
+
+      config {
+        image = "{{ registry.image.name }}:{{ registry.image.tag }}"
+        port_map {
+          http = 5000
+        }
+      }
+
+      resources {
+        memory = 128
+        network {
+          port "http" {}
+        }
+      }
+
+    }
+
+  }
+
+}

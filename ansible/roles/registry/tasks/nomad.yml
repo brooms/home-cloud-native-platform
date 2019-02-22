@@ -1,0 +1,16 @@
+---
+
+- name: Copy job to /tmp
+  copy:
+    src: registry.nomad
+    dest: /tmp/registry.nomad
+  when: 0
+
+- name: Copy job to /tmp
+  template:
+    src: registry.nomad.j2
+    dest: /tmp/registry.nomad
+
+- name: Run job
+  command: nomad job run /tmp/registry.nomad
+  register: nomad_registry_job_submitted

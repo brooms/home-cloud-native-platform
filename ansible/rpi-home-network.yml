@@ -1,101 +1,13 @@
 ---
 
-# Common base tasks expacted to run on all nodes
-- hosts: local-system #rpi-home-network-nodes
- 
-  tasks:
+- import_playbook: common.yml
 
-    - debug:
-        msg: "Running common tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
+- import_playbook: consul.yml
 
-    - import_role:
-        name: upgrade
-      tags:
-        - upgrade
-        - common
+- import_playbook: vault.yml
 
-    - import_role:
-        name: git
-      tags:
-        - git
-        - common
+- import_playbook: nomad.yml
+   
+- import_playbook: docker.yml      
 
-    - import_role:
-        name: pip
-      tags:
-        - pip
-        - common
-
-
-# Install and configure consul
-- hosts: consul_instances
-
-  become: true
-
-  tasks:
-
-    - import_role:
-        name: brianshumate.consul
-      tags:
-        - consul
-
-
-# Install and configure vault
-- hosts: vault_instances
-
-  tasks:
-
-    - import_role:
-        name: vault
-      tags:
-        - vault
-
-    - import_role:
-        name: vault-init
-      tags:
-        - vault
-      when: 0
-
-    - import_role:
-        name: vault-unseal
-      tags:
-        - vault
-
-
-# Install and configure nomad
-- hosts: nomad_instances
-
-  become: true
-
-  vars:
-    nomad_use_consul: true
-    nomad_docker_enable: true
-
-  tasks:
-
-    - import_role:
-        name: brianshumate.nomad
-      tags:
-        nomad
-
-
-# Install and configure docker
-- hosts: docker_instances
-
-  tasks:
-
-    - import_role:
-        name: docker
-      tags:
-        - docker
-      when: 0
-
-
-# Run up Cadvisor
-- hosts: local-system
-
-  tasks:
-
-    - import_role:
-        name: cadvisor
-        tasks_from: nomad.yml
+- import_playbook: cadvisor.yml

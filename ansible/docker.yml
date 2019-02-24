@@ -1,12 +1,14 @@
 ---
 
-- hosts: docker-nodes
-
-  remote_user: pi
+# Install and configure docker
+- hosts: docker_instances
 
   vars:
      docker_upgrade: false
 
-  roles:
-    - upgrade
-    - docker
+  tasks:
+
+    - import_role:
+        name: docker
+      tags:
+        - docker

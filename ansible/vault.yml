@@ -1,19 +1,9 @@
 ---
 
-- hosts: local-system
+# Install and configure vault
+- hosts: vault_instances
 
   tasks:
-
-    - import_role:
-        name: upgrade
-      tags:
-        - upgrade
-
-    - import_role:
-        name: consul
-      tags:
-        - consul
-      when: 0
 
     - import_role:
         name: vault
@@ -24,6 +14,7 @@
         name: vault-init
       tags:
         - vault
+      when: 0
 
     - import_role:
         name: vault-unseal

@@ -1,0 +1,110 @@
+---
+
+# Common base tasks expacted to run on all nodes
+- hosts: rpi-home-network-nodes
+ 
+  tasks:
+
+    - debug:
+        msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
+
+    - import_role:
+        name: upgrade
+      tags:
+        - upgrade
+        - common
+
+    # git is required to build some images from source
+    - import_role:
+        name: git
+      tags:
+        - git
+        - common
+
+    # pip is required to install modules for docker
+    - import_role:
+        name: pip
+      tags:
+        - pip
+        - common
+
+
+# Install and configure consul
+- hosts: consul_instances
+
+  become: true
+
+  tasks:
+
+    - import_role:
+        name: brianshumate.consul
+      tags:
+        - consul
+
+    - debug:
+        var: consul_servers
+
+
+# Install and configure vault
+- hosts: vault_instances
+
+  tasks:
+
+    - import_role:
+        name: vault
+      tags:
+        - vault
+
+    - import_role:
+        name: vault-init
+      tags:
+        - vault
+      when: 0
+
+    - import_role:
+        name: vault-unseal
+      tags:
+        - vault
+
+
+# Install and configure nomad
+- hosts: nomad_instances
+
+  become: true
+
+  vars:
+    nomad_use_consul: true
+    nomad_bootstrap_expect: 1
+    nomad_docker_enable: true
+
+  tasks:
+
+    - import_role:
+        name: brianshumate.nomad
+      tags:
+        nomad
+
+    - debug:
+        var: nomad_servers
+         
+
+# Install and configure docker
+- hosts: docker_instances
+
+  tasks:
+
+    - import_role:
+        name: docker
+      tags:
+        - docker
+      when: 0
+
+
+# Run up Cadvisor
+- hosts: local-system
+
+  tasks:
+
+    - import_role:
+        name: cadvisor
+        tasks_from: nomad.yml

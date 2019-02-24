@@ -7,11 +7,9 @@
   tasks:
 
     - import_role:
-        name: upgrade
-      tags:
-        - upgrade
-
-    - import_role:
         name: brianshumate.consul
       tags:
         - consul
+
+    - debug:
+        var: consul_servers

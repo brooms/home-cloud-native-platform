@@ -1,0 +1,29 @@
+---
+
+# Common base tasks expacted to run on all nodes
+- hosts: rpi-home-network-nodes
+ 
+  tasks:
+
+    - debug:
+        msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
+
+    - import_role:
+        name: upgrade
+      tags:
+        - upgrade
+        - common
+
+    # git is required to build some images from source
+    - import_role:
+        name: git
+      tags:
+        - git
+        - common
+
+    # pip is required to install modules for docker
+    - import_role:
+        name: pip
+      tags:
+        - pip
+        - common

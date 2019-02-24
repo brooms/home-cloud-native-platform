@@ -4,10 +4,10 @@
 
 - import_playbook: consul.yml
 
-- import_playbook: vault.yml
+# - import_playbook: vault.yml
 
-- import_playbook: nomad.yml
+# - import_playbook: nomad.yml
    
-- import_playbook: docker.yml      
+# - import_playbook: docker.yml      
 
-- import_playbook: cadvisor.yml
+# - import_playbook: cadvisor.yml

@@ -1,0 +1,12 @@
+---
+
+- name: 'Ensure that the docker service is functional'
+  docker_ping:
+    register: result
+    retries: 5
+    delay: 10
+  until: result|success
+  tags:
+    - configuration
+    - docker
+

@@ -57,7 +57,7 @@
     backup: yes
     mode: 0644
   register: docker_service 
-  notify: docker-restart-service
+  notify: 'restart docker'
   tags:
     - configuration
     - docker
@@ -66,7 +66,7 @@
   systemd:
     daemon_reload: true
   when: (docker_daemon_options is changed or docker_service is changed)
-  notify: docker-restart-service
+  notify: 'restart docker'
   tags:
     - configuration
     - docker
@@ -80,17 +80,6 @@
   tags:
     - configuration
     - docker
-
-- name: 'Ensure that the docker service is functional'
-  docker_ping:
-    register: result
-    retries: 5
-    delay: 10
-  until: result|success
-  tags:
-    - configuration
-    - docker
-  when: 0
 
 - name: Ensure group "docker" exists
   become: true
@@ -120,4 +109,13 @@
     state: latest
   tags:
     - configuration
+    - docker
+
+- name: force all notified handlers to run at this point, not waiting for normal sync points
+  meta: flush_handlers
+
+- name: test docker
+  import_tasks: test.yml
+  tags:
+    - test
     - docker

@@ -6,7 +6,29 @@
   get_url:
     url: "{{ docker_source_url }}"
     dest: "{{ docker_download_dest }}"
+  tags:
+    - installation
+    - docker
 
 - name: Run install script
   become: true
   command: "/bin/sh {{ docker_download_dest }}"
+  tags:
+    - installation
+    - docker
+
+- name: "Ensure pip modules {{ docker_python_module.modules }} are installed"
+  become: true
+  pip:
+    # executable: pip3
+    # extra_args: --user
+    name: "{{ docker_python_module.modules }}"
+    state: latest
+  tags:
+    - installation
+    - docker
+
+- name: clean up
+  file:
+    path: "{{ docker_download_dest }}"
+    state: absent

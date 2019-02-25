@@ -5,8 +5,7 @@
     register: result
     retries: 5
     delay: 10
-  until: result|success
+  until: result is success
   tags:
-    - configuration
+    - test
     - docker
-

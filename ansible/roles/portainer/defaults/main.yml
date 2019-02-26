@@ -1,7 +1,7 @@
 ---
 
 portainer:
-  container:
+  service:
     name: portainer
     ports:
       http: 9000

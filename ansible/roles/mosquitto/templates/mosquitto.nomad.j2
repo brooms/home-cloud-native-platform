@@ -6,38 +6,38 @@ job "mosquitto" {
   
   type = "service"
 
-  group "app" {
-    // count = 1
+  group "home-automation" {
+    
+    count = 1
 
-    // restart {
-    //   attempts = 3
-    //   delay    = "20s"
-    //   mode     = "delay"
-    // }
+    restart {
+      attempts = 3
+      delay    = "20s"
+      mode     = "delay"
+    }
 
-    task "mosquitto" {
+    task "mosquitto-container" {
+
       driver = "docker"
 
       config {
         image = "{{ mosquitto.image.name }}:{{ mosquitto.image.tag }}"
         port_map {
-          http = 1883,
-          https = 9001
+          http = "{{ mosquitto.service.ports.http }}",
+          https = "{{ mosquitto.service.ports.https }}"
         }
       }
 
-      // service {
-      //   name = "mosquitto"
-
-      //   port = "http"
-
-      //   check {
-      //     type = "http"
-      //     path = "/"
-      //     interval = "10s"
-      //     timeout = "2s"
-      //   }
-      // }
+      service {
+        name = "{{ mosquitto.service.name }}"
+        port = "http"
+        check {
+          type = "http"
+          path = "/"
+          interval = "10s"
+          timeout = "2s"
+        }
+      }
 
       resources {
         network {

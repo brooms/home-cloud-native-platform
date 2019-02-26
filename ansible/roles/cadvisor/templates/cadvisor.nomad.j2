@@ -11,7 +11,7 @@ job "cadvisor" {
       config {
         image = "{{ cadvisor.image.name }}:{{ cadvisor.image.tag }}"
         port_map {
-          http = 8080
+          http = "{{ cadvisor.container.ports.http }}"
         }
         volumes = [
           "/:/rootfs:ro",

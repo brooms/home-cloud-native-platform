@@ -5,7 +5,7 @@ packages: [
 ]
 
 mosquitto:
-  container:
+  service:
     name: mosquitto
     ports:
       http: 1883

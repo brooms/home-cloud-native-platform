@@ -2,7 +2,15 @@ job "portainer" {
 
   datacenters = ["dc1"]
 
-  group "app" {
+  group "node-management" {
+
+    count = 2
+
+    restart {
+      attempts = 3
+      delay    = "20s"
+      mode     = "delay"
+    }
 
     task "portainer-container" {
 
@@ -12,7 +20,7 @@ job "portainer" {
         image = "{{ portainer.image.name }}:{{ portainer.image.tag }}"
         args  = [ "--no-auth" ]
         port_map {
-          http = 9000
+          http = "{{ portainer.service.ports.http }}"
         }
         volumes = [
           "/var/run/docker.sock:/var/run/docker.sock",
@@ -20,6 +28,17 @@ job "portainer" {
         ]
       }
 
+      service {
+        name = "{{ portainer.service.name }}"
+        port = "http"
+        check {
+          type     = "http"
+          path     = "/"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+      
       resources {
         memory = 128
         network {

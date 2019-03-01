@@ -1,10 +1,5 @@
 ---
 
-- name: Create directory for storage
-  file:
-    name: "{{ nextcloud.storage }}"
-    state: directory
-
 - name: Run nextcloud container
   docker_container:
     name: "{{ nextcloud.container.name }}"

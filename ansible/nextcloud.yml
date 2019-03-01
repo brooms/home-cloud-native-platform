@@ -1,18 +1,21 @@
 ---
 
-- hosts: nextcloud-nodes
+- hosts: rpi-home-network-nodes
 
-  # remote_user: pi
+  tasks:
 
-  # vars:
-  #    nextcloud_dir:       /var/www/html/nextcloud
-  #    data_dir:            /var/nextcloud/data
-  #    # database:            "{{ DATABASE | default('sqlite') }}"
-  #    # mysql_root_password: "{{ MYSQL_ROOT_PASSWORD }}"
-  #    # ncuser_password:     "{{ NCUSER_PASSWORD }}"
+    - import_role:
+        name: nextcloud
+        tasks_from: configure.yml
+      tags:
+        - nextcloud
+        - configuration
 
-  roles:
-    - upgrade
-    # - apache
-    # - mysql
-    - nextcloud
+    - import_role:
+        name: nextcloud
+        tasks_from: nomad.yml
+      environment:
+        NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
+      tags:
+        - nextcloud
+        - services

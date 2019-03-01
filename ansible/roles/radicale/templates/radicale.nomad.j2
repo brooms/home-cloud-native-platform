@@ -6,7 +6,8 @@ job "radicale" {
   
   type = "service"
 
-  group "radicale-app" {
+  group "home-cloud" {
+
     count = 1
 
     restart {
@@ -15,19 +16,20 @@ job "radicale" {
       mode     = "delay"
     }
 
-    task "radicale" {
+    task "radicale-container" {
+
       driver = "docker"
 
       config {
         image = "{{ radicale.image.name }}:{{ radicale.image.tag }}"
+        port_map {
+          http = "{{ radicale.service.ports.http }}"
+        }
         volumes = [
       	  "{{ radicale.storage }}/config:/etc/radicale:ro",
           "{{ radicale.storage }}/data:/var/lib/radicale",
           "{{ radicale.storage }}/logs:/var/log/radicale"
         ]
-        port_map {
-          http = 5232
-        }
       }
 
       env {
@@ -35,9 +37,15 @@ job "radicale" {
       }
 
       service {
-        name = "{{ radicale.container.name }}"
-
+        name = "{{ radicale.service.name }}"
         port = "http"
+        check {
+          type     = "http"
+          path     = "/"
+          interval = "10s"
+          timeout  = "2s"
+        }
+
       }
 
       resources {
@@ -45,6 +53,9 @@ job "radicale" {
           port "http" { }
         }
       }
+      
     }
+
   }
+
 }

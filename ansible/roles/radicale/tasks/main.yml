@@ -1,67 +1,13 @@
 ---
 
-- name: Get source
-  git:
-    repo: "{{ radicale.project.src }}"
-    dest: "/tmp/radicale"
-    update: yes
-  register: radicale_source
-
 - name: Build image
-  docker_image:
-    path: /tmp/radicale
-    name: "{{ radicale.image.name }}"
-    tag: "{{ radicale.image.tag}}"
-  when: radicale_source.changed
+  include_tasks:
+    name: build.yml
 
-- name: Create directory for radicale configuration
-  file:
-    path: "{{ radicale.storage }}"
-    state: directory
-
-- name: Copy configuration files
-  copy:
-    dest: "{{ radicale.storage }}/{{ item }}"
-    src: "{{ item }}"
-    backup: yes
-  loop:
-    - config
-    - logging
-
-- name: Create directories for radicale data and logging
-  # become: true
-  file:
-    path: "{{ radicale.storage }}/{{ item }}"
-    state: directory
-  loop:
-    - data
-    - logs
-
-- name: Copy job to /tmp
-  template:
-    src: radicale.nomad
-    dest: /tmp/radicale.nomad
-
-- name: Run job
-  command: nomad job run /tmp/radicale.nomad
-  register: nomad_radicale_job_submitted
+- name: Configure node
+  include_tasks:
+    name: configure.yml
   
-# - name: "Run image {{ radicale.image.name }}:{{ radicale.image.tag }} as container {{ radicale.container.name }}"
-#   docker_container:
-#     name: "{{ radicale.container.name }}"
-#     image: "{{ radicale.image.name }}:{{ radicale.image.tag }}"
-#     # dns_servers:
-#     #   - "{{ consul_server }}"
-#     # dns_search_domains:
-#     #   - service.consul
-#     # hostname: "{{ radicale.container.name }}"
-#     # network_mode: host
-#     published_ports:
-#       - "{{ radicale.container.ports.http }}:5232"
-#     recreate: yes
-#     restart_policy: "{{ radicale.container.restart.policy }}"
-#     state: started
-#     volumes:
-#       - "{{ radicale.storage }}/config:/etc/radicale"
-#       - "{{ radicale.storage }}/data:/var/lib/radicale"
-#       - "{{ radicale.storage }}/logs:/var/log/radicale"
+- name: Run container
+  include_tasks:
+    name: conatiner.yml

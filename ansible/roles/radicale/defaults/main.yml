@@ -5,7 +5,7 @@ radicale:
     src: https://github.com/Kozea/Radicale
     url: https://radicale.org/
     version: master
-  container:
+  service:
     name: radicale
     ports:
       http: 5232

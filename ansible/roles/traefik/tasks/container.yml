@@ -1,18 +1,5 @@
 ---
 
-- name: "Create directory for configuration at {{ traefik.storage }}"
-  file:
-    path: "{{ traefik.storage }}"
-    state: directory
-
-- name: Copy configuration files
-  copy:
-    dest: "{{ traefik.storage }}/{{ item }}"
-    src: "{{ item }}"
-    backup: yes
-  loop:
-    - traefik.toml
-
 # docker run -d -p 8080:8080 -p 80:80 \
 # -v $PWD/traefik.toml:/etc/traefik/traefik.toml \
 # -v /var/run/docker.sock:/var/run/docker.sock \

@@ -1,0 +1,10 @@
+---
+
+- name: Copy job to /tmp
+  template:
+    src: traefik.nomad.j2
+    dest: /tmp/traefik.nomad
+
+- name: Run job
+  command: nomad job run /tmp/traefik.nomad
+  register: nomad_traefik_job_submitted

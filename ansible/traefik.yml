@@ -1,0 +1,14 @@
+---
+
+- hosts: rpi-home-network-nodes
+
+  tasks:
+
+    - import_role:
+        name: traefik
+        tasks_from: nomad.yml
+      environment:
+        NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
+      tags:
+        - traefik
+        - services

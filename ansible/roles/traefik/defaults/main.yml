@@ -5,7 +5,7 @@ traefik:
     src: https://github.com/containous/traefik
     url: https://traefik.io/
     version: master
-  container:
+  service:
     name: traefik
     ports:
       http: 80

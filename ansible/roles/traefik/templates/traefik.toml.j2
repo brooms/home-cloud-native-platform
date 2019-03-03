@@ -3,59 +3,29 @@
 # It is not recommended in production,
 # unless secured by authentication and authorizations
 [api]
-  # Name of the related entry point
-  #
-  # Optional
-  # Default: "traefik"
-  #
-  entryPoint = "traefik"
+# Name of the related entry point
+#
+# Optional
+# Default: "traefik"
+#
+entryPoint = "traefik"
 
-  # Enable Dashboard
-  #
-  # Optional
-  # Default: true
-  #
-  dashboard = true
+# Enable Dashboard
+#
+# Optional
+# Default: true
+#
+dashboard = true
 
-  # Enable debug mode.
-  # This will install HTTP handlers to expose Go expvars under /debug/vars and
-  # pprof profiling data under /debug/pprof/.
-  # Additionally, the log level will be set to DEBUG.
-  #
-  # Optional
-  # Default: false
-  #
-  debug = true
-  
-  [file]
-
-# Backends
-[backends]
-  [backends.consul]
-    [backends.consul.servers]
-    {% for host in groups['consul_instances'] %}
-      [backends.consul.servers.{{ host }}]
-        url = "http://{{ hostvars[host].ansible_eth0.ipv4.address }}:8500"
-    {% endfor %}
-
-  [backends.nomad]
-    [backends.nomad.servers]
-    {% for host in groups['nomad_instances'] %}
-      [backends.nomad.servers.{{ host }}]
-        url = "http://{{ hostvars[host].ansible_eth0.ipv4.address }}:4646"
-    {% endfor %}
-
-# Frontends
-[frontends]
-  [frontends.consul]
-  backend = "consul"
-    [frontends.consul.routes.route1]
-    rule = "Host:consul.{{ ansible_eth0.ipv4.address }}"
-
-  [frontends.nomad]
-  backend = "nomad"
-    [frontends.nomad.routes.route1]
-    rule = "Host:nomad.{{ ansible_eth0.ipv4.address }}"
+# Enable debug mode.
+# This will install HTTP handlers to expose Go expvars under /debug/vars and
+# pprof profiling data under /debug/pprof/.
+# Additionally, the log level will be set to DEBUG.
+#
+# Optional
+# Default: false
+#
+debug = true
 
 
 ################################################################
@@ -153,11 +123,6 @@ network = "web"
 # Consul Catalog Provider
 ################################################################
 
-#[consulCatalog]
-#endpoint = "127.0.0.1:8500"
-#exposedByDefault = false
-#domain = "service.{{ ansible_eth0.ipv4.address }}.nip.io"
-
 # Enable Consul Catalog Provider.
 [consulCatalog]
 
@@ -203,9 +168,7 @@ prefix = "traefik"
 # - "getAttribute(...)" function uses prefixed tag names based on "prefix" value
 #
 # Optional
-# Default: "Host:{{.ServiceName}}.{{.Domain}}"
-#
-#frontEndRule = "Host:{{.ServiceName}}.{{.Domain}}"
+# Default: "Hos
 
 # Enable Consul catalog TLS connection.
 #

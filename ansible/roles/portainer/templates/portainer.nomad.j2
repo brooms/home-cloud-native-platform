@@ -31,6 +31,7 @@ job "portainer" {
       service {
         name = "{{ portainer.service.name }}"
         port = "http"
+        tags = ["traefik.enable=true"]
         check {
           type     = "http"
           path     = "/"

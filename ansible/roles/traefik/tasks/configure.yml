@@ -6,9 +6,7 @@
     state: directory
 
 - name: Copy configuration files
-  copy:
-    dest: "{{ traefik.storage }}/{{ item }}"
-    src: "{{ item }}"
+  template:
+    src: traefik.toml.j2
+    dest: "{{ traefik.storage }}/traefik.toml"
     backup: yes
-  loop:
-    - traefik.toml

@@ -1,1 +1,0 @@
-see https://www.nomadproject.io/guides/operations/deployment-guide.html#common-configuration

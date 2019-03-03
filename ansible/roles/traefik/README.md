@@ -1,0 +1,1 @@
+Configuration based on https://dev.to/livioribeiro/using-lxd-and-ansible-to-simulate-infrastructure-2g8l

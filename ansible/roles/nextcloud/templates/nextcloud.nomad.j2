@@ -29,6 +29,7 @@ job "nextcloud" {
       service {
         name = "{{ nextcloud.service.name }}"
         port = "http"
+        tags = ["traefik.enable=true"]
         check {
           type     = "http"
           path     = "/"

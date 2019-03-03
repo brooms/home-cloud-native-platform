@@ -9,9 +9,9 @@
         msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
 
     - import_role:
-        name: upgrade
+        name: base
       tags:
-        - upgrade
+        - base
         - common
 
     # git is required to build some images from source

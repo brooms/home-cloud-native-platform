@@ -1,8 +1,0 @@
----
-
-- name: Update all packages to the latest version
-  become: true
-  apt:
-    cache_valid_time: 3600
-    upgrade: dist
-    update_cache: yes

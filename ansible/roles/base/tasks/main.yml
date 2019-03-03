@@ -1,0 +1,10 @@
+---
+
+- name: Update host
+  become: true
+  import_tasks: update.yml
+
+- name: Install packages
+  become: true
+  import_tasks: install.yml
+  

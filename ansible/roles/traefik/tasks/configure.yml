@@ -7,6 +7,6 @@
 
 - name: Copy configuration files
   template:
-    src: traefik.toml.j2
+    src: traefik-consul.toml.j2
     dest: "{{ traefik.storage }}/traefik.toml"
     backup: yes

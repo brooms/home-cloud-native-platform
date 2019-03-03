@@ -4,6 +4,9 @@
 
   become: true
   
+  vars:
+    consul_dnsmasq_enable: true
+
   tasks:
 
     - import_role:

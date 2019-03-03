@@ -8,3 +8,9 @@
   become: true
   import_tasks: install.yml
   
+- name: Set hostname
+  become: true
+  hostname:
+    name: "{{ inventory_hostname }}"
+  when: inventory_hostname != 'local'
+  

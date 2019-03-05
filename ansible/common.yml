@@ -1,7 +1,7 @@
 ---
 
 # Common base tasks expacted to run on all nodes
-- hosts: rpi-home-network-nodes
+- hosts: rpi-hcnp-nodes
  
   tasks:
 

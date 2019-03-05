@@ -13,4 +13,18 @@
   hostname:
     name: "{{ inventory_hostname }}"
   when: inventory_hostname != 'local'
-  
+
+- debug:
+    var: groups['rpi-hcnp-nodes']
+
+# src: https://gist.github.com/rothgar/8793800
+- name: "Build hosts file"
+  become: true
+  lineinfile:
+    path: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
+    state: present
+    backup: yes
+  when: hostvars[item].ansible_default_ipv4.address is defined
+  loop: "{{ groups['rpi-hcnp-nodes']|flatten(levels=1) }}"

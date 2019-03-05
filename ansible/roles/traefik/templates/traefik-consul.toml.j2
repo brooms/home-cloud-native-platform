@@ -1,32 +1,35 @@
+# [entryPoints]
+#   [entryPoints.http]
+#   address = ":80"
+
 # API definition
 # Warning: Enabling API will expose Traefik's configuration.
 # It is not recommended in production,
 # unless secured by authentication and authorizations
 [api]
-# Name of the related entry point
-#
-# Optional
-# Default: "traefik"
-#
-entryPoint = "traefik"
+  # Name of the related entry point
+  #
+  # Optional
+  # Default: "traefik"
+  #
+  entryPoint = "traefik"
 
-# Enable Dashboard
-#
-# Optional
-# Default: true
-#
-dashboard = true
+  # Enable Dashboard
+  #
+  # Optional
+  # Default: true
+  #
+  dashboard = true
 
-# Enable debug mode.
-# This will install HTTP handlers to expose Go expvars under /debug/vars and
-# pprof profiling data under /debug/pprof/.
-# Additionally, the log level will be set to DEBUG.
-#
-# Optional
-# Default: false
-#
-debug = true
-
+  # Enable debug mode.
+  # This will install HTTP handlers to expose Go expvars under /debug/vars and
+  # pprof profiling data under /debug/pprof/.
+  # Additionally, the log level will be set to DEBUG.
+  #
+  # Optional
+  # Default: false
+  #
+  debug = true
 
 ################################################################
 # Consul Catalog Provider

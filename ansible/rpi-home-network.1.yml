@@ -32,7 +32,7 @@
 # Install and configure consul
 - hosts: consul_instances
 
-  become: true
+  become: yes
 
   tasks:
 
@@ -70,7 +70,7 @@
 # Install and configure nomad
 - hosts: nomad_instances
 
-  become: true
+  become: yes
 
   vars:
     nomad_use_consul: true

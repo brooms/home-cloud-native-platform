@@ -1,7 +1,7 @@
 ---
 
 - name: Create Docker configuration directories
-  become: true
+  become: yes
   file:
     path: "{{ item }}"
     state: "directory"
@@ -16,7 +16,7 @@
     - docker
 
 - name: Configure Docker daemon options (json)
-  become: true
+  become: yes
   copy:
     src: "daemon.json"
     dest: "/etc/docker/daemon.json"
@@ -31,7 +31,7 @@
     - docker
 
 - name: Configure Docker service
-  become: true
+  become: yes
   copy:
     src: "docker.conf"
     dest: "/etc/systemd/system/docker.service.d/docker.conf"
@@ -55,7 +55,7 @@
     - docker
 
 - name: Ensure Docker is started and enabled at boot
-  become: true
+  become: yes
   service:
     name: docker
     state: "{{ docker_service_state }}"
@@ -65,7 +65,7 @@
     - docker
 
 - name: Ensure group "docker" exists
-  become: true
+  become: yes
   group:
     name: docker
     state: present
@@ -74,7 +74,7 @@
     - docker
 
 - name: Ensure current user is in docker group
-  become: true
+  become: yes
   user:
     name: "{{ ansible_user_id }}"
     groups: docker

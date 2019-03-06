@@ -2,10 +2,10 @@
 
 - hosts: consul_instances
 
-  become: true
+  become: yes
   
   vars:
-    consul_dnsmasq_enable: true
+    consul_dnsmasq_enable: yes
 
   tasks:
 

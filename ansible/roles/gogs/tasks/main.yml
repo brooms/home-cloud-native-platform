@@ -3,7 +3,7 @@
 # https://github.com/gogs/gogs/tree/master/docker
 
 - name: "Create local directory at {{ gogs.storage }} for data"
-  become: true
+  become: yes
   file:
     path: "{{ gogs.storage }}"
     state: directory

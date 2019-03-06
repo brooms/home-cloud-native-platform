@@ -4,7 +4,7 @@
 
   remote_user: "{{ user }}"
 
- # become: true
+ # become: yes
 
  # become_user: "{{ user }}"
 

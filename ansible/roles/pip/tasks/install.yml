@@ -17,7 +17,7 @@
   when: pip_install_check.rc != 0
 
 - name: "Install {{ item.pip }}"
-  become: true
+  become: yes
   command: "{{ item.python }} {{ pip_download_dest }}/get-pip.py"
   tags:
     - installation
@@ -25,7 +25,7 @@
   when: pip_install_check.rc != 0
 
 - name: "upgrade {{ item.pip }} if installed"
-  become: true
+  become: yes
   pip:
     name: pip
     # extra_args: --user

@@ -4,12 +4,12 @@
 
 # Create group and user for vault
 - name: "Creating vault user group {{ vault_group }}"
-  become: true
+  become: yes
   group: 
     name: "{{ vault_group }}"
 
 - name: Creating vault user
-  become: true
+  become: yes
   user:
     name: "{{ vault_user }}"
     group: "{{ vault_group }}"
@@ -21,14 +21,14 @@
 
 # Install binary from archive
 - name: Install prerequisites
-  become: true
+  become: yes
   package:
     name: "{{ item }}"
     update_cache: yes
   with_items: "{{ vault_install_prerequisites }}"
 
 - name: Download binary
-  become: true
+  become: yes
   get_url:
     url: https://releases.hashicorp.com/vault/{{vault_version}}/vault_{{vault_version}}_linux_amd64.zip
     dest: /tmp/vault_{{vault_version}}_linux_amd64.zip
@@ -39,7 +39,7 @@
   register: vault_download
 
 - name: "Unzip vault archive"
-  become: true
+  become: yes
   unarchive:
     src: "{{ vault_download.dest }}"
     dest: /usr/local/bin
@@ -50,7 +50,7 @@
 
 # Need to set binary capabilities on Linux, to give the Vault executable the ability to use the mlock syscall without running the process as root.
 - name: "Set vault binary capabilities"
-  become: true
+  become: yes
   capabilities:
     path: /usr/local/bin/vault
     capability: cap_ipc_lock+ep
@@ -58,7 +58,7 @@
 
 # Configure systemd
 - name: Copy systemd init file
-  become: true
+  become: yes
   template:
     src: init.service.j2
     dest: /etc/systemd/system/vault.service
@@ -67,7 +67,7 @@
   notify: systemd_reload
 
 - name: Create directory for configuration file
-  become: true
+  become: yes
   file:
     path: "{{ vault_config_path }}"
     state: directory
@@ -75,7 +75,7 @@
     group: "{{ vault_group }}"
 
 - name: config file
-  become: true
+  become: yes
   template:
     src: vault.hcl.j2
     dest: "{{ vault_config_path }}/vault.hcl"
@@ -84,7 +84,7 @@
     mode: 0640
     
 - name: vault service
-  become: true
+  become: yes
   service:
     name: vault
     state: started

@@ -1,25 +1,37 @@
 ---
 
 - name: Update host
-  become: true
+  become: yes
   import_tasks: update.yml
 
 - name: Install packages
-  become: true
+  become: yes
   import_tasks: install.yml
   
+- debug:
+    msg: "Set hostname to {{ inventory_hostname }}"
+
 - name: Set hostname
-  become: true
+  become: yes
   hostname:
     name: "{{ inventory_hostname }}"
   when: inventory_hostname != 'local'
+
+# src: http://derpturkey.com/setting-host-with-ansible-in-ubuntu/
+- name: Update hostname in /etc/hosts
+  become: yes
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.1\.1'
+    line: '127.0.1.1    {{ inventory_hostname }}'
+    state: present
 
 - debug:
     var: groups['rpi-hcnp-nodes']
 
 # src: https://gist.github.com/rothgar/8793800
 - name: "Build hosts file"
-  become: true
+  become: yes
   lineinfile:
     path: /etc/hosts
     regexp: '.*{{ item }}$'

@@ -1,7 +1,7 @@
 ---
 
 - name: Install {{ git }}
-  become: true
+  become: yes
   package:
     name: "{{ packages }}"
     state: latest

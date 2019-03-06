@@ -4,7 +4,7 @@
 
 # sudo apt-get update && sudo apt-get install libav-tools libssl-dev
 - name: Update system and install libav-tools
-  become: true
+  become: yes
   package:
     name: "{{ item }}"
     state: latest
@@ -38,14 +38,14 @@
   when: vagrant_check_deb.rc == 1
 
 - name: "Install {{ kerberos_pkg }}"
-  become: true
+  become: yes
   apt:
     deb: "/tmp/{{ kerberos_pkg }}.deb"
   when: vagrant_check_deb.rc == 1
 
 # Set machinery to start on boot
 - name: Enable start at boot and start service
-  become: true
+  become: yes
   systemd:
     name: kerberosio
     state: started
@@ -53,14 +53,14 @@
 
 # Update the packages and kernel
 - name: Add repository into source list
-  become: true
+  become: yes
   apt_repository:
     repo: deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi
     state: present
 
 #  sudo apt-get install -t stretch nginx php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 - name: Install nginx
-  become: true
+  become: yes
   package:
     name: "{{ item }}"
     state: latest
@@ -78,19 +78,19 @@
     - php7.0-mcrypt
 
 - name: Configure nginx
-  become: true
+  become: yes
   file:
     path: /etc/nginx/sites-enabled/default
     state: absent
   
 - name: Copy config
-  become: true
+  become: yes
   copy:
     dest: /etc/nginx/sites-enabled/kerberosio.conf
     src: kerberosio.conf
 
 - name: Enable nginx service
-  become: true
+  become: yes
   systemd:
     name: nginx
     enabled: yes

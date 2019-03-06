@@ -1,7 +1,7 @@
 ---
 
 - name: Install Python modules
-  become: true
+  become: yes
   pip:
     name: "{{ item }}"
     state: latest

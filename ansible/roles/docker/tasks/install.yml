@@ -11,14 +11,14 @@
     - docker
 
 - name: Run install script
-  become: true
+  become: yes
   command: "/bin/sh {{ docker_download_dest }}"
   tags:
     - installation
     - docker
 
 - name: "Ensure pip modules {{ docker_python_module.modules }} are installed"
-  become: true
+  become: yes
   pip:
     # executable: pip3
     # extra_args: --user

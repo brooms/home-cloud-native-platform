@@ -2,7 +2,7 @@
 
 # Create group
 - name: "Create system group {{ openhab.group.name }} with id {{ openhab.group.id }}"
-  become: true
+  become: yes
   group:
     name: "{{ openhab.group.name }}"
     state: present
@@ -11,7 +11,7 @@
 
 # sudo useradd -r -s /sbin/nologin openhab
 - name: Create system user {{ openhab.user.name }} with id {{ openhab.user.id }}"
-  become: true
+  become: yes
   user:
     name: "{{ openhab.user.name }}"
     create_home: no
@@ -22,7 +22,7 @@
 
 # usermod -a -G openhab <user>
 - name: "Add user {{ ansible_user }} to group {{ openhab.group.name }}"
-  become: true
+  become: yes
   user:
     name: "{{ ansible_user }}"
     groups: "{{ openhab.group.name }}"
@@ -30,7 +30,7 @@
 
 # Create directories
 - name: "Create base directory {{ openhab.directories.base }}"
-  become: true
+  become: yes
   file:
     name: "{{ openhab.directories.base }}"
     state: directory
@@ -40,7 +40,7 @@
 
 # Create data directories
 - name: Create data directories
-  become: true
+  become: yes
   file:
     name: "{{ openhab.directories.base }}/{{ item }}"
     state: directory
@@ -51,7 +51,7 @@
 
 # Clone configureation
 - name: "Clone configuration into {{ openhab.directories.base }}/conf"
-  become: true
+  become: yes
   git:
     repo: 'https://{{ github_user | urlencode }}:{{ github_password | urlencode }}@{{ openhab.configuration.repo }}'
     # repo: 'https://github.com/greenthegarden/openhab2-configuration.git'
@@ -62,7 +62,7 @@
   when: 0
   
 - name: "Set permissions on {{ openhab.directories.base }}/conf"
-  become: true
+  become: yes
   file:
     dest: "{{ openhab.directories.base }}/conf"
     owner: "{{ openhab.user.name }}"

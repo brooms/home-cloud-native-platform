@@ -2,7 +2,7 @@
 
 # sudo mkdir -p /var/www/web && sudo chown www-data:www-data /var/www/web
 - name: Create www location
-  become: true
+  become: yes
   file:
     path: /var/www/web
     state: directory
@@ -16,7 +16,7 @@
     url: https://github.com/kerberos-io/web/releases/download/v2.5.1/web.tar.gz
 
 - name: Extract /tmp/web.tar.gz into /var/www/web
-  become: true
+  become: yes
   unarchive:
     src: /tmp/web.tar.gz
     dest: /var/www/web
@@ -27,7 +27,7 @@
   # sudo chown www-data -R storage bootstrap/cache config/kerberos.php
 # sudo chmod -R 775 storage bootstrap/cache
 - name: Set permissions
-  become: true
+  become: yes
   file:
     dest: "{{ item }}"
     owner: www-data
@@ -41,7 +41,7 @@
   # sudo chown www-data -R storage bootstrap/cache config/kerberos.php
 # sudo chmod 0600 config/kerberos.php
 - name: Set permissions
-  become: true
+  become: yes
   file:
     dest: "{{ item }}"
     owner: www-data
@@ -52,7 +52,7 @@
 
 # sudo service nginx restart
 - name: Restart nginx service
-  become: true
+  become: yes
   systemd:
     name: nginx
     state: restarted

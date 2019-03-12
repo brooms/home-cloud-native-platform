@@ -40,3 +40,24 @@
     backup: yes
   when: hostvars[item].ansible_default_ipv4.address is defined
   loop: "{{ groups['rpi-hcnp-nodes']|flatten(levels=1) }}"
+
+
+#   hostvars[item]['ansible_eth1']['ipv4']['address']
+
+
+#   lineinfile: dest=/etc/hosts line="{{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}   {{ hostvars[item]['ansible_hostname'] }}"
+#   with_items: "{{ groups['server_list'] }}"
+
+- name: "Update DNS settings"
+  template:
+    src: "resolv.conf.j2"
+    dest: "/tmp/resolv.conf"
+    mode: "0644"
+
+- name: "Insert into resolv.conf"
+  become: yes
+  blockinfile:
+    block: "{{ lookup('file', '/tmp/resolv.conf') }}"
+    dest: "/etc/resolv.conf"
+    backup: yes
+    insertbefore: BOF

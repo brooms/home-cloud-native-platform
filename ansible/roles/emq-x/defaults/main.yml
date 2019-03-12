@@ -1,0 +1,5 @@
+---
+
+emqx_deb: https://www.emqx.io/downloads/edge/v3.1-beta.1/emqx-edge-raspbian9-v3.1-beta.1_armhf.deb
+emqx_zip: https://www.emqx.io/downloads/edge/v3.1-beta.1/emqx-edge-raspbian9-v3.1-beta.1.zip
+

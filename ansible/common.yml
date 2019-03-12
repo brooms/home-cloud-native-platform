@@ -3,11 +3,25 @@
 # Common base tasks expacted to run on all nodes
 - hosts: rpi-hcnp-nodes
  
+  vars:
+        # resolv_nameservers: "{{ groups['rpi-hcnp-nodes'].ansible_default_ipv4.address }}"
+        resolv_nameservers: "{{ groups['rpi-hcnp-nodes'] | map('extract', hostvars, ['ansible_eth0', 'ipv4', 'address']) | join(',') }}"
+        # resolv_domain: "foo.org" # consul domain?
+        # resolv_search:
+        #   - "foo.bar"
+        #   - "foobar.com"
+        resolv_options:
+          - "timeout:2"
+          - "rotate"
+
   tasks:
 
     - debug:
         msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
 
+    - debug:
+        var: resolv_nameservers
+        
     - import_role:
         name: base
       tags:

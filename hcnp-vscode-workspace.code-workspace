@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "/home/philip/iot/RelayduinoMqttController"
+		},
+		{
+			"path": "/home/philip/workspace/nomad-intro"
 		}
 	],
 	"settings": {

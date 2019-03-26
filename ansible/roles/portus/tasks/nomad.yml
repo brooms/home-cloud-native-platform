@@ -1,0 +1,16 @@
+---
+
+- name: Copy job to /tmp
+  copy:
+    src: portus.nomad
+    dest: /tmp/portus.nomad
+  when: 0
+
+- name: Copy job to /tmp
+  template:
+    src: portus.nomad.j2
+    dest: /tmp/portus.nomad
+
+- name: Run job
+  command: nomad job run /tmp/portus.nomad
+  register: nomad_portus_job_submitted

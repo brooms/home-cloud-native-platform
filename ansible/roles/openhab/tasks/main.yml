@@ -49,7 +49,7 @@
     mode: 0755
   loop: "{{ openhab.directories.data }}"
 
-# Clone configureation
+# Clone configuration
 - name: "Clone configuration into {{ openhab.directories.base }}/conf"
   become: yes
   git:

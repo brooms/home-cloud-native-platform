@@ -6,7 +6,6 @@
 
     - import_role:
         name: registry
-        tasks_from: nomad.yml
+        tasks_from: container.yml
       tags:
         - registry
-        - services

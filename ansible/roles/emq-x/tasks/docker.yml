@@ -1,5 +1,8 @@
 ---
 
+- set_fact:
+    src_zip: https://www.emqx.io/downloads/edge/v3.1-beta.1/emqx-edge-docker-v3.1-beta.1.zip
+
 - name: Download image
   get_url:
     src: https://www.emqx.io/downloads/edge/v3.1-beta.1/emqx-edge-docker-v3.1-beta.1.zip

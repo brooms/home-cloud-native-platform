@@ -1,0 +1,10 @@
+---
+
+portus:
+  service:
+    name: portus
+    ports:
+      http: 3000
+  image:
+    name: portus
+    tag: 2.4.3

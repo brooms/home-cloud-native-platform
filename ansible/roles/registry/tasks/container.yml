@@ -1,0 +1,12 @@
+---
+
+# https://docs.docker.com/registry/
+# docker run -d -p 5000:5000 --name registry registry:2
+- name: "Run image {{ registry.image.name }}:{{ registry.image.tag }} as service {{ registry.service.name }}"
+  docker_container:
+    name: "{{ registry.service.name }}"
+    image: "{{ registry.image.name }}:{{ registry.image.tag }}"
+    published_ports:
+      - "{{ registry.service.ports.http }}:5000"
+    restart_policy: always
+    state: started

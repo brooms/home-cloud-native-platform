@@ -9,5 +9,5 @@
       - "{{ grafana.service.ports.http }}:3000"
     recreate: yes
     state: started
-    volumes:
-      - "{{ grafana.storage }}:/var/lib/grafana"
+    # volumes:
+    #   - "{{ grafana.storage }}:/var/lib/grafana"

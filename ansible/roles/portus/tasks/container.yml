@@ -1,0 +1,12 @@
+---
+
+# http://port.us.org/docs/deploy.html
+# docker run -d -p 5000:5000 --name portus portus:2
+- name: "Run image {{ portus.image.name }}:{{ portus.image.tag }} as service {{ portus.service.name }}"
+  docker_container:
+    name: "{{ portus.service.name }}"
+    image: "{{ portus.image.name }}:{{ portus.image.tag }}"
+    published_ports:
+      - "{{ portus.service.ports.http }}:3000"
+    restart_policy: always
+    state: started

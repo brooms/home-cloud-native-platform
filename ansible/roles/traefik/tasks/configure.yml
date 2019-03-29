@@ -7,6 +7,13 @@
 
 - name: Copy configuration files
   template:
-    src: traefik-consul.toml.j2
+    # src: traefik-consul.toml.j2
+    src: traefik-do.toml.j2
     dest: "{{ traefik.storage }}/traefik.toml"
     backup: yes
+
+- name: Create file for Let's Encrypt information
+  file:
+    path: "{{ traefik.storage }}/acme.json"
+    state: touch
+    mode: 0600

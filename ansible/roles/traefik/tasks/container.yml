@@ -4,22 +4,24 @@
 # -v $PWD/traefik.toml:/etc/traefik/traefik.toml \
 # -v /var/run/docker.sock:/var/run/docker.sock \
 # traefik
-- name: "Run image {{ traefik.image.name }}:{{ traefik.image.tag }} as container {{ traefik.container.name }}"
+- name: "Run image {{ traefik.image.name }}:{{ traefik.image.tag }} as service {{ traefik.service.name }}"
   docker_container:
-    name: "{{ traefik.container.name }}"
+    name: "{{ traefik.service.name }}"
     image: "{{ traefik.image.name }}:{{ traefik.image.tag}}"
     published_ports:
-      - "{{ traefik.container.ports.http }}:80"
+      - "{{ traefik.service.ports.http }}:80"
+      - 443:443
       - 8080:8080
-    dns_servers:
-      - "{{ consul_server }}"
-    dns_search_domains:
-      - service.consul
-    hostname: "{{ traefik.container.name }}"
+    # dns_servers:
+    #   - "{{ consul_server }}"
+    # dns_search_domains:
+    #   - service.consul
+    hostname: "{{ traefik.service.name }}"
     network_mode: host
     recreate: yes
-    restart_policy: "{{ traefik.container.restart.policy }}"
+    restart_policy: "{{ traefik.service.restart.policy }}"
     state: started
     volumes:
       - "{{ traefik.storage }}/traefik.toml:/etc/traefik/traefik.toml"
+      - "{{ traefik.storage }}/acme.json:/etc/traefik/acme.json"
       - "/var/run/docker.sock:/var/run/docker.sock"

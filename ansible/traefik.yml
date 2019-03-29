@@ -1,6 +1,6 @@
 ---
 
-- hosts: rpi-home-network-nodes
+- hosts: local-system
 
   tasks:
 
@@ -31,6 +31,8 @@
     - import_role:
         name: traefik
         tasks_from: configure.yml
+      tags:
+        - traefik
 
     - import_role:
         name: traefik
@@ -39,4 +41,10 @@
         NOMAD_ADDR: "http://{{ consul_bind_address }}:4646"
       tags:
         - traefik
-        - services
+      when: 0
+      
+    - import_role:
+        name: traefik
+        tasks_from: container.yml
+      tags:
+        - traefik

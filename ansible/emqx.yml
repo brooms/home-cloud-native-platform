@@ -1,0 +1,14 @@
+---
+
+- hosts: local-system
+
+  tasks:
+
+    - import_role:
+        name: emq-x
+        tasks_from: container.yml
+      environment:
+        NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
+      tags:
+        - emqx
+

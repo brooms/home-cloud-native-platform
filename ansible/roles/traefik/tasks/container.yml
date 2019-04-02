@@ -1,5 +1,6 @@
 ---
 
+# source: https://hub.docker.com/_/traefik
 # docker run -d -p 8080:8080 -p 80:80 \
 # -v $PWD/traefik.toml:/etc/traefik/traefik.toml \
 # -v /var/run/docker.sock:/var/run/docker.sock \
@@ -9,19 +10,19 @@
     name: "{{ traefik.service.name }}"
     image: "{{ traefik.image.name }}:{{ traefik.image.tag}}"
     published_ports:
-      - "{{ traefik.service.ports.http }}:80"
-      - 443:443
+      - 80:80
+      # - 443:443
       - 8080:8080
     # dns_servers:
     #   - "{{ consul_server }}"
     # dns_search_domains:
     #   - service.consul
     hostname: "{{ traefik.service.name }}"
-    network_mode: host
+    # network_mode: host
     recreate: yes
     restart_policy: "{{ traefik.service.restart.policy }}"
     state: started
     volumes:
       - "{{ traefik.storage }}/traefik.toml:/etc/traefik/traefik.toml"
-      - "{{ traefik.storage }}/acme.json:/etc/traefik/acme.json"
+      # - "{{ traefik.storage }}/acme.json:/etc/traefik/acme.json"
       - "/var/run/docker.sock:/var/run/docker.sock"

@@ -1,6 +1,17 @@
 ---
 
-- hosts: home-assistant-nodes
+- hosts: local-system
 
-  roles:
-    - home-assistant
+  tasks:
+
+    - import_role:
+        name: home-assistant
+        tasks_from: configure.yml
+      tags:
+        - home-assistant
+
+    - import_role:
+        name: home-assistant
+        tasks_from: container.yml
+      tags:
+        - home-assistant

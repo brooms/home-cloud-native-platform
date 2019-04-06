@@ -3,7 +3,7 @@
 homeassistant:
   configuration:
     repo: 'github.com/greenthegarden/home-assistant-configuration.git'
-  container:
+  service:
     name: home-assistant
   image:
     name:

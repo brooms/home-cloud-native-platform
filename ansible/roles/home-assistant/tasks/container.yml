@@ -8,9 +8,9 @@
 - debug:
     var: homeassistant_image_name
 
-- name: "Run image {{ homeassistant.image.name }}:{{ homeassistant.image.tag }} as container {{ homeassistant.container.name }}"
+- name: "Run image {{ homeassistant_image_name }}:{{ homeassistant.image.tag }} as container {{ homeassistant.service.name }}"
   docker_container:
-    name: "{{ homeassistant.container.name }}"
+    name: "{{ homeassistant.service.name }}"
     image: "{{ homeassistant_image_name }}:{{ homeassistant.image.tag }}"
     network_mode: host
     recreate: yes

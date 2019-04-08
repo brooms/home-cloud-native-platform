@@ -9,6 +9,7 @@
   docker_container:
     name: "{{ traefik.service.name }}"
     image: "{{ traefik.image.name }}:{{ traefik.image.tag}}"
+    command: "--consul --consul.endpoint={{ ansible_default_ipv4.address }}:8500"
     published_ports:
       - 80:80
       # - 443:443

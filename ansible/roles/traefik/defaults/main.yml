@@ -13,5 +13,5 @@ traefik:
       policy: always
   image:
     name: traefik
-    tag: latest
+    tag: "v1.7.10"
   storage: "{{ storage_base }}/traefik"

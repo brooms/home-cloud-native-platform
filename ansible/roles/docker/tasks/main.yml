@@ -23,6 +23,12 @@
     - configuration
     - docker
 
+- name: install python modules
+  import_tasks: modules.yml
+  tags:
+    - configuration
+    - docker
+
 - name: force all notified handlers to run at this point, not waiting for normal sync points
   meta: flush_handlers
 

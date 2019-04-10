@@ -5,11 +5,10 @@
   tasks:
 
     - import_role:
-        name: portainer
+        name: portus
         # tasks_from: nomad.yml
         tasks_from: container.yml
       environment:
         NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
       tags:
-        - portainer
-        - services
+        - portus

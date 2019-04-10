@@ -1,0 +1,26 @@
+version: 0.1
+loglevel: debug
+storage:
+  filesystem:
+    rootdirectory: /var/lib/docker-registry
+  delete:
+    enabled: true
+http:
+  addr: :5000
+  tls:
+    certificate: /etc/nginx/ssl/my.registry.crt
+    key: /etc/nginx/ssl/my.registry.key
+auth:
+  token:
+    realm: https://my.portus/v2/token
+    service: my.registry:5000
+    issuer: my.portus
+    rootcertbundle: /etc/nginx/ssl/my.registry.crt
+notifications:
+  endpoints:
+    - name: portus
+      url: https://my.portus/v2/webhooks/events
+      timeout: 500ms
+      threshold: 5
+      backoff: 1s
+      

@@ -6,5 +6,5 @@ portus:
     ports:
       http: 3000
   image:
-    name: portus
+    name: opensuse/portus
     tag: 2.4.3

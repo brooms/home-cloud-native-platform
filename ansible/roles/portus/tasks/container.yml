@@ -6,6 +6,10 @@
   docker_container:
     name: "{{ portus.service.name }}"
     image: "{{ portus.image.name }}:{{ portus.image.tag }}"
+    env:
+      PORTUS_SECRET_KEY_BASE:
+      PORTUS_KEY_PATH:
+      PORTUS_PASSWORD:
     published_ports:
       - "{{ portus.service.ports.http }}:3000"
     restart_policy: always

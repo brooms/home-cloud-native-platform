@@ -42,6 +42,12 @@
         service_consul_running: yes
         service_docker_running: yes
 
+    - name: "Ensure python-consul is installed"
+      become: yes
+      pip:
+        name: python-consul
+        state: present
+
   tasks:
 
     - name: "Start EMQ-X"

@@ -1,0 +1,80 @@
+---
+
+- hosts: local-system #rpi-home-network-nodes
+ 
+  # vars_prompt:
+
+  #   - name: "github_user"
+  #     prompt: "Enter github username"
+  #     private: no
+
+  #   - name: "github_password"
+  #     prompt: "Enter github password"
+  #     private: yes
+
+  pre_tasks:
+
+    - name: "Collect facts about system services"
+      service_facts:
+      register: services_state
+
+    - name: Debug
+      debug:
+        var: services_state
+        verbosity: 2
+
+    - name: Check consul is running
+      assert:
+        that:
+          - "ansible_facts.services['consul.service'].state == 'running'"
+        fail_msg: "consul.service is not running"
+        success_msg: "consul.service is running"
+
+    - name: Check docker is running
+      assert:
+        that:
+          - "ansible_facts.services['docker.service'].state == 'running'"
+        fail_msg: "docker.service is not running"
+        success_msg: "docker.service is running"
+
+    - name: "Set running services facts"
+      set_fact:
+        service_consul_running: yes
+        service_docker_running: yes
+
+  tasks:
+
+    - name: "Start EMQ-X"
+      import_role:
+        name: emqx
+        tasks_from: container.yml
+      tags:
+        - mqtt
+        - service
+
+  #   - name: "Start Nextcloud"
+  #     import_role:
+  #       name: nextcloud
+  #       tasks_from: container.yml
+  #       environment:
+  #       NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
+  #       tags:
+  #       - nextcloud
+  #       - service
+  #       when: 0
+
+  #   - name: "Configure openHAB"
+  #     import_role:
+  #       name: openhab
+  #       tasks_from: configuration.yml
+  #       tags:
+  #           - openhab
+  #           - configuration
+
+  #   - name: "Start openHAB"
+  #     import_role:
+  #       name: openhab
+  #       tasks_from: container.yml
+  #       tags:
+  #           - openhab
+  #           - service

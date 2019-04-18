@@ -6,10 +6,18 @@
   docker_container:
     name: "{{ registry.service.name }}"
     image: "{{ registry.image.name }}:{{ registry.image.tag }}"
+    env:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /registry_data
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+      REGISTRY_HTTP_ADDR: 0.0.0.0:5000
+      REGISTRY_HTTP_DEBUG_ADDR: 0.0.0.0:5001
     published_ports:
       - "{{ registry.service.ports.http }}:5000"
+      - 5001:5001
     restart_policy: always
     state: started
+    volumes:
+      - /registry_data
 
   # registry:
   #   image: library/registry:2.6

@@ -5,15 +5,21 @@
   vars:
     ansible_version_minimum: '2.6.0'
 
-  # vars_prompt:
+    deploy_nextcloud: no
+    deploy_openhab: yes
+    deploy_homeassistant: yes
 
-  #   - name: "github_user"
-  #     prompt: "Enter github username"
-  #     private: no
+  vars_prompt:
 
-  #   - name: "github_password"
-  #     prompt: "Enter github password"
-  #     private: yes
+    - name: "github_user"
+      prompt: "Enter github username"
+      private: no
+      when: deploy_openhab or deplay_homeassistant
+
+    - name: "github_password"
+      prompt: "Enter github password"
+      private: yes
+      when: deploy_openhab or deplay_homeassistant
 
   pre_tasks:
 
@@ -59,37 +65,57 @@
 
   tasks:
 
-    # - name: "Start EMQ-X"
-    #   import_role:
-    #     name: emqx
-    #     tasks_from: container.yml
-    #   tags:
-    #     - mqtt
-    #     - service
+    - name: "Start EMQ-X"
+      import_role:
+        name: emqx
+        tasks_from: container.yml
+      tags:
+        - mqtt
+        - service
 
-  #   - name: "Start Nextcloud"
-  #     import_role:
-  #       name: nextcloud
-  #       tasks_from: container.yml
-  #       environment:
-  #       NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
-  #       tags:
-  #       - nextcloud
-  #       - service
-  #       when: 0
+    - name: "Start Nextcloud"
+      import_role:
+        name: nextcloud
+        tasks_from: container.yml
+      environment:
+        NOMAD_ADDR: "http://{{ ansible_default_ipv4.address }}:4646"
+      tags:
+        - nextcloud
+        - service
+      when: deploy_nextcloud
 
-  #   - name: "Configure openHAB"
-  #     import_role:
-  #       name: openhab
-  #       tasks_from: configuration.yml
-  #       tags:
-  #           - openhab
-  #           - configuration
+    - name: "Configure openHAB"
+      import_role:
+        name: openhab
+        tasks_from: configure.yml
+      tags:
+        - openhab
+        - configuration
+      when: deploy_openhab
 
-  #   - name: "Start openHAB"
-  #     import_role:
-  #       name: openhab
-  #       tasks_from: container.yml
-  #       tags:
-  #           - openhab
-  #           - service
+    - name: "Start openHAB"
+      import_role:
+        name: openhab
+        tasks_from: container.yml
+      tags:
+        - openhab
+        - service
+      when: deploy_openhab
+
+    - name: "Configure home-assistant"
+      import_role:
+        name: home-assistant
+        tasks_from: configure.yml
+      tags:
+        - homeassistant
+        - configuration
+      when: deploy_homeassistant
+
+    - name: "Start home-assistant"
+      import_role:
+        name: home-assistant
+        tasks_from: container.yml
+      tags:
+        - homeassistant
+        - service
+      when: deploy_homeassistant

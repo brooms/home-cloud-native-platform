@@ -21,9 +21,10 @@
     restart_policy: "{{ emqx.service.restart.policy }}"
     state: started
   register: emqx_service_launched
-  
+
 - name: "register {{ emqx.service.name }} service with the local consul agent"
   consul:
-    service_name: "{{ emqx.service.name }}"
-    # service_port: 80
+    service_name: "{{ emqx.service.name }}-{{ item.value }}"
+    service_port: "{{ item.value }}"
+  with_dict: "{{ emqx.service.ports }}"
   when: service_consul_running

@@ -12,15 +12,12 @@
     repo: 'https://{{ github_user | urlencode }}:{{ github_password | urlencode }}@{{ homeassistant.configuration.repo }}'
     # repo: 'hhttps://github.com/greenthegarden/home-assistant-configuration.git'
     dest: "{{ homeassistant.storage }}"
-    force: yes
     update: yes
   register: homeassistant_source
-  when: 0
   
 - name: "Set permissions on {{ homeassistant.storage }}"
+  become: yes
   file:
     dest: "{{ homeassistant.storage }}"
     mode: 0755
     recurse: yes
-  when: 0
-

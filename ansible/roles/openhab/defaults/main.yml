@@ -15,7 +15,7 @@ openhab:
     ]
   configuration:
     repo: 'github.com/greenthegarden/openhab2-configuration.git'
-  container:
+  service:
     name: openhab
     ports:
       http: 8888    # the HTTP port of the web interface
@@ -27,3 +27,5 @@ openhab:
   image:
     name: openhab/openhab
     tag: latest
+
+# { name: 'testuser1', groups: 'wheel' }#

@@ -5,6 +5,8 @@ homeassistant:
     repo: 'github.com/greenthegarden/home-assistant-configuration.git'
   service:
     name: home-assistant
+    ports:
+      http: 8123
   image:
     name:
       linux: "homeassistant/home-assistant"

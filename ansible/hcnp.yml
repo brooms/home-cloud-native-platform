@@ -117,10 +117,57 @@
         - nomad
 
 
-# Run up Traefik
+# Run up core services
 - hosts: hcnp-nodes
 
+  vars:
+    run_portainer: yes
+    run_traefik: yes
+
+  pre_tasks:
+
+    - name: "Collect facts about system services"
+      service_facts:
+      register: services_state
+
+    - name: Debug
+      debug:
+        var: services_state
+        verbosity: 2
+
+    - name: "Check required services are running"
+      assert:
+        that:
+          - "ansible_facts.services['{{ item }}'].state == 'running'"
+        fail_msg: "{{ item }} is not running"
+        success_msg: "{{ item }} is running"
+      loop:
+        - consul.service
+        - docker.service
+
+    - name: "Set running services facts"
+      set_fact:
+        service_consul_running: yes
+        service_docker_running: yes
+
+    - name: "Ensure required modules are installed"
+      become: yes
+      pip:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - python-consul
+        - docker
+
   tasks:
+
+    - name: "Run Portainer as a container"
+      import_role:
+        name: portainer
+        tasks_from: container.yml
+      tags:
+        - portainer
+      when: run_portainer
 
     - set_fact:
         consul_iface: "\
@@ -129,7 +176,8 @@
           {% else %}\
             {{ lookup('env','CONSUL_IFACE') | default(ansible_default_ipv4.interface, true) }}\
           {% endif %}"
-    
+      when: run_traefik
+
     - set_fact:
         consul_bind_address: "\
           {% if ansible_system == 'FreeBSD' %}\
@@ -139,12 +187,15 @@
           {% else %}\
             {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_'+ consul_iface ]['ipv4']['address'], true) }}\
           {% endif %}"
+      when: run_traefik
 
     - debug:
         var: consul_iface
+      when: run_traefik
 
     - debug:
         var: consul_bind_address
+      when: run_traefik
 
     - name: "Configure traefik"
       import_role:
@@ -152,6 +203,7 @@
         tasks_from: configure.yml
       tags:
         - traefik
+      when: run_traefik
 
     - name: "Run Traefik as a container"
       import_role:
@@ -159,4 +211,4 @@
         tasks_from: container.yml
       tags:
         - traefik
-        
+      when: run_traefik

@@ -1,7 +1,6 @@
 ---
 
-# Common base tasks expacted to run on all nodes
-- hosts: wb-hcnp-nodes
+- hosts: hcnp-nodes
  
   vars:
     pip_versions: [
@@ -99,7 +98,7 @@
 
 
 # Run up Traefik
-- hosts: wb-hcnp-nodes
+- hosts: hcnp-nodes
 
   tasks:
 

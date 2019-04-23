@@ -7,7 +7,6 @@ all:
     local-system:
       ansible_connection: local
       ansible_host: localhost
-      ansible_user: philip
       consul_mode: server
 
   children:
@@ -21,6 +20,7 @@ all:
         local-system:
           consul_iface: eth0
           consul_node_role: bootstrap
+          consul_bootstrap_expect: yes
 
     docker_instances:
       hosts:

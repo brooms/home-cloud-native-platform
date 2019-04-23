@@ -1,10 +1,11 @@
 ---
 
-- name: Install {{ git }}
+- name: Install {{ git_package }}
   become: yes
   package:
-    name: "{{ packages }}"
+    name: "{{ git_packages }}"
     state: latest
+  register: git_installed
   tags:
     - installation
     - git

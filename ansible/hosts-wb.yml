@@ -20,7 +20,7 @@ all:
 
   children:
   
-    wb-hcnp-nodes:
+    hcnp-nodes:
       hosts:
         wb-node-48:
 

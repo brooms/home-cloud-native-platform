@@ -4,23 +4,10 @@
 
 # See https://git-scm.com/docs/git-config for options
 
-- name: "configure user.name to {{ config.user.name }}"
+- name: "Set git parameters"
   git_config:
-    name: user.mame
-    scope: global
-    value: "{{ config.user.name }}"
-  when: config.user.name is defined
-
-- name: "configure user.email to {{ config.user.email }}"
-  git_config:
-    name: user.email
-    scope: global
-    value: "{{ config.user.email }}"
-  when: config.user.email is defined
-
-- name: "set credential.helper to {{ config.credential.helper }}"
-  git_config:
-    name: credential.helper
-    scope: global
-    value: "{{ config.credential.helper }}"
-  when: config.credential.helper is defined
+    name: "{{ item.key }}"
+    scope: "{{ item.scope | default('global') }}"
+    value: "{{ item.value }}"
+  loop: "{{ git_config }}"
+  when: git_config is defined and (git_config | length > 0)

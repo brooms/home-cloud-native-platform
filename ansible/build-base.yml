@@ -3,20 +3,40 @@
 - hosts: hcnp-nodes
  
   vars:
+
     pip_versions: [
       { python: 'python2', pip: 'pip2' },
     ]
+
+    # resolv_nameservers: "{{ groups['rpi-hcnp-nodes'].ansible_default_ipv4.address }}"
+    resolv_nameservers: "{{ groups['hcnp-nodes'] | map('extract', hostvars, ['ansible_eth0', 'ipv4', 'address']) | join(',') }}"
+    # resolv_domain: "foo.org" # consul domain?
+    # resolv_search:
+    #   - "foo.bar"
+    #   - "foobar.com"
+    resolv_options:
+      - "timeout:2"
+      - "rotate"
+
+    run_upgrade: no
+    run_git: yes
+    run_pip: no
 
   tasks:
 
     - debug:
         msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
 
-    # - import_role:
-    #     name: upgrade
-    #   tags:
-    #     - upgrade
-    #     - common
+    - debug:
+        var: resolv_nameservers
+        
+    - name: "Upgrade all packages on node"
+      import_role:
+        name: base
+        tasks_from: upgrade
+      tags:
+        - upgrade
+      when: run_upgrade
 
     # git is required to build some images from source
     - name: "Ensure git is installed"
@@ -25,7 +45,7 @@
         tasks_from: install
       tags:
         - git
-        - common
+      when: run_git
 
     # pip is required to install modules for docker
     - name: "Run pip role"
@@ -33,7 +53,7 @@
         name: pip
       tags:
         - pip
-        - common
+      when: run_pip
 
 
 # Run role to install and configure consul

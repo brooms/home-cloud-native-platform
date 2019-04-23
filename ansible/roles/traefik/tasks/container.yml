@@ -27,3 +27,10 @@
       - "{{ traefik.storage }}/traefik.toml:/etc/traefik/traefik.toml"
       # - "{{ traefik.storage }}/acme.json:/etc/traefik/acme.json"
       - "/var/run/docker.sock:/var/run/docker.sock"
+
+- name: "register {{ traefik.service.name }} service with the local consul agent"
+  consul:
+    service_name: "{{ traefik.service.name }}-{{ item.value }}"
+    service_port: "{{ item.value }}"
+  with_dict: "{{ traefik.service.ports }}"
+  when: service_consul_running

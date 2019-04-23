@@ -20,9 +20,10 @@
     #     - common
 
     # git is required to build some images from source
-    - name: "Run git role"
+    - name: "Ensure git is installed"
       import_role:
         name: git
+        tasks_from: install
       tags:
         - git
         - common
@@ -69,6 +70,17 @@
 #         - vault
 
 
+# Run role to install and configure docker
+- hosts: docker_instances
+
+  tasks:
+
+    - import_role:
+        name: docker
+      tags:
+        - docker
+
+
 # Run role to install and configure nomad
 - hosts: nomad_instances
 
@@ -84,24 +96,48 @@
         name: nomad
       tags:
         - nomad
-        
-
-# Run role to install and configure docker
-- hosts: docker_instances
-
-  tasks:
-
-    - import_role:
-        name: docker
-      tags:
-        - docker
 
 
-# Run up Portainer
+# Run up Traefik
 - hosts: wb-hcnp-nodes
 
   tasks:
 
-    - import_role:
-        name: portainer
+    - set_fact:
+        consul_iface: "\
+          {% if ansible_os_family == 'Windows' %}\
+            {{ lookup('env','CONSUL_IFACE') | default(ansible_interfaces[0].interface_name, true) }}\
+          {% else %}\
+            {{ lookup('env','CONSUL_IFACE') | default(ansible_default_ipv4.interface, true) }}\
+          {% endif %}"
+    
+    - set_fact:
+        consul_bind_address: "\
+          {% if ansible_system == 'FreeBSD' %}\
+            {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_'+ consul_iface ]['ipv4'][0]['address'], true) }}\
+          {% elif ansible_os_family == 'Windows'  %}\
+            {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
+          {% else %}\
+            {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_'+ consul_iface ]['ipv4']['address'], true) }}\
+          {% endif %}"
+
+    - debug:
+        var: consul_iface
+
+    - debug:
+        var: consul_bind_address
+
+    - name: "Configure traefik"
+      import_role:
+        name: traefik
+        tasks_from: configure.yml
+      tags:
+        - traefik
+
+    - name: "Run Traefik as a container"
+      import_role:
+        name: traefik
         tasks_from: container.yml
+      tags:
+        - traefik
+        

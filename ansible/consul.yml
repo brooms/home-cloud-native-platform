@@ -3,6 +3,9 @@
 - hosts: consul_instances
  
   vars:
+    consul_version: '1.4.4'
+    consul_datacenter: hcnp
+    consul_domain: 'service.consul'
     consul_dnsmasq_enable: yes
 
   tasks:

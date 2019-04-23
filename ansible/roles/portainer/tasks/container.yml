@@ -15,3 +15,10 @@
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "{{ portainer.storage }}:/data"
+
+- name: "register {{ portainer.service.name }} service with the local consul agent"
+  consul:
+    service_name: "{{ portainer.service.name }}-{{ item.value }}"
+    service_port: "{{ item.value }}"
+  with_dict: "{{ portainer.service.ports }}"
+  when: service_consul_running

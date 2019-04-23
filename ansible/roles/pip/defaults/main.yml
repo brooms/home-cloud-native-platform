@@ -4,7 +4,11 @@
 # Pip configuration
 pip_download_dest: /tmp
 pip_source_url: 'https://bootstrap.pypa.io/get-pip.py'
-modules: [
+pip_modules: [
   setuptools,
   python-consul
+]
+pip_versions: [
+  { python: 'python2', pip: 'pip2' },
+  { python: 'python3', pip: 'pip3' }
 ]

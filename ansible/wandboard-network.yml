@@ -1,0 +1,107 @@
+---
+
+# Common base tasks expacted to run on all nodes
+- hosts: wb-hcnp-nodes
+ 
+  vars:
+    pip_versions: [
+      { python: 'python2', pip: 'pip2' },
+    ]
+
+  tasks:
+
+    - debug:
+        msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
+
+    # - import_role:
+    #     name: upgrade
+    #   tags:
+    #     - upgrade
+    #     - common
+
+    # git is required to build some images from source
+    - name: "Run git role"
+      import_role:
+        name: git
+      tags:
+        - git
+        - common
+
+    # pip is required to install modules for docker
+    - name: "Run pip role"
+      import_role:
+        name: pip
+      tags:
+        - pip
+        - common
+
+
+# Run role to install and configure consul
+- hosts: consul_instances
+
+  tasks:
+
+    - name: "Run consul role"
+      import_role:
+        name: consul
+      tags:
+        - consul
+
+# Run role to install and configure vault
+# - hosts: vault_instances
+
+#   tasks:
+
+#     - import_role:
+#         name: vault
+#       tags:
+#         - vault
+
+#     - import_role:
+#         name: vault-init
+#       tags:
+#         - vault
+#       when: 0
+
+#     - import_role:
+#         name: vault-unseal
+#       tags:
+#         - vault
+
+
+# Run role to install and configure nomad
+- hosts: nomad_instances
+
+  vars:
+    nomad_use_consul: yes
+    nomad_bootstrap_expect: 1
+    nomad_docker_enable: yes
+
+  tasks:
+
+    - name: "Run nomad role"
+      import_role:
+        name: nomad
+      tags:
+        - nomad
+        
+
+# Run role to install and configure docker
+- hosts: docker_instances
+
+  tasks:
+
+    - import_role:
+        name: docker
+      tags:
+        - docker
+
+
+# Run up Portainer
+- hosts: wb-hcnp-nodes
+
+  tasks:
+
+    - import_role:
+        name: portainer
+        tasks_from: container.yml

@@ -4,8 +4,8 @@ git: git
 
 config:
   user:
-    name: greenthegarden
-    email: 'greenthegarden@gmail.com'
+    name:
+    email:
   http:
     sslVerify: false
   credential:

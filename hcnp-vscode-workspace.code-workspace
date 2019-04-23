@@ -2,15 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "/home/philip/openhab2-configuration"
-		},
-		{
-			"path": "/home/philip/iot/RelayduinoMqttController"
-		},
-		{
-			"path": "/home/philip/workspace/nomad-intro"
 		}
 	],
 	"settings": {

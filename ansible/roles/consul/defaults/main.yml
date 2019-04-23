@@ -1,0 +1,6 @@
+---
+
+consul_python_modules: [
+  netaddr,
+  python-consul
+]

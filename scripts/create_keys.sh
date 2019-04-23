@@ -3,8 +3,8 @@
 # see https://www.ssh.com/ssh/keygen for details
 key_algorithm="rsa" # one of rsa, dsa, ecdsa, ed25519
 key_size="4096"
-key_comment="home-cloud-native-platform"
-key_file="id_${ALGORITHM}_hcnp"
+key_comment="wb-cloud-native-platform"
+key_file="id_${key_algorithm}_hcnp"
 key_file_dir="${HOME}/.ssh"
 
 if [ -f ${key_file_dir}/${key_file} ] ; then

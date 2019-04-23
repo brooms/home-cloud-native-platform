@@ -1,0 +1,13 @@
+---
+
+- name: "Install and configure nomad"
+  become: yes
+  import_role:
+    name: brianshumate.nomad
+  tags:
+    nomad
+
+- debug:
+    var: nomad_servers
+  tags:
+    nomad

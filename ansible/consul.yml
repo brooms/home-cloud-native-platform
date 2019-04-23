@@ -1,18 +1,14 @@
 ---
 
 - hosts: consul_instances
-
-  become: yes
-  
+ 
   vars:
     consul_dnsmasq_enable: yes
 
   tasks:
 
-    - import_role:
-        name: brianshumate.consul
+    - name: "Run consul role" 
+      import_role:
+        name: consul
       tags:
         - consul
-
-    - debug:
-        var: consul_servers

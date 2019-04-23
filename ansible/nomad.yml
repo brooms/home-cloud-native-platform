@@ -3,19 +3,15 @@
 # Install and configure nomad
 - hosts: nomad_instances
 
-  become: yes
-
   vars:
     nomad_use_consul: yes
-    nomad_bootstrap_expect: 2
-    # nomad_docker_enable: yes
+    nomad_bootstrap_expect: 1
+    nomad_docker_enable: yes
 
   tasks:
 
-    - import_role:
-        name: brianshumate.nomad
+    - name: "Run nomad role"
+      import_role:
+        name: nomad
       tags:
         nomad
-
-    - debug:
-        var: nomad_servers

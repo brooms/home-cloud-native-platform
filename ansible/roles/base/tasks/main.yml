@@ -1,63 +1,21 @@
 ---
 
-- name: Update host
+- name: "Update node"
   become: yes
   import_tasks: update.yml
 
-- name: Install packages
+- name: "Install packages"
   become: yes
   import_tasks: install.yml
   
-- debug:
-    msg: "Set hostname to {{ inventory_hostname }}"
-
-- name: Set hostname
+- name: "Update hostname"
   become: yes
-  hostname:
-    name: "{{ inventory_hostname }}"
-  when: inventory_hostname != 'local'
+  import_tasks: hostname.yml
 
-# src: http://derpturkey.com/setting-host-with-ansible-in-ubuntu/
-- name: Update hostname in /etc/hosts
+- name: "Update hosts"
   become: yes
-  lineinfile:
-    dest: /etc/hosts
-    regexp: '^127\.0\.1\.1'
-    line: '127.0.1.1    {{ inventory_hostname }}'
-    state: present
+  import_tasks: hosts.yml
 
-- debug:
-    var: groups['rpi-hcnp-nodes']
-
-# src: https://gist.github.com/rothgar/8793800
-- name: "Build hosts file"
+- name: "Update resolv"
   become: yes
-  lineinfile:
-    path: /etc/hosts
-    regexp: '.*{{ item }}$'
-    line: "{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
-    state: present
-    backup: yes
-  when: hostvars[item].ansible_default_ipv4.address is defined
-  loop: "{{ groups['rpi-hcnp-nodes']|flatten(levels=1) }}"
-
-
-#   hostvars[item]['ansible_eth1']['ipv4']['address']
-
-
-#   lineinfile: dest=/etc/hosts line="{{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}   {{ hostvars[item]['ansible_hostname'] }}"
-#   with_items: "{{ groups['server_list'] }}"
-
-- name: "Update DNS settings"
-  template:
-    src: "resolv.conf.j2"
-    dest: "/tmp/resolv.conf"
-    mode: "0644"
-
-- name: "Insert into resolv.conf"
-  become: yes
-  blockinfile:
-    block: "{{ lookup('file', '/tmp/resolv.conf') }}"
-    dest: "/etc/resolv.conf"
-    backup: yes
-    insertbefore: BOF
+  import_tasks: resolv.yml

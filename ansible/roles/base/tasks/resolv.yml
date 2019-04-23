@@ -1,0 +1,15 @@
+---
+
+- name: "Update DNS settings"
+  template:
+    src: "resolv.conf.j2"
+    dest: "/tmp/resolv.conf"
+    mode: "0644"
+
+- name: "Insert into resolv.conf"
+  become: yes
+  blockinfile:
+    block: "{{ lookup('file', '/tmp/resolv.conf') }}"
+    dest: "/etc/resolv.conf"
+    backup: yes
+    insertbefore: BOF

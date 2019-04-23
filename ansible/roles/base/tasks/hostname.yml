@@ -1,0 +1,10 @@
+---
+
+- debug:
+    msg: "Set hostname to {{ inventory_hostname }}"
+
+- name: Set hostname
+  become: yes
+  hostname:
+    name: "{{ inventory_hostname }}"
+  when: inventory_hostname != 'local'

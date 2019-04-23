@@ -5,7 +5,7 @@ use_sudo=true
 
 extension="yml"
 inventory="hosts"
-playbook="common"
+playbook="build-base"
 
 read -p "Enter inventory file name [${inventory}]: " inventory_input
 inventory="${inventory_input:-${inventory}}.${extension}"

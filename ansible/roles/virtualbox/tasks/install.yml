@@ -1,6 +1,0 @@
----
-
-
-- name: Install
-  apt:
-    deb: "{{ vagrant_pkg_deb }}"

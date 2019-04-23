@@ -23,12 +23,12 @@ The following services are distributed across the nodes:
 
 ## Installing
 
-Create an ssh key using ['scripts/create_keys.sh'](scripts/create_keys.sh) and copy is across to the nodes using ['scripts/copy_keys.sh'](scripts/copy_keys.sh).
+Create an ssh key using [`scripts/create_keys.sh`](scripts/create_keys.sh) and copy is across to the nodes using [`scripts/copy_keys.sh`](scripts/copy_keys.sh).
 
-Ensure Ansible is installed on the controller using ['scripts/install_ansible.sh'](scripts/install_ansible.sh).
+Ensure Ansible is installed on the controller using [`scripts/install_ansible.sh`](scripts/install_ansible.sh).
 
-Ensure dependent Ansible roles are installed from [Ansible Galaxy](https://galaxy.ansible.com/) using ['ansible/ansible-install-dependent-roles.sh'](ansible/ansible-install-dependent-roles.sh).
+Ensure dependent Ansible roles are installed from [Ansible Galaxy](https://galaxy.ansible.com/) using [`ansible/ansible-install-dependent-roles.sh`](ansible/ansible-install-dependent-roles.sh).
 
-Configure and [Ansible Inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html), such as ['ansible/hosts.yml'](ansible/hosts.yml) to suit the network. Check the nodes specified within the inventory file using ['ansible/ansible-list-all-nodes.sh'](ansible/ansible-list-all-nodes.sh). Test the connection to the nodes using ['ansible/ansible-ping-all-nodes.sh'](ansible/ansible-ping-all-nodes.sh). Get the facts about a node using ['ansible/ansible-get-facts.sh'](ansible/ansible-get-facts.sh).
+Configure and [Ansible Inventory](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html), such as [`ansible/hosts.yml`](ansible/hosts.yml) to suit the network. Check the nodes specified within the inventory file using [`ansible/ansible-list-all-nodes.sh`](ansible/ansible-list-all-nodes.sh). Test the connection to the nodes using [`ansible/ansible-ping-all-nodes.sh`](ansible/ansible-ping-all-nodes.sh). Get the facts about a node using [`ansible/ansible-get-facts.sh`](ansible/ansible-get-facts.sh).
 
-Create an [Ansible Playbook](https://docs.ansible.com/ansible/latest/user_guide/playbooks.html) to run required roles on specified hosts. Test the playbook syntax using ['ansible/ansible-check-playbook-syntax.sh'](ansible/ansible-check-playbook-syntax.sh). Run the Ansible playbook using ['ansible/ansible-run-play.sh'](ansible/ansible-run-play.sh).
+Create an [Ansible Playbook](https://docs.ansible.com/ansible/latest/user_guide/playbooks.html) to run required roles on specified hosts. Test the playbook syntax using [`ansible/ansible-check-playbook-syntax.sh`](ansible/ansible-check-playbook-syntax.sh). Run the Ansible playbook using [`ansible/ansible-run-play.sh`](ansible/ansible-run-play.sh).

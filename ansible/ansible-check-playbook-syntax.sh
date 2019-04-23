@@ -2,7 +2,7 @@
 
 extension="yml"
 inventory="hosts"
-playbook="common"
+playbook="hcnp"
 
 read -p "Enter inventory file name [${inventory}]: " inventory_input
 inventory="${inventory_input:-${inventory}}.${extension}"

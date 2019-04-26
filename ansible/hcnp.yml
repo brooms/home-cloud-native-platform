@@ -35,8 +35,17 @@
         name: base
         tasks_from: update
       tags:
+        - base
         - update
       when: run_update
+      
+    - name: "Upgrade all packages on node"
+      import_role:
+        name: base
+        tasks_from: hostname
+      tags:
+        - base
+        - hostname
 
     # git is required to build some images from source
     - name: "Ensure git is installed"
@@ -63,7 +72,7 @@
     consul_version: '1.4.4'
     consul_datacenter: hcnp
     consul_domain: 'service.consul'
-    consul_dnsmasq_enable: yes
+    consul_dnsmasq_enable: no
 
   tasks:
 

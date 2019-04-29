@@ -21,7 +21,17 @@ The following services are distributed across the nodes:
 * [Home Assistant](https://www.home-assistant.io/)
 * [Kerberos.io](https://www.kerberos.io/)
 
+
+## Dependencies
+
+Required by Ansible 
+
+* python
+* setuptools
+
 ## Installing
+
+
 
 Create an ssh key using [`scripts/create_keys.sh`](scripts/create_keys.sh) and copy is across to the nodes using [`scripts/copy_keys.sh`](scripts/copy_keys.sh).
 

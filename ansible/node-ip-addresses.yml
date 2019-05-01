@@ -1,0 +1,19 @@
+---
+
+# Install and configure docker
+- hosts: hcnp-nodes
+
+  vars:
+     docker_upgrade: false
+
+  tasks:
+
+    - debug:
+        msg: "Getting list of node IP addresses"
+
+    - name: "Get list of IP addresses"
+      set_fact:
+        node_ip_addresses: "{{ groups['hcnp-nodes'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}"
+
+    - debug:
+        var: node_ip_addresses

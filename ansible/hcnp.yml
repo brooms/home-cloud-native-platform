@@ -1,141 +1,148 @@
 ---
 
-- hosts: hcnp-nodes
+# - hosts: hcnp-nodes
+    
+#   vars:
+
+#     pip_versions: [
+#       { python: 'python2', pip: 'pip2' },
+#     ]
+
+#     # resolv_nameservers: "{{ groups['rpi-hcnp-nodes'].ansible_default_ipv4.address }}"
+#     resolv_nameservers: "{{ groups['hcnp-nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
+#     # resolv_domain: "foo.org" # consul domain?
+#     # resolv_search:
+#     #   - "foo.bar"
+#     #   - "foobar.com"
+#     resolv_options:
+#       - "timeout:2"
+#       - "rotate"
+
+#     run_update: no
+#     run_git: yes
+#     run_pip: no
  
-  vars:
+#   environment:
 
-    pip_versions: [
-      { python: 'python2', pip: 'pip2' },
-    ]
+    
 
-    # resolv_nameservers: "{{ groups['rpi-hcnp-nodes'].ansible_default_ipv4.address }}"
-    resolv_nameservers: "{{ groups['hcnp-nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
-    # resolv_domain: "foo.org" # consul domain?
-    # resolv_search:
-    #   - "foo.bar"
-    #   - "foobar.com"
-    resolv_options:
-      - "timeout:2"
-      - "rotate"
+#   tasks:
 
-    run_update: no
-    run_git: yes
-    run_pip: no
+#     - debug:
+#         msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
 
-  tasks:
-
-    - debug:
-        msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
-
-    - debug:
-        var: resolv_nameservers
+#     - debug:
+#         var: resolv_nameservers
         
-    - name: "Upgrade all packages on node"
-      import_role:
-        name: base
-        tasks_from: update
-      tags:
-        - base
-        - update
-      when: run_update
+#     - name: "Upgrade all packages on node"
+#       import_role:
+#         name: base
+#         tasks_from: update
+#       tags:
+#         - base
+#         - update
+#       when: run_update
       
-    - name: "Upgrade all packages on node"
-      import_role:
-        name: base
-        tasks_from: hostname
-      tags:
-        - base
-        - hostname
+#     - name: "Upgrade all packages on node"
+#       import_role:
+#         name: base
+#         tasks_from: hostname
+#       tags:
+#         - base
+#         - hostname
 
-    # git is required to build some images from source
-    - name: "Ensure git is installed"
-      import_role:
-        name: git
-        tasks_from: install
-      tags:
-        - git
-      when: run_git
+#     # git is required to build some images from source
+#     - name: "Ensure git is installed"
+#       import_role:
+#         name: git
+#         tasks_from: install
+#       tags:
+#         - git
+#       when: run_git
 
-    # pip is required to install modules for docker
-    - name: "Run pip role"
-      import_role:
-        name: pip
-      tags:
-        - pip
-      when: run_pip
+#     # pip is required to install modules for docker
+#     - name: "Run pip role"
+#       import_role:
+#         name: pip
+#       tags:
+#         - pip
+#       when: run_pip
 
 
-# Run role to install and configure consul
-- hosts: consul_instances
+# # Run role to install and configure consul
+# - hosts: consul_instances
 
-  vars:
-    consul_version: '1.4.4'
-    consul_datacenter: hcnp
-    consul_domain: 'service.consul'
-    consul_dnsmasq_enable: no
+#   vars:
+#     consul_version: '1.4.4'
+#     consul_datacenter: hcnp
+#     consul_domain: 'service.consul'
+#     consul_dnsmasq_enable: no
 
-  tasks:
+#   tasks:
 
-    - name: "Run consul role"
-      import_role:
-        name: consul
-      tags:
-        - consul
+#     - name: "Run consul role"
+#       import_role:
+#         name: consul
+#       tags:
+#         - consul
 
-# Run role to install and configure vault
-# - hosts: vault_instances
+# # Run role to install and configure vault
+# # - hosts: vault_instances
+
+# #   tasks:
+
+# #     - import_role:
+# #         name: vault
+# #       tags:
+# #         - vault
+
+# #     - import_role:
+# #         name: vault-init
+# #       tags:
+# #         - vault
+# #       when: 0
+
+# #     - import_role:
+# #         name: vault-unseal
+# #       tags:
+# #         - vault
+
+
+# # Run role to install and configure docker
+# - hosts: docker_instances
 
 #   tasks:
 
 #     - import_role:
-#         name: vault
+#         name: docker
 #       tags:
-#         - vault
+#         - docker
 
-#     - import_role:
-#         name: vault-init
+
+# # Run role to install and configure nomad
+# - hosts: nomad_instances
+
+#   vars:
+#     nomad_use_consul: yes
+#     nomad_bootstrap_expect: 1
+#     nomad_docker_enable: yes
+
+#   tasks:
+
+#     - name: "Run nomad role"
+#       import_role:
+#         name: nomad
 #       tags:
-#         - vault
-#       when: 0
-
-#     - import_role:
-#         name: vault-unseal
-#       tags:
-#         - vault
-
-
-# Run role to install and configure docker
-- hosts: docker_instances
-
-  tasks:
-
-    - import_role:
-        name: docker
-      tags:
-        - docker
-
-
-# Run role to install and configure nomad
-- hosts: nomad_instances
-
-  vars:
-    nomad_use_consul: yes
-    nomad_bootstrap_expect: 1
-    nomad_docker_enable: yes
-
-  tasks:
-
-    - name: "Run nomad role"
-      import_role:
-        name: nomad
-      tags:
-        - nomad
+#         - nomad
 
 
 # Run up core services
 - hosts: hcnp-nodes
 
   vars:
+
+    domain_name: 'greenthegarden.net'
+    
     run_portainer: yes
     run_traefik: yes
 

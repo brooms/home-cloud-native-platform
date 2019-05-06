@@ -1,197 +1,43 @@
-# API definition
-# Warning: Enabling API will expose Traefik's configuration.
-# It is not recommended in production,
-# unless secured by authentication and authorizations
+logLevel = "ERROR" #DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+defaultEntryPoints = ["https", "http"]
+
+# WEB interface of Traefik - it will show web page with overview of frontend and backend configurations 
 [api]
-# Name of the related entry point
-#
-# Optional
-# Default: "traefik"
-#
-entryPoint = "traefik"
+  entryPoint = "traefik"
+  dashboard = true
+  address = ":8080"
 
-# Enable Dashboard
-#
-# Optional
-# Default: true
-#
-dashboard = true
+# Force HTTPS
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.tls]
 
-# Enable debug mode.
-# This will install HTTP handlers to expose Go expvars under /debug/vars and
-# pprof profiling data under /debug/pprof/.
-# Additionally, the log level will be set to DEBUG.
-#
-# Optional
-# Default: false
-#
-debug = true
+[file]
+  watch = true
+  filename = "/etc/traefik/rules.toml"
 
-
-################################################################
-# Docker Provider
-################################################################
-
-# Enable Docker Provider.
+# Let's encrypt configuration
+[acme]
+email = "greenthegarden@gmail.com" #any email id will work
+storage="/etc/traefik/acme.json"
+entryPoint = "https"
+acmeLogging=true 
+onDemand = false #create certificate when container is created
+onHostRule = true
+  # Use a HTTP-01 acme challenge rather than TLS-SNI-01 challenge
+  [acme.httpChallenge]
+  entryPoint = "http"
+   
+# Connection to docker host system (docker.sock)
 [docker]
-
-# Docker server endpoint. Can be a tcp or a unix socket endpoint.
-#
-# Required
-#
 endpoint = "unix:///var/run/docker.sock"
-
-# Default base domain used for the frontend rules.
-# Can be overridden by setting the "traefik.domain" label on a container.
-#
-# Optional
-#
-domain = "docker.localhost"
-
-# Enable watch docker changes.
-#
-# Optional
-#
+domain = "{{ domain_name }}"
 watch = true
-
-# Override default configuration template.
-# For advanced users :)
-#
-# Optional
-#
-# filename = "docker.tmpl"
-
-# Override template version
-# For advanced users :)
-#
-# Optional
-# - "1": previous template version (must be used only with older custom templates, see "filename")
-# - "2": current template version (must be used to force template version when "filename" is used)
-#
-# templateVersion = 2
-
-# Expose containers by default in Traefik.
-# If set to false, containers that don't have `traefik.enable=true` will be ignored.
-#
-# Optional
-# Default: true
-#
-exposedByDefault = true
-
-# Use the IP address from the binded port instead of the inner network one.
-#
-# In case no IP address is attached to the binded port (or in case 
-# there is no bind), the inner network one will be used as a fallback.     
-#
-# Optional
-# Default: false
-#
-usebindportip = true
-
-# Use Swarm Mode services as data provider.
-#
-# Optional
-# Default: false
-#
-swarmMode = false
-
-# Polling interval (in seconds) for Swarm Mode.
-#
-# Optional
-# Default: 15
-#
-swarmModeRefreshSeconds = 15
-
-# Define a default docker network to use for connections to all containers.
-# Can be overridden by the traefik.docker.network label.
-#
-# Optional
-#
-network = "web"
-
-# Enable docker TLS connection.
-#
-# Optional
-#
-#  [docker.tls]
-#  ca = "/etc/ssl/ca.crt"
-#  cert = "/etc/ssl/docker.crt"
-#  key = "/etc/ssl/docker.key"
-#  insecureSkipVerify = true
-
-################################################################
-# Consul Catalog Provider
-################################################################
-
-# Enable Consul Catalog Provider.
-[consulCatalog]
-
-# Consul server endpoint.
-#
-# Required
-# Default: "127.0.0.1:8500"
-#
-endpoint = "127.0.0.1:8500"
-
-# Expose Consul catalog services by default in Traefik.
-#
-# Optional
-# Default: true
-#
-exposedByDefault = false
-
-# Allow Consul server to serve the catalog reads regardless of whether it is the leader.
-#
-# Optional
-# Default: false
-#
-stale = false
-
-# Default base domain used for the frontend rules.
-#
-# Optional
-#
-domain = "consul.localhost"
-
-# Prefix for Consul catalog tags.
-#
-# Optional
-# Default: "traefik"
-#
-prefix = "traefik"
-
-# Default frontEnd Rule for Consul services.
-#
-# The format is a Go Template with:
-# - ".ServiceName", ".Domain" and ".Attributes" available
-# - "getTag(name, tags, defaultValue)", "hasTag(name, tags)" and "getAttribute(name, tags, defaultValue)" functions are available
-# - "getAttribute(...)" function uses prefixed tag names based on "prefix" value
-#
-# Optional
-# Default: "Hos
-
-# Enable Consul catalog TLS connection.
-#
-# Optional
-#
-#    [consulCatalog.tls]
-#    ca = "/etc/ssl/ca.crt"
-#    cert = "/etc/ssl/consul.crt"
-#    key = "/etc/ssl/consul.key"
-#    insecureSkipVerify = true
-
-# Override default configuration template.
-# For advanced users :)
-#
-# Optional
-#
-# filename = "consulcatalog.tmpl"
-
-# Override template version
-# For advanced users :)
-#
-# Optional
-# - "1": previous template version (must be used only with older custom templates, see "filename")
-# - "2": current template version (must be used to force template version when "filename" is used)
-#
-# templateVersion = 2
+# This will hide all docker containers that don't have explicitly  
+# set label to "enable"
+exposedbydefault = false

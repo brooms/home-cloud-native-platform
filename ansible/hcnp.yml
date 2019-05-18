@@ -1,90 +1,90 @@
 ---
 
-# - hosts: hcnp-nodes
+- hosts: hcnp-nodes
     
-#   vars:
+  vars:
 
-#     pip_versions: [
-#       { python: 'python2', pip: 'pip2' },
-#     ]
+    pip_versions: [
+      { python: 'python2', pip: 'pip2' },
+    ]
 
-#     # resolv_nameservers: "{{ groups['rpi-hcnp-nodes'].ansible_default_ipv4.address }}"
-#     resolv_nameservers: "{{ groups['hcnp-nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
-#     # resolv_domain: "foo.org" # consul domain?
-#     # resolv_search:
-#     #   - "foo.bar"
-#     #   - "foobar.com"
-#     resolv_options:
-#       - "timeout:2"
-#       - "rotate"
+    # resolv_nameservers: "{{ groups['rpi-hcnp-nodes'].ansible_default_ipv4.address }}"
+    resolv_nameservers: "{{ groups['hcnp-nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
+    # resolv_domain: "foo.org" # consul domain?
+    # resolv_search:
+    #   - "foo.bar"
+    #   - "foobar.com"
+    resolv_options:
+      - "timeout:2"
+      - "rotate"
 
-#     run_update: no
-#     run_git: yes
-#     run_pip: no
+    run_update: yes
+    run_git: yes
+    run_pip: yes
  
-#   environment:
+  environment:
 
     
 
-#   tasks:
+  tasks:
 
-#     - debug:
-#         msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
+    - debug:
+        msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
 
-#     - debug:
-#         var: resolv_nameservers
+    - debug:
+        var: resolv_nameservers
         
-#     - name: "Upgrade all packages on node"
-#       import_role:
-#         name: base
-#         tasks_from: update
-#       tags:
-#         - base
-#         - update
-#       when: run_update
+    - name: "Upgrade all packages on node"
+      import_role:
+        name: base
+        tasks_from: update
+      tags:
+        - base
+        - update
+      when: run_update
       
-#     - name: "Upgrade all packages on node"
-#       import_role:
-#         name: base
-#         tasks_from: hostname
-#       tags:
-#         - base
-#         - hostname
+    - name: "Upgrade all packages on node"
+      import_role:
+        name: base
+        tasks_from: hostname
+      tags:
+        - base
+        - hostname
 
-#     # git is required to build some images from source
-#     - name: "Ensure git is installed"
-#       import_role:
-#         name: git
-#         tasks_from: install
-#       tags:
-#         - git
-#       when: run_git
+    # git is required to build some images from source
+    - name: "Ensure git is installed"
+      import_role:
+        name: git
+        tasks_from: install
+      tags:
+        - git
+      when: run_git
 
-#     # pip is required to install modules for docker
-#     - name: "Run pip role"
-#       import_role:
-#         name: pip
-#       tags:
-#         - pip
-#       when: run_pip
+    # pip is required to install modules for docker
+    - name: "Run pip role"
+      import_role:
+        name: pip
+      tags:
+        - pip
+      when: run_pip
 
 
-# # Run role to install and configure consul
-# - hosts: consul_instances
+# Run role to install and configure consul
+- hosts: consul_instances
 
-#   vars:
-#     consul_version: '1.4.4'
-#     consul_datacenter: hcnp
-#     consul_domain: 'service.consul'
-#     consul_dnsmasq_enable: no
+  vars:
+    consul_version: '1.4.4'
+    consul_datacenter: hcnp
+    consul_domain: 'service.consul'
+    consul_dnsmasq_enable: no
 
-#   tasks:
+  tasks:
 
-#     - name: "Run consul role"
-#       import_role:
-#         name: consul
-#       tags:
-#         - consul
+    - name: "Run consul role"
+      import_role:
+        name: consul
+      tags:
+        - consul
 
 # # Run role to install and configure vault
 # # - hosts: vault_instances
@@ -108,15 +108,15 @@
 # #         - vault
 
 
-# # Run role to install and configure docker
-# - hosts: docker_instances
+# Run role to install and configure docker
+- hosts: docker_instances
 
-#   tasks:
+  tasks:
 
-#     - import_role:
-#         name: docker
-#       tags:
-#         - docker
+    - import_role:
+        name: docker
+      tags:
+        - docker
 
 
 # # Run role to install and configure nomad
@@ -142,9 +142,10 @@
   vars:
 
     domain_name: 'greenthegarden.net'
-    
+    hcnp_network: 'hcnp'
+
     run_portainer: yes
-    run_traefik: yes
+    run_traefik: no
 
   pre_tasks:
 
@@ -183,6 +184,12 @@
 
   tasks:
 
+    # - name: "Create network {{ hcnp_network }}"
+    #   docker_network:
+    #     name: "{{ hcnp_network }}"
+    #     state: present
+    #   when: hcnp_network is defined
+
     - name: "Run Portainer as a container"
       import_role:
         name: portainer
@@ -191,25 +198,25 @@
         - portainer
       when: run_portainer
 
-    - set_fact:
-        consul_iface: "\
-          {% if ansible_os_family == 'Windows' %}\
-            {{ lookup('env','CONSUL_IFACE') | default(ansible_interfaces[0].interface_name, true) }}\
-          {% else %}\
-            {{ lookup('env','CONSUL_IFACE') | default(ansible_default_ipv4.interface, true) }}\
-          {% endif %}"
-      when: run_traefik
+    # - set_fact:
+    #     consul_iface: "\
+    #       {% if ansible_os_family == 'Windows' %}\
+    #         {{ lookup('env','CONSUL_IFACE') | default(ansible_interfaces[0].interface_name, true) }}\
+    #       {% else %}\
+    #         {{ lookup('env','CONSUL_IFACE') | default(ansible_default_ipv4.interface, true) }}\
+    #       {% endif %}"
+    #   when: run_traefik
 
-    - set_fact:
-        consul_bind_address: "\
-          {% if ansible_system == 'FreeBSD' %}\
-            {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_'+ consul_iface ]['ipv4'][0]['address'], true) }}\
-          {% elif ansible_os_family == 'Windows'  %}\
-            {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
-          {% else %}\
-            {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_'+ consul_iface ]['ipv4']['address'], true) }}\
-          {% endif %}"
-      when: run_traefik
+    # - set_fact:
+    #     consul_bind_address: "\
+    #       {% if ansible_system == 'FreeBSD' %}\
+    #         {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_'+ consul_iface ]['ipv4'][0]['address'], true) }}\
+    #       {% elif ansible_os_family == 'Windows'  %}\
+    #         {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
+    #       {% else %}\
+    #         {{ lookup('env','CONSUL_BIND_ADDRESS') | default(hostvars[inventory_hostname]['ansible_'+ consul_iface ]['ipv4']['address'], true) }}\
+    #       {% endif %}"
+    #   when: run_traefik
 
     - debug:
         var: consul_iface

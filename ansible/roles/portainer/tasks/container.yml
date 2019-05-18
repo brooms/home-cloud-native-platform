@@ -8,6 +8,25 @@
     image: "{{ portainer.image.name }}:{{ portainer.image.tag }}"
     command:
       - --no-auth
+    labels:
+      traefik.enable: "true"
+      traefik.backend: "portainer"
+      # traefik.frontend.rule: "Host:portainer.${DOMAINNAME}"
+      # traefik.frontend.rule: "Host:${DOMAINNAME}; PathPrefixStrip: /portainer"
+      traefik.frontend.rule: "PathPrefixStrip: /portainer"
+      traefik.port: "9000"
+      # traefik.docker.network: "{{ hcnp_network }}"
+      # traefik.frontend.headers.SSLRedirect: "true"
+      # traefik.frontend.headers.STSSeconds: "315360000"
+      # traefik.frontend.headers.browserXSSFilter: "true"
+      # traefik.frontend.headers.contentTypeNosniff: "true"
+      # traefik.frontend.headers.forceSTSHeader: "true"
+      # traefik.frontend.headers.SSLHost: "example.com"
+      # traefik.frontend.headers.STSIncludeSubdomains: "true"
+      # traefik.frontend.headers.STSPreload: "true"
+      # traefik.frontend.headers.frameDeny: "true"
+    # networks:
+    #   - name: "{{ hcnp_network }}"
     published_ports:
       - "{{ portainer.service.ports.http }}:9000"
     restart_policy: always

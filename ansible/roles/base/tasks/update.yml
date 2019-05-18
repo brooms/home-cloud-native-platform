@@ -1,6 +1,7 @@
 ---
 
 - name: Update all packages to the latest version using apt
+  become: yes
   apt:
     cache_valid_time: 3600
     upgrade: dist
@@ -8,6 +9,7 @@
   when: ansible_pkg_mgr == 'apt'
 
 - name: upgrade all packages to the latest version using yum
+  become: yes
   yum:
     name: '*'
     state: latest

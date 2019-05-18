@@ -6,16 +6,16 @@ inventory="hosts"
 playbook="hcnp"
 use_retry=false
 use_sudo=false
-verbose_arg="v"
+verbose_level="v"
 
+# get command line arguments
 while getopts "bhl:rv:" opt ;
 do
   case $opt in
     b) use_sudo=true;;
     l) limit_arg=$OPTARG;;
     r) use_retry=true;;
-    v) verbose_arg="-$OPTARG"
-       echo "Verbose level set to ${verbose_arg}";;
+    v) verbose_level=$OPTARG;;
     h) usage
     exit 0;;
     *) usage
@@ -23,6 +23,7 @@ do
   esac
 done
 
+# prompt for variables
 read -p "Enter inventory file name [${inventory}]: " inventory_input
 inventory="${inventory_input:-${inventory}}"
 inventory_file="${inventory}.${extension}"
@@ -41,7 +42,7 @@ then
   exit
 fi
 
-if [ "${use_retry}" = true ] ;
+if [ ${use_retry} = true ] ;
 then
   retry_file="${playbook}.retry"
   if [ -f ${retry_file} ] ;
@@ -55,11 +56,17 @@ then
 fi
 
 options=""
-if [ "${use_sudo}" = true ] ;
+if [ ${use_sudo} = true ] ;
 then
   options="${options} --ask-become-pass"
 fi
 
+verbose_arg=""
+if [ ! -z ${verbose_level+x} ] ;
+then
+  verbose_arg="-${verbose_level}"
+  echo "Verbose level set to ${verbose_level}"
+fi
 
 echo "Running playbook ${playbook_file} with inventory ${inventory_file} with options ${options}"
 ansible-playbook -i ${inventory_file} ${options} ${verbose_arg} ${playbook_file} ${limits}

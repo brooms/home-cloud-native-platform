@@ -10,7 +10,7 @@
     name: "{{ traefik.service.name }}"
     image: "{{ traefik.image.name }}:{{ traefik.image.tag}}"
     # command: "--consul --consul.endpoint={{ ansible_default_ipv4.address }}:8500"
-    domainname: "{{ domain_name }}"
+    # domainname: "{{ domain_name }}"
     # dns_servers:
     #   - "{{ consul_server }}"
     # dns_search_domains:
@@ -19,12 +19,24 @@
     labels:
       traefik.enable: "true"
       traefik.backend: "traefik"
-      traefik.frontend.rule: "Host:traefik.{{ domain_name }}"
+#      traefik.frontend.rule: "Host:traefik.{{ domain_name }}"
+      # traefik.frontend.rule: "Host:${DOMAINNAME}; PathPrefixStrip: /traefik"
+      traefik.frontend.rule: "PathPrefixStrip: /traefik"
       traefik.port: "8080"
+      # traefik.docker.network: "{{ hcnp_network }}"
+      # traefik.frontend.headers.SSLRedirect: "true"
+      # traefik.frontend.headers.STSSeconds: "315360000"
+      # traefik.frontend.headers.browserXSSFilter: "true"
+      # traefik.frontend.headers.contentTypeNosniff: "true"
+      # traefik.frontend.headers.forceSTSHeader: "true"
+      # traefik.frontend.headers.SSLHost: "example.com"
+      # traefik.frontend.headers.STSIncludeSubdomains: "true"
+      # traefik.frontend.headers.STSPreload: "true"
+      # traefik.frontend.headers.frameDeny: "true"
+      # traefik.frontend.auth.basic.users: "${HTTP_USERNAME}:${HTTP_PASSWORD}"
     # network_mode: host
     # networks:
-    #   - name: default
-    #   - name: traefik_proxy
+    #   - name: "{{ hcnp_network }}"
     published_ports:
       - 80:80
       - 443:443
@@ -34,7 +46,7 @@
     state: started
     volumes:
       - "{{ traefik.storage }}/traefik.toml:/etc/traefik/traefik.toml"
-      - "{{ traefik.storage }}/acme.json:/etc/traefik/acme.json"
+      # - "{{ traefik.storage }}/acme.json:/etc/traefik/acme.json"
       - "/var/run/docker.sock:/var/run/docker.sock"
 
 - name: "register {{ traefik.service.name }} service with the local consul agent"

@@ -1,6 +1,6 @@
 ---
 
-- hosts: hcnp-nodes
+- hosts: hcnp_nodes
     
   vars:
 
@@ -8,8 +8,8 @@
       { python: 'python2', pip: 'pip2' },
     ]
 
-    # resolv_nameservers: "{{ groups['rpi-hcnp-nodes'].ansible_default_ipv4.address }}"
-    resolv_nameservers: "{{ groups['hcnp-nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
+    # resolv_nameservers: "{{ groups['rpi-hcnp_nodes'].ansible_default_ipv4.address }}"
+    resolv_nameservers: "{{ groups['hcnp_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
     # resolv_domain: "foo.org" # consul domain?
     # resolv_search:
     #   - "foo.bar"
@@ -137,7 +137,7 @@
 
 
 # Run up core services
-- hosts: hcnp-nodes
+- hosts: hcnp_nodes
 
   vars:
 

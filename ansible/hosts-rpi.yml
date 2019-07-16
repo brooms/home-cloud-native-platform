@@ -45,7 +45,7 @@ all:
 
   children:
   
-    hcnp-nodes:
+    hcnp_nodes:
       hosts:
         # hcnp-node-50:
         # hcnp-node-51:

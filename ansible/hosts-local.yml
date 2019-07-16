@@ -11,7 +11,7 @@ all:
 
   children:
   
-    hcnp-nodes:
+    hcnp_nodes:
       hosts:
         local-system:
 

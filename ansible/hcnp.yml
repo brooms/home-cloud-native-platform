@@ -19,8 +19,6 @@
       - "rotate"
 
     run_update: yes
-    run_git: yes
-    run_pip: yes
  
   environment:
 
@@ -37,7 +35,7 @@
     - name: "Update existing packages"
       import_role:
         name: base
-        tasks_from: update-system
+        tasks_from: update-packages
       tags:
         - base
         - update
@@ -73,7 +71,6 @@
         name: pip
       tags:
         - pip
-      when: run_pip
 
 
 # Run role to install and configure consul

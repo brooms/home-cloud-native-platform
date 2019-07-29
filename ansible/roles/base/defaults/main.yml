@@ -1,7 +1,10 @@
 ---
 
 packages: [
-  dnsutils
+  dnsutils,
+  git,
+  sshpass,
+  unzip
 ]
 
 resolv_nameservers: []

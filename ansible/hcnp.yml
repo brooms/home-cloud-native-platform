@@ -34,31 +34,38 @@
     - debug:
         var: resolv_nameservers
         
-    - name: "Upgrade all packages on node"
+    - name: "Update existing packages"
       import_role:
         name: base
-        tasks_from: update
+        tasks_from: update-system
       tags:
         - base
         - update
       when: run_update
       
-    - name: "Upgrade all packages on node"
+    - name: "Install dependent packages"
       import_role:
         name: base
-        tasks_from: hostname
+        tasks_from: install-dependencies
+      tags:
+        - base
+        - dependencies
+
+    - name: "Set hostname"
+      import_role:
+        name: base
+        tasks_from: set-hostname
       tags:
         - base
         - hostname
 
-    # git is required to build some images from source
-    - name: "Ensure git is installed"
+    - name: "Update hosts"
       import_role:
-        name: git
-        tasks_from: install
+        name: base
+        tasks_from: update-hosts
       tags:
-        - git
-      when: run_git
+        - base
+        - hosts
 
     # pip is required to install modules for docker
     - name: "Run pip role"

@@ -1,16 +1,16 @@
 ---
 
-- name: "Update node"
+- name: "Update existing packages"
   become: yes
-  import_tasks: update.yml
+  import_tasks: update-packages.yml
 
-- name: "Install packages"
+- name: "Install dependent packages"
   become: yes
-  import_tasks: install.yml
+  import_tasks: install-dependencies.yml
   
-- name: "Update hostname"
+- name: "Set hostname"
   become: yes
-  import_tasks: hostname.yml
+  import_tasks: set-hostname.yml
 
 - name: "Update hosts"
   become: yes

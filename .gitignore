@@ -7,3 +7,7 @@
 
 rootKey/*
 unsealKey/*
+
+# ensure vagrant cache files are not retained
+*/.vagrant/*
+vagrant_ansible_inventory_default

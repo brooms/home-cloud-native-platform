@@ -47,3 +47,23 @@ Create an [Ansible Playbook](https://docs.ansible.com/ansible/latest/user_guide/
 
 * [`build-base.yml`](build-base.yml) will provision a node with a base OS with the core services defined above.
 * [`home-automation.yml`](home-automation.yml) will add teh full stack of home automation services to a node which has the core service installed to .
+
+## Installing ansible on CentOS 7 with pip3
+
+Install the latest version of pip3
+```bash
+sudo yum install epel-release
+sudo yum install python36-pip
+sudo pip3 install --upgrade pip
+
+```
+
+Install dependencies to build cyptography module
+```bash
+sudo yum install redhat-rpm-config gcc libffi-devel python36-devel openssl-devel
+```
+
+Install ansible
+```
+sudo pip3 install --upgrade ansible
+```

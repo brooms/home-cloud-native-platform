@@ -1,25 +1,22 @@
 ---
 
 - name: "Update existing packages"
-  become: yes
   import_tasks: update-packages.yml
 
 - name: "Install dependent packages"
-  become: yes
   import_tasks: install-dependencies.yml
   
+- name: "Install pip3"
+  import_tasks: install-pip3
+
 - name: "Configure git"
-  become: yes
   import_tasks: configure-git.yml
 
 - name: "Set hostname"
-  become: yes
   import_tasks: set-hostname.yml
 
 - name: "Update hosts"
-  become: yes
   import_tasks: hosts.yml
 
 - name: "Update resolv"
-  become: yes
   import_tasks: resolv.yml

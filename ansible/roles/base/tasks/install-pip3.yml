@@ -1,0 +1,25 @@
+---
+
+- name: "Install on CentOS 7"
+  become: yes
+  block:
+  - name: Ensure epel-release is installed
+    yum:
+      name: epel-release
+      state: latest
+  # - name: "Install CentOS Software Colllections (CentOS SCL)"
+  #   yum:
+  #     name: centos-release-scl
+  #     state: present
+  - name: Install pip
+    yum:
+      name: python36-pip
+      state: latest
+  when: ansible_distribution == 'CentOS' # and main version >
+
+- name: "Install on Debian based system"
+  become: yes
+  apt:
+    name: python36-pip
+    state: latest
+  when: ansible_distribution == 'Debian'

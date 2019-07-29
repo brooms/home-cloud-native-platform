@@ -5,6 +5,7 @@
   pip:
     name: "{{ docker_python_module.modules }}"
     state: latest
+    executable: pip-3.6
   tags:
     - installation
     - docker

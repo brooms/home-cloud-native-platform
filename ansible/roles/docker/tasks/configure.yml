@@ -46,6 +46,7 @@
     - docker
 
 - name: Reload systemd daemon
+  become: yes
   systemd:
     daemon_reload: true
   when: (docker_daemon_options is changed or docker_service is changed)

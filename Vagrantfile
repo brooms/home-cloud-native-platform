@@ -10,9 +10,12 @@ Vagrant.configure("2") do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
+#  vagrant_root = File.dirname(__FILE__)
+
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "centos/7"
+ # config.vm.box = "centos/7"
+  config.vm.box = "bento/ubuntu-16.04"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -44,7 +47,7 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.synced_folder ".", "/vagrant", disabled: true 
+  config.vm.synced_folder ".", "/vagrant", owner: "vagrant", group: "vagrant"
 
   config.vm.provider "hyperv"
 
@@ -64,8 +67,10 @@ Vagrant.configure("2") do |config|
   # information on available options.
   config.vm.provider "hyperv" do |h| 
     h.enable_virtualization_extensions = true 
-#    h.differncing_disk = true 
-  end 
+#    h.linked_clone = true 
+  end
+
+  config.vm.define "hcnp_test_node"
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
@@ -75,12 +80,23 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
   if Vagrant::Util::Platform.windows?
-    config.vm.provision :guest_ansible do |ansible|
-      ansible.playbook = "./hcnp.yml"
+#    config.vm.provision :guest_ansible do |ansible|
+    config.vm.provision :ansible_local do |ansible|
+      ansible.playbook = "ansible/hcnp.yml"
+      ansible.install_mode = "pip"
+      ansible.version = "2.8.3"
+      ansible.verbose = true
+      ansible.install = true
+      ansible.galaxy_role_file = "ansible/requirements.yml"
+      ansible.groups = {
+        "hcnp_nodes" => ["hcnp_test_node"],
+        "consul_instances" => ["hcnp_test_node"],
+        "docker_instances" => ["hcnp_test_node"],
+      }
     end
   else
     config.vm.provision :ansible do |ansible|
-      ansible.playbook = "./hcnp.yml"
+      ansible.playbook = "hcnp.yml"
     end
   end
 

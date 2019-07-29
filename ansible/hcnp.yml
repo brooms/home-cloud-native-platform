@@ -4,10 +4,6 @@
     
   vars:
 
-    pip_versions: [
-      { python: 'python3', pip: 'pip3' },
-    ]
-
     # resolv_nameservers: "{{ groups['rpi-hcnp_nodes'].ansible_default_ipv4.address }}"
     resolv_nameservers: "{{ groups['hcnp_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
     # resolv_domain: "foo.org" # consul domain?
@@ -64,13 +60,6 @@
       tags:
         - base
         - hosts
-
-    # pip is required to install modules for docker
-    - name: "Run pip role"
-      import_role:
-        name: pip
-      tags:
-        - pip
 
 
 # Run role to install and configure consul

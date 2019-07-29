@@ -24,7 +24,7 @@
     - docker
 
 - name: install python modules
-  import_tasks: modules.yml
+  import_tasks: install-python-modules.yml
   tags:
     - configuration
     - docker

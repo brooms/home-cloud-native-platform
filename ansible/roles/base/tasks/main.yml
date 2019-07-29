@@ -8,6 +8,10 @@
   become: yes
   import_tasks: install-dependencies.yml
   
+- name: "Configure git"
+  become: yes
+  import_tasks: configure-git.yml
+
 - name: "Set hostname"
   become: yes
   import_tasks: set-hostname.yml

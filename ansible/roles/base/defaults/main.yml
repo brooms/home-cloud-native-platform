@@ -1,8 +1,13 @@
 ---
 
+git_config: [
+  { key: 'http.sslVerify', value: 'true', scope: 'global' },
+]
+
 packages: [
   dnsutils,
   git,
+  python3-pip,
   sshpass,
   unzip
 ]

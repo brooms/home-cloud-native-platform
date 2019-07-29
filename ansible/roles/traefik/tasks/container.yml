@@ -10,11 +10,14 @@
     name: "{{ traefik.service.name }}"
     image: "{{ traefik.image.name }}:{{ traefik.image.tag}}"
     # command: "--consul --consul.endpoint={{ ansible_default_ipv4.address }}:8500"
+    command:
+      - --api=true
+      - --debug
     # domainname: "{{ domain_name }}"
-    # dns_servers:
-    #   - "{{ consul_server }}"
-    # dns_search_domains:
-    #   - service.consul
+    dns_servers:
+      - "{{ consul_server }}"
+    dns_search_domains:
+      - service.consul
     hostname: "{{ traefik.service.name }}"
     labels:
       traefik.enable: "true"
@@ -38,15 +41,17 @@
     # networks:
     #   - name: "{{ hcnp_network }}"
     published_ports:
-      - 80:80
-      - 443:443
-      - 8080:8080
+      - "{{ traefik.service.ports.http }}:80"
+      - "{{ traefik.service.ports.https }}:443"
+      - "{{ traefik.service.ports.ui }}:8080"
+    pull: yes
     recreate: yes
     restart_policy: "{{ traefik.service.restart.policy }}"
     state: started
     volumes:
       - "{{ traefik.storage }}/traefik.toml:/etc/traefik/traefik.toml"
       # - "{{ traefik.storage }}/acme.json:/etc/traefik/acme.json"
+      - "{{ traefik.storage }}/html:/var/www/html"
       - "/var/run/docker.sock:/var/run/docker.sock"
 
 - name: "register {{ traefik.service.name }} service with the local consul agent"

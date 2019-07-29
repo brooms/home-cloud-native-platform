@@ -9,6 +9,8 @@ traefik:
     name: traefik
     ports:
       http: 80
+      https: 443
+      ui: 8080
     restart:
       policy: always
   image:

@@ -43,7 +43,8 @@
 # Required
 # Default: "127.0.0.1:8500"
 #
-endpoint = "{{ consul_bind_address }}:8500"
+#endpoint = "{{ consul_bind_address }}:8500"
+endpoint = "{{ ansible_host }}:8500"
 
 # Expose Consul catalog services by default in Traefik.
 #
@@ -65,6 +66,7 @@ stale = false
 #
 #domain = "consul.localhost"
 domain = "service.consul"
+domain = consul
 
 # Prefix for Consul catalog tags.
 #
@@ -108,3 +110,10 @@ prefix = "traefik"
 # - "2": current template version (must be used to force template version when "filename" is used)
 #
 # templateVersion = 2
+
+#
+# Send anonymous usage data
+# 
+# Optional
+# Default: false
+sendAnonymousUsage = false

@@ -14,8 +14,10 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
- # config.vm.box = "centos/7"
-  config.vm.box = "bento/ubuntu-16.04"
+  #config.vm.box = "centos/7"
+  #config.vm.box = "bento/ubuntu-16.04"
+  #config.vm.box = "bento/debian-10"
+  config.vm.box = "ubuntu/xenial64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -47,9 +49,24 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.synced_folder ".", "/vagrant", owner: "vagrant", group: "vagrant"
+  config.vm.synced_folder ".", "/vagrant"
+  # {
+  #   owner: "vagrant",
+  #   group: "vagrant",
+  #   type: "smb",
+  #   mount_options: ["vers=3.0"],
+  #   smb_username: ENV["VAGRANT_SMB_USERNAME"],
+  #   smb_password: ENV["VAGRANT_SMB_USERNAME"]
+  # }
+  # {
+  #   type: "rsync",
+  #   rsync__exclude: ".git/",
+  #   rsync__args: ["--verbose"]
+  # }
 
-  config.vm.provider "hyperv"
+  config.vm.post_up_message = "VM ready for provisioning ..."
+
+ # config.vm.provider "virtualbox"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -67,10 +84,17 @@ Vagrant.configure("2") do |config|
   # information on available options.
   config.vm.provider "hyperv" do |h| 
     h.enable_virtualization_extensions = true 
-#    h.linked_clone = true 
+    h.linked_clone = true 
   end
 
-  config.vm.define "hcnp_test_node"
+  config.vm.provider "virtualbox" do |v|
+    v.gui = true
+    v.memory = 1024
+    v.cpus = 2
+    v.linked_clone = true 
+  end
+
+config.vm.define "hcnp_test_node"
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
@@ -82,16 +106,24 @@ Vagrant.configure("2") do |config|
   if Vagrant::Util::Platform.windows?
 #    config.vm.provision :guest_ansible do |ansible|
     config.vm.provision :ansible_local do |ansible|
-      ansible.playbook = "ansible/hcnp.yml"
-      ansible.install_mode = "pip"
-      ansible.version = "2.8.3"
+
+      # ansible.install_mode = "pip"
+      # ansible.version = "2.8.3"
       ansible.verbose = true
       ansible.install = true
+
+      ansible.config_file = "ansible/ansible.cfg"
+      ansible.compatibility_mode = "2.0"
       ansible.galaxy_role_file = "ansible/requirements.yml"
+      ansible.galaxy_roles_path = "ansible/roles"
+      ansible.playbook = "ansible/hcnp.yml"
       ansible.groups = {
         "hcnp_nodes" => ["hcnp_test_node"],
         "consul_instances" => ["hcnp_test_node"],
         "docker_instances" => ["hcnp_test_node"],
+      }
+      ansible.extra_vars = {
+        CONSUL_IFACE: "ansible_enp0s8.device",
       }
     end
   else

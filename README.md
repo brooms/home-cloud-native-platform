@@ -47,3 +47,12 @@ Create an [Ansible Playbook](https://docs.ansible.com/ansible/latest/user_guide/
 
 * [`build-base.yml`](build-base.yml) will provision a node with a base OS with the core services defined above.
 * [`home-automation.yml`](home-automation.yml) will add teh full stack of home automation services to a node which has the core service installed to .
+
+## Vagrant
+
+### SMB share on Wnndows
+
+```
+$env:VAGRANT_SMB_USERNAME = "user@DOMAIN"
+$env:VAGRANT_SMB_PASSWORD = "PASSWORD"
+vagrant up

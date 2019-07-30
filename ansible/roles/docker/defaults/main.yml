@@ -1,19 +1,5 @@
 ---
 
-docker: docker
-
-docker_download_dest: /tmp/get-docker.sh
-docker_source_url: 'http://get.docker.com'
-
-docker_package_state: present
-docker_restart_on_package_change: true
-docker_upgrade: false
-
-# Service options.
-docker_service_state: started
-docker_service_enabled: yes
-docker_restart_handler_state: restarted
-
 docker_python_module:
   install: true
   modules: [

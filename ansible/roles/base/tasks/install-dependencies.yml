@@ -7,3 +7,18 @@
     name: "{{ item }}"
     state: latest
   loop: "{{ packages }}"
+
+- name: install pip
+  become: yes
+  import_role:
+    name: geerlingguy.pip
+  tags:
+    - pip
+
+- name: install python modules
+  become: yes
+  pip:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ python_modules }}"
+  

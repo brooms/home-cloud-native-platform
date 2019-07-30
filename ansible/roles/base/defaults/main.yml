@@ -7,9 +7,15 @@ git_config: [
 packages: [
   dnsutils,
   git,
-  python3-pip,
+  python-pip,
   sshpass,
   unzip
+]
+
+python_modules: [
+  docker,
+  netaddr,
+  python-consul
 ]
 
 resolv_nameservers: []

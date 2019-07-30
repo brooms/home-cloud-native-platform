@@ -66,7 +66,7 @@
 - hosts: consul_instances
 
   vars:
-    consul_version: '1.4.4'
+    consul_version: '1.5.3'
     consul_datacenter: hcnp
     consul_domain: 'service.consul'
     consul_dnsmasq_enable: no
@@ -103,6 +103,12 @@
 
 # Run role to install and configure docker
 - hosts: docker_instances
+
+  vars:
+    docker_install_compose: false
+    docker_users: [
+      "{{ ansible_user_id }}"
+    ]
 
   tasks:
 

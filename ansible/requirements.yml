@@ -10,6 +10,16 @@
   src: git+https://github.com/brianshumate/ansible-nomad.git
   version: origin/master
 
+- name: geerlingguy.docker
+  cms: git
+  src: git+https://github.com/geerlingguy/ansible-role-docker.git
+  version: origin/master
+
+- name: geerlingguy.pip
+  cms: git
+  src: git+https://github.com/geerlingguy/ansible-role-pip.git
+  version: origin/master
+  
 - name: cloudalchemy.prometheus
   cms: git
   src: git+https://github.com/cloudalchemy/ansible-prometheus.git

@@ -119,7 +119,7 @@ config.vm.define "hcnp_test_node"
       ansible.playbook = "ansible/hcnp.yml"
       ansible.groups = {
         "hcnp_nodes" => ["hcnp_test_node"],
-        "consul_instances" => ["hcnp_test_node"],
+        "consul_instances" => [],
         "docker_instances" => ["hcnp_test_node"],
       }
       ansible.extra_vars = {

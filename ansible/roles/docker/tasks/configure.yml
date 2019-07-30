@@ -87,3 +87,15 @@
 - name: reset ssh connection to allow user changes to affect 'current login user'
   meta: reset_connection
   
+- name: Get user groups
+  command: "groups"
+  register: command_output
+
+- set_fact:
+    user_groups: "{{ command_output.stdout }}"
+
+# fail at this point if user is not in docker group and notify user to start a new session
+- name: "Fail is user {{ ansible_user }} is not in group 'docker'"
+  fail:
+    msg: "User {{ansible_user}} is not in docker group. Start a new session and run the script again"
+  when: user_groups is not search("docker")

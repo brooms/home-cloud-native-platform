@@ -7,7 +7,6 @@
   tags:
     - installation
     - docker
-  when: docker_install_check.rc != 0 or docker_upgrade
 
 - name: configure docker
   import_tasks: configure.yml

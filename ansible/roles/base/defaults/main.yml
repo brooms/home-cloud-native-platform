@@ -6,7 +6,7 @@ git_config: [
 
 packages: [
   dnsutils,
-  git,
+#  git,
   python-pip,
   sshpass,
   unzip

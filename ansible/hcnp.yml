@@ -103,12 +103,14 @@
 - hosts: consul_instances
 
   vars:
-    consul_install_dependencies: false
-    consul_datacenter: hcnp
-    consul_ui: true
-    consul_domain: 'service.consul'
-    consul_dnsmasq_enable: yes
-    consul_install_remotely: true
+    # consul_install_dependencies: false
+    # consul_datacenter: hcnp
+    # consul_ui: true
+    # consul_domain: 'service.consul'
+    # consul_dnsmasq_enable: yes
+    # consul_install_remotely: true
+    # consul_debug: yes
+    # consul_log_level: INFO
 
   tasks:
 
@@ -157,21 +159,24 @@
         - docker
 
 
-# # Run role to install and configure nomad
-# - hosts: nomad_instances
+# Run role to install and configure nomad
+- hosts: nomad_instances
 
-#   vars:
-#     nomad_use_consul: yes
-#     nomad_bootstrap_expect: 1
-#     nomad_docker_enable: yes
+  vars:
+    # nomad_use_consul: yes
+    # nomad_datacenter: "hcnp"
+    # nomad_bootstrap_expect: 2
+    # nomad_docker_enable: yes
+    # nomad_debug: yes
+    # nomad_log_level: "INFO"
 
-#   tasks:
+  tasks:
 
-#     - name: "Run nomad role"
-#       import_role:
-#         name: nomad
-#       tags:
-#         - nomad
+    - name: "Run nomad role"
+      import_role:
+        name: nomad
+      tags:
+        - nomad
 
 
 # Run up core services
@@ -179,8 +184,8 @@
 
   vars:
 
-    domain_name: 'greenthegarden.net'
-    hcnp_network: 'hcnp'
+    # domain_name: 'greenthegarden.net'
+    # hcnp_network: 'hcnp'
 
     run_portainer: yes
     run_traefik: no
@@ -190,11 +195,6 @@
     - name: "Collect facts about system services"
       service_facts:
       register: services_state
-
-    - name: Debug
-      debug:
-        var: services_state
-        verbosity: 2
 
     - name: "Check required services are running"
       assert:
@@ -221,6 +221,24 @@
         - docker
 
   tasks:
+
+    - debug:
+        var: consul_iface
+
+    - debug:
+        var: consul_bind_address
+
+    - debug:
+        var: consul_advertise_address
+        
+    - debug:
+        var: nomad_iface
+
+    - debug:
+        var: nomad_bind_address
+
+    - debug:
+        var: nomad_advertise_address
 
     # - name: "Create network {{ hcnp_network }}"
     #   docker_network:
@@ -258,11 +276,9 @@
 
     - debug:
         var: consul_iface
-      when: run_traefik
 
     - debug:
         var: consul_bind_address
-      when: run_traefik
 
     - name: "Configure traefik"
       import_role:

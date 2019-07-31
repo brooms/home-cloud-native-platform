@@ -6,7 +6,7 @@ configs:
   test:
     ip_range: 172.16.1
     ip_netmask: 255.255.255.0
-    hcnp_node_count: 2
+    hcnp_node_count: 3
 
 ansible_node:
   name: "ansible-node"

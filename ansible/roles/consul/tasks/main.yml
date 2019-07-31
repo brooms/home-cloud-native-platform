@@ -1,21 +1,8 @@
 ---
 
-# - name: "Install required python modules"
-#   become: true
-#   pip:
-#     name: "{{ item }}"
-#   loop: "{{ consul_python_modules }}"
-#   tags:
-#     - consul
-
 - name: "Install and configure consul" 
   become: yes
   import_role:
     name: brianshumate.consul
-  tags:
-    - consul
-
-- debug:
-    var: consul_servers
   tags:
     - consul

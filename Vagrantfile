@@ -24,8 +24,7 @@ def generate_node_ip(base_settings, id)
   node_ip_range = base_settings['ip_range']
   node_ip_id = Integer(id)
   node_ip = [ node_ip_range, node_ip_id ].join('.')
-end  
-
+end
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -142,6 +141,7 @@ Vagrant.configure("2") do |config|
       ansible_node.vm.network ansible_node_settings['external_network'], ip: ansible_node_ip, netmask: base_settings["external_netmask"]
       # ansible_node.vm.network "private_network", ip: "172.16.1.1", netmask: "255.255.255.0"
 
+      # ansible_node.vm.provision "shell", inline: $set_environment_variables, run: "always"
     end
 
     # Enable provisioning with a shell script. Additional provisioners such as
@@ -179,9 +179,11 @@ Vagrant.configure("2") do |config|
         #   "docker_instances" => ["hcnp_test_node"],
         # }
 
-        # ansible.extra_vars = {
+        ansible.extra_vars = {
         #   node_list: generate_node_hostnames(config_file)
-        # }
+          # consul_log_level: "DEBUG",
+          # consul_iface: "enp0s8"
+        }
       end
     else
       config.vm.provision :ansible do |ansible|

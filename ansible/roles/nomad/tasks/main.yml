@@ -6,8 +6,3 @@
     name: brianshumate.nomad
   tags:
     nomad
-
-- debug:
-    var: nomad_servers
-  tags:
-    nomad

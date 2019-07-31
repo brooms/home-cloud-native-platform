@@ -8,14 +8,14 @@ configs:
     ip_netmask: 255.255.255.0
     hcnp_node_count: 2
 
-ansible-node:
+ansible_node:
   name: "ansible-node"
   memory: 1024
   cpus: 1
   external_network: "private_network"
   external_ip_base: 100
 
-hcnp-node:
+hcnp_node:
   name: "hcnp-node"
   memory: 1024
   cpus: 1

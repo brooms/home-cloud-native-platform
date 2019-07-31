@@ -1,0 +1,48 @@
+---
+
+all:
+
+  hosts:
+
+    ansible-node:
+      ansible_connection: local
+      ansible_host: localhost
+    hcnp_node_120:
+      ansible_ssh_host: 172.16.1.120
+      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp_node_120/virtualbox/private_key
+    hcnp_node_121:
+      ansible_ssh_host: 172.16.1.121
+      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp_node_121/virtualbox/private_key
+
+  children:
+  
+    hcnp_nodes:
+      hosts:
+        hcnp_node_120:
+        hcnp_node_121:
+
+    consul_instances:
+      hosts:
+        hcnp_node_120:
+          consul_iface: enp0s8
+          consul_node_role: bootstrap
+        hcnp_node_121:
+          consul_iface: enp0s8
+          consul_node_role: bootstrap
+
+    docker_instances:
+      hosts:
+        hcnp_node_120:
+        hcnp_node_121:
+
+    nomad_instances:
+      hosts:
+        hcnp_node_120:
+          nomad_node_role: both
+        hcnp_node_121:
+          nomad_node_role: both
+
+    vault_instances:
+      hosts:
+        hcnp_node_120:
+        hcnp_node_121:

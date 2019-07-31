@@ -68,8 +68,9 @@
   vars:
     consul_version: '1.5.3'
     consul_datacenter: hcnp
+    consul_ui: true
     consul_domain: 'service.consul'
-    consul_dnsmasq_enable: no
+    consul_dnsmasq_enable: yes
 
   tasks:
 

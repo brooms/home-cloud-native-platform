@@ -11,3 +11,6 @@ unsealKey/*
 # ensure vagrant cache files are not retained
 .vagrant/
 vagrant_ansible_inventory_default
+
+# ensure log files are not retained
+*.log

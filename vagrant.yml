@@ -1,0 +1,23 @@
+---
+configs:
+
+  use: 'test'
+
+  test:
+    ip_range: 172.16.1
+    ip_netmask: 255.255.255.0
+    hcnp_node_count: 2
+
+ansible_node:
+  name: "ansible_node"
+  memory: 1024
+  cpus: 1
+  external_network: "private_network"
+  external_ip_base: 100
+
+hcnp_node:
+  name: "hcnp_node"
+  memory: 1024
+  cpus: 1
+  external_network: "private_network"
+  external_ip_base: 120

@@ -1,6 +1,32 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'yaml'
+
+# Load settings from vagrant.yml or vagrant.yml.dist
+current_dir = File.dirname(File.expand_path(__FILE__))
+if File.file?("#{current_dir}/vagrant.yml")
+  config_file = YAML.load_file("#{current_dir}/vagrant.yml")
+elsif
+  config_file = YAML.load_file("#{current_dir}/vagrant.yml.dist")
+else
+  exit(1)
+end
+
+base_settings = config_file['configs'][config_file['configs']['use']]
+ansible_node_settings = config_file['ansible_node']
+hcnp_node_settings = config_file['hcnp_node']
+
+puts "%s" % base_settings
+
+# define scripts
+def generate_node_ip(base_settings, id)
+  node_ip_range = base_settings['ip_range']
+  node_ip_id = Integer(id)
+  node_ip = [ node_ip_range, node_ip_id ].join('.')
+end  
+
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -42,31 +68,13 @@ Vagrant.configure("2") do |config|
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
-  config.vm.network "public_network"
+  # config.vm.network "public_network"
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.synced_folder ".", "/vagrant"
-  # {
-  #   owner: "vagrant",
-  #   group: "vagrant",
-  #   type: "smb",
-  #   mount_options: ["vers=3.0"],
-  #   smb_username: ENV["VAGRANT_SMB_USERNAME"],
-  #   smb_password: ENV["VAGRANT_SMB_USERNAME"]
-  # }
-  # {
-  #   type: "rsync",
-  #   rsync__exclude: ".git/",
-  #   rsync__args: ["--verbose"]
-  # }
-
-  config.vm.post_up_message = "VM ready for provisioning ..."
-
- # config.vm.provider "virtualbox"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -88,48 +96,99 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider "virtualbox" do |v|
-    v.gui = true
-    v.memory = 1024
-    v.cpus = 2
-    v.linked_clone = true 
+    v.gui = false
   end
 
-config.vm.define "hcnp_test_node"
+  # Set up hcnp_nodes
+  (1..base_settings['hcnp_node_count']).each do |i|
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
-  if Vagrant::Util::Platform.windows?
-#    config.vm.provision :guest_ansible do |ansible|
-    config.vm.provision :ansible_local do |ansible|
+    hcnp_node_ip_base = Integer(hcnp_node_settings['external_ip_base']) + (i-1)
+    hcnp_node_ip = generate_node_ip(base_settings, hcnp_node_ip_base)
+    hcnp_node_name = hcnp_node_settings['name'] + "_#{hcnp_node_ip_base}"
 
-      # ansible.install_mode = "pip"
-      # ansible.version = "2.8.3"
-      ansible.verbose = true
-      ansible.install = true
+    config.vm.define hcnp_node_name do |hcnp_node|
+      
+      puts "Node name set to %s" % hcnp_node_name
+      puts "Node IP address set to %s" % hcnp_node_ip
 
-      ansible.config_file = "ansible/ansible.cfg"
-      ansible.compatibility_mode = "2.0"
-      ansible.galaxy_role_file = "ansible/requirements.yml"
-      ansible.galaxy_roles_path = "ansible/roles"
-      ansible.playbook = "ansible/hcnp.yml"
-      ansible.groups = {
-        "hcnp_nodes" => ["hcnp_test_node"],
-        "consul_instances" => [],
-        "docker_instances" => ["hcnp_test_node"],
-      }
-      ansible.extra_vars = {
-        CONSUL_IFACE: "ansible_enp0s8.device",
-      }
+      hcnp_node.vm.provider "virtualbox" do |vb|
+
+        vb.name = $hcnp_node_name 
+        vb.memory = ansible_node_settings['memory']
+        vb.cpus = ansible_node_settings['cpus']
+        # create additional interface
+        hcnp_node.vm.network hcnp_node_settings['external_network'], ip: hcnp_node_ip, netmask: base_settings['external_netmask']
+      end
+    
     end
-  else
-    config.vm.provision :ansible do |ansible|
-      ansible.playbook = "hcnp.yml"
+
+  end
+
+  # Create a machine to run ansible
+  ansible_node_ip_base = Integer(ansible_node_settings['external_ip_base'])
+  ansible_node_ip = generate_node_ip(base_settings, ansible_node_ip_base)
+  ansible_node_name = ansible_node_settings['name']
+
+  config.vm.define ansible_node_name do |ansible_node|
+
+    ansible_node.vm.provider "virtualbox" do |vb|
+
+      vb.name = ansible_node_name
+      vb.memory = ansible_node_settings['memory']
+      vb.cpus = ansible_node_settings['cpus']
+      vb.linked_clone = true 
+
+      # create additional interface
+      ansible_node.vm.network ansible_node_settings['external_network'], ip: ansible_node_ip, netmask: base_settings["external_netmask"]
+      # ansible_node.vm.network "private_network", ip: "172.16.1.1", netmask: "255.255.255.0"
+
     end
+
+    # Enable provisioning with a shell script. Additional provisioners such as
+    # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+    # documentation for more information about their specific syntax and use.
+    # config.vm.provision "shell", inline: <<-SHELL
+    #   apt-get update
+    #   apt-get install -y apache2
+    # SHELL
+    if Vagrant::Util::Platform.windows?
+  #    config.vm.provision :guest_ansible do |ansible|
+      ansible_node.vm.provision :ansible_local do |ansible|
+
+        ansible_node.vm.synced_folder ".", "/vagrant",
+          owner: "vagrant",
+          mount_options: ["dmode=775,fmode=600"]
+
+        # ansible.install_mode = "pip"
+        # ansible.version = "2.8.3"
+        ansible.compatibility_mode = "2.0"
+        ansible.install = true
+        ansible.limit = "all"
+        ansible.verbose = "vv"
+
+        ansible.config_file = "ansible/ansible.cfg"
+        ansible.inventory_path = "ansible/hosts-vagrant.yml"
+        ansible.playbook = "ansible/hcnp.yml"
+
+        ansible.galaxy_role_file = "ansible/requirements.yml"
+        ansible.galaxy_roles_path = "ansible/roles"
+
+        # ansible.groups = {
+        #   "hcnp_nodes" => ["hcnp_test_node"],
+        #   "consul_instances" => [],
+        #   "docker_instances" => ["hcnp_test_node"],
+        # }
+
+        # ansible.extra_vars = {
+        #   node_list: generate_node_hostnames(config_file)
+        # }
+      end
+    else
+      config.vm.provision :ansible do |ansible|
+        ansible.playbook = "hcnp.yml"
+      end
+    end
+
   end
 
 end

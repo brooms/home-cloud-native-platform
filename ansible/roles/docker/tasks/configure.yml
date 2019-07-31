@@ -74,12 +74,18 @@
     - configuration
     - docker
 
-- name: Ensure current user is in docker group
+- name: Set docker_users fact if not already defined
+  set_fact:
+    docker_users: [ "{{ ansible_user_id }}" ]
+  when: docker_users is not defined
+
+- name: Ensure docker_users are in docker group
   become: yes
   user:
-    name: "{{ ansible_user_id }}"
+    name: "{{ docker_users }}"
     groups: docker
     append: yes
+  loop: "{{ docker_users }}"
   tags:
     - configuration
     - docker
@@ -91,11 +97,13 @@
   command: "groups"
   register: command_output
 
-- set_fact:
+- name: Set user_groups fact for current user
+  set_fact:
     user_groups: "{{ command_output.stdout }}"
 
 # fail at this point if user is not in docker group and notify user to start a new session
-- name: "Fail is user {{ ansible_user }} is not in group 'docker'"
+- name: "Fail if docker_users are not in group 'docker'"
   fail:
-    msg: "User {{ansible_user}} is not in docker group. Start a new session and run the script again"
+    msg: "User {{ item }} is not in docker group. Start a new session and run the script again"
+  loop: "{{ docker_users }}"
   when: user_groups is not search("docker")

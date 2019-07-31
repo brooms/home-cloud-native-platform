@@ -4,19 +4,9 @@ git_config: [
   { key: 'http.sslVerify', value: 'true', scope: 'global' },
 ]
 
-packages: [
-  dnsutils,
-#  git,
-  python-pip,
-  sshpass,
-  unzip
-]
+packages: []
 
-python_modules: [
-  docker,
-  netaddr,
-  python-consul
-]
+python_modules: []
 
 resolv_nameservers: []
 resolv_domain: ""

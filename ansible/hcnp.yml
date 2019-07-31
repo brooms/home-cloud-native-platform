@@ -1,8 +1,56 @@
 ---
 
+- hosts: all
+
+  tasks:
+
+    - name: "Update existing packages"
+      import_role:
+        name: base
+        tasks_from: update-packages
+      tags:
+        - base
+        - update
+
+
+- hosts: ansible-node
+
+  vars:
+
+    packages: [
+      python-pip,
+      sshpass,
+      unzip,
+    ]
+
+    python_modules: [
+      { name: netaddr },
+    ]
+
+  tasks:
+
+    - name: "Install dependencies"
+      import_role:
+        name: base
+        tasks_from: install-dependencies
+      tags:
+        - base
+        - dependencies
+
+
 - hosts: hcnp_nodes
     
   vars:
+
+    packages: [
+      python-pip,
+      sshpass,
+    ]
+
+    python_modules: [
+      { name: docker },
+      { name: python-consul },
+    ]
 
     # resolv_nameservers: "{{ groups['rpi-hcnp_nodes'].ansible_default_ipv4.address }}"
     resolv_nameservers: "{{ groups['hcnp_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
@@ -13,8 +61,6 @@
     resolv_options:
       - "timeout:2"
       - "rotate"
-
-    run_update: yes
  
   environment:
 
@@ -27,17 +73,8 @@
 
     - debug:
         var: resolv_nameservers
-        
-    - name: "Update existing packages"
-      import_role:
-        name: base
-        tasks_from: update-packages
-      tags:
-        - base
-        - update
-      when: run_update
-      
-    - name: "Install dependent packages"
+  
+    - name: "Install dependencies"
       import_role:
         name: base
         tasks_from: install-dependencies
@@ -66,11 +103,12 @@
 - hosts: consul_instances
 
   vars:
-    consul_version: '1.5.3'
+    consul_install_dependencies: false
     consul_datacenter: hcnp
     consul_ui: true
     consul_domain: 'service.consul'
     consul_dnsmasq_enable: yes
+    consul_install_remotely: true
 
   tasks:
 

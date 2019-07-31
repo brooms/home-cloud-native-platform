@@ -8,6 +8,11 @@
     state: latest
   loop: "{{ packages }}"
 
+#  for compatability with gerrlingguy.pip
+- name: define python modules to install 
+  set_fact:
+    pip_install_packages: "{{ python_modules }}"
+
 - name: install pip
   become: yes
   import_role:
@@ -15,10 +20,10 @@
   tags:
     - pip
 
-- name: install python modules
-  become: yes
-  pip:
-    name: "{{ item }}"
-    state: latest
-  loop: "{{ python_modules }}"
+# - name: install python modules
+#   become: yes
+#   pip:
+#     name: "{{ item }}"
+#     state: latest
+#   loop: "{{ python_modules }}"
   

@@ -104,7 +104,7 @@ Vagrant.configure("2") do |config|
 
     hcnp_node_ip_base = Integer(hcnp_node_settings['external_ip_base']) + (i-1)
     hcnp_node_ip = generate_node_ip(base_settings, hcnp_node_ip_base)
-    hcnp_node_name = hcnp_node_settings['name'] + "_#{hcnp_node_ip_base}"
+    hcnp_node_name = hcnp_node_settings['name'] + "-#{hcnp_node_ip_base}"
 
     config.vm.define hcnp_node_name do |hcnp_node|
       

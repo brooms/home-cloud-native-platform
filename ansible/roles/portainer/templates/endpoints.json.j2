@@ -1,0 +1,8 @@
+[
+  {% for node in node_list %}
+  ,{
+    "Name": "{{ ansible_hostname }}",
+    "URL": "tcp://{{}}:2375"
+  }
+  {% endfor %}
+]

@@ -10,6 +10,11 @@
   src: git+https://github.com/brianshumate/ansible-nomad.git
   version: origin/master
 
+- name: brianshumate.vault
+  cms: git
+  src: git+https://github.com/brianshumate/ansible-vault.git
+  version: origin/master
+
 - name: geerlingguy.docker
   cms: git
   src: git+https://github.com/geerlingguy/ansible-role-docker.git
@@ -23,4 +28,9 @@
 - name: cloudalchemy.prometheus
   cms: git
   src: git+https://github.com/cloudalchemy/ansible-prometheus.git
+  version: origin/master
+
+- name: kibatic.traefik
+  cms: git
+  src: git+https://github.com/kibatic/ansible-traefik.git
   version: origin/master

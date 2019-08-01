@@ -8,6 +8,8 @@ packages: []
 
 python_modules: []
 
+storage_base: "/hcnp"
+
 resolv_nameservers: []
 resolv_domain: ""
 resolv_search: []

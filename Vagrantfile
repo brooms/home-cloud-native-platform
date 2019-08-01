@@ -110,13 +110,16 @@ Vagrant.configure("2") do |config|
       puts "Node name set to %s" % hcnp_node_name
       puts "Node IP address set to %s" % hcnp_node_ip
 
+      hcnp_node.vm.network hcnp_node_settings['external_network'], ip: hcnp_node_ip#, netmask: base_settings['external_netmask']
+      hcnp_node.vm.hostname = hcnp_node_name
       hcnp_node.vm.provider "virtualbox" do |vb|
-
-        vb.name = $hcnp_node_name 
+        vb.name = hcnp_node_name 
         vb.memory = ansible_node_settings['memory']
         vb.cpus = ansible_node_settings['cpus']
-        # create additional interface
-        hcnp_node.vm.network hcnp_node_settings['external_network'], ip: hcnp_node_ip, netmask: base_settings['external_netmask']
+        vb.customize ["modifyvm", :id, "--ioapic", "on"]
+        # Enable NAT hosts DNS resolver
+        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
       end
     
     end
@@ -130,19 +133,20 @@ Vagrant.configure("2") do |config|
 
   config.vm.define ansible_node_name do |ansible_node|
 
+    ansible_node.vm.network ansible_node_settings['external_network'], ip: ansible_node_ip, netmask: base_settings["external_netmask"]
+    # ansible_node.vm.network "private_network", ip: "172.16.1.1", netmask: "255.255.255.0"
     ansible_node.vm.provider "virtualbox" do |vb|
-
       vb.name = ansible_node_name
       vb.memory = ansible_node_settings['memory']
       vb.cpus = ansible_node_settings['cpus']
-      vb.linked_clone = true 
-
-      # create additional interface
-      ansible_node.vm.network ansible_node_settings['external_network'], ip: ansible_node_ip, netmask: base_settings["external_netmask"]
-      # ansible_node.vm.network "private_network", ip: "172.16.1.1", netmask: "255.255.255.0"
-
-      # ansible_node.vm.provision "shell", inline: $set_environment_variables, run: "always"
+      vb.linked_clone = true
+      vb.customize ["modifyvm", :id, "--ioapic", "on"]
+      # Enable NAT hosts DNS resolver
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     end
+    ansible_node.vm.post_up_message = "Ansible node spun up!"
+    # ansible_node.vm.provision "shell", inline: $set_environment_variables, run: "always"
 
     # Enable provisioning with a shell script. Additional provisioners such as
     # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the

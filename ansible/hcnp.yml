@@ -2,6 +2,21 @@
 
 - hosts: all
 
+  pre_tasks:
+
+    - name: "Assert external_iface exists"
+      assert:
+        that:
+            - external_iface in ansible_interfaces
+        fail_msg: "{{ external_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
+        success_msg: "external_iface set to {{ external_iface }}"
+      when: external_iface is defined
+
+    - name: Create hcnp_node_list
+      set_fact:
+        hcnp_node_list: "{{ groups['hcnp_nodes'] | map('extract', hostvars, 'ansible_host') | list }}"
+      when: groups['hcnp_nodes'] is defined
+
   tasks:
 
     - name: "Update existing packages"
@@ -52,6 +67,15 @@
       { name: python-consul },
     ]
 
+    hcnp_node_external_ip: "\
+      {% if ansible_system == 'FreeBSD' %}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ external_iface ]['ipv4'][0]['address'], true) }}\
+      {% elif ansible_os_family == 'Windows'  %}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
+      {% else %}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ external_iface | replace('-', '_')]['ipv4']['address'], true) }}\
+      {% endif %}"
+    
     # resolv_nameservers: "{{ groups['rpi-hcnp_nodes'].ansible_default_ipv4.address }}"
     resolv_nameservers: "{{ groups['hcnp_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
     # resolv_domain: "foo.org" # consul domain?
@@ -61,15 +85,20 @@
     resolv_options:
       - "timeout:2"
       - "rotate"
+
+    storage_base: 
  
   environment:
 
+  pre_tasks:
     
+    - debug:
+        msg: "IP address {{ hcnp_node_external_ip }}"
 
   tasks:
 
     - debug:
-        msg: "Running tasks on {{ ansible_host }}-{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
+        msg: "Running tasks on {{ ansible_host }}_{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
 
     - debug:
         var: resolv_nameservers
@@ -104,13 +133,27 @@
 
   vars:
     # consul_install_dependencies: false
-    # consul_datacenter: hcnp
-    # consul_ui: true
-    # consul_domain: 'service.consul'
-    # consul_dnsmasq_enable: yes
-    # consul_install_remotely: true
+    consul_datacenter: hcnp
+    consul_domain: 'consul'
+    consul_acl_datacenter: "consul"
+    consul_recursors: ['8.8.8.8', '8.8.4.4']
+    consul_ui: true
+    consul_dnsmasq_enable: yes
+    consul_install_remotely: true
     # consul_debug: yes
     # consul_log_level: INFO
+    consul_client_address: "0.0.0.0"
+    consul_acl_master_token_display: yes
+
+  pre_tasks:
+
+    - name: "Assert consul_iface interface exists when defined"
+      assert:
+        that:
+            - consul_iface in ansible_interfaces
+        fail_msg: "{{ consul_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
+        success_msg: "consul_iface set to {{ consul_iface }}"
+      when: consul_iface is defined
 
   tasks:
 
@@ -163,12 +206,22 @@
 - hosts: nomad_instances
 
   vars:
-    # nomad_use_consul: yes
+    nomad_use_consul: yes
     # nomad_datacenter: "hcnp"
     # nomad_bootstrap_expect: 2
-    # nomad_docker_enable: yes
+    nomad_docker_enable: yes
     # nomad_debug: yes
     # nomad_log_level: "INFO"
+
+  pre_tasks:
+
+    - name: "Assert nomad_iface interface exists when defined"
+      assert:
+        that:
+            - nomad_iface in ansible_interfaces
+        fail_msg: "{{ nomad_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
+        success_msg: "nomad_iface set to {{ nomad_iface }}"
+      when: nomad_iface is defined
 
   tasks:
 

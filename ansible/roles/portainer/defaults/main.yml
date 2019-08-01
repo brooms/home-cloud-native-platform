@@ -8,4 +8,7 @@ portainer:
     name: portainer
     ports:
       http: 9000
-  storage: portainer_data
+    volumes:
+      data: portainer_data
+  storage: 
+    configuration: "{{ storage_base }}/portainer"

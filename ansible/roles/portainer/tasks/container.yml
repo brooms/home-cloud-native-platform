@@ -9,6 +9,24 @@
   with_dict: "{{ portainer.service.ports }}"
   when: service_consul_running
 
+- name: "Create configuration directory"
+  file:
+    path: "{{ portainer.storage }}"
+    state: directory
+
+# - name: "[Clustered Mode] Generate endpoints configuration file at {{ portainer.storage }}/endpoints.json"
+#   template:
+#     src: endpoints.json.j2
+#     dest: "{{ portainer.storage }}/endpoints.json"
+#   with_items: "{{ hcnp_node_list }}"
+#   when: hcnp_node_list is defined and (hcnp_node_list | length > 1)
+
+# - name: "[Standalone Mode] Generate endpoints configuration file at {{ portainer.storage }}/endpoints.json"
+#   template:
+#     src: endpoints.json.j2
+#     dest: "{{ portainer.storage }}/endpoints.json"
+#   when: hcnp_node_list is not defined or (hcnp_node_list | length < 2)
+
 # https://www.portainer.io/installation/
 # docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
 - name: "Run image {{ portainer.image.name }}:{{ portainer.image.tag }} as service {{ portainer.service.name }}"
@@ -16,6 +34,8 @@
     name: "{{ portainer.service.name }}"
     image: "{{ portainer.image.name }}:{{ portainer.image.tag }}"
     command:
+      # - --external-endpoints
+      # - /srv/portainer/endpoints.json
       - --no-auth
     labels:
       traefik.enable: "true"
@@ -42,7 +62,8 @@
     state: started
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - "{{ portainer.storage }}:/data"
+      - "{{ portainer.service.volumes.data }}:/data"
+      - "{{ portainer.storage.configuration }}:/srv/portainer"
 
 - name: "register {{ portainer.service.name }} service with the local consul agent"
   consul:

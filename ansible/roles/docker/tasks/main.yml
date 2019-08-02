@@ -1,13 +1,5 @@
 ---
 
-- name: install docker
-  become: yes
-  import_role:
-    name: geerlingguy.docker
-  tags:
-    - installation
-    - docker
-
 - name: configure docker
   import_tasks: configure.yml
   tags:

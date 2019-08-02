@@ -58,7 +58,7 @@ all:
           nomad_node_role: server
         hcnp-node-121.consul:
           nomad_iface: enp0s8
-          nomad_node_role: server
+          nomad_node_role: client
         hcnp-node-122.consul:
           nomad_iface: enp0s8
           nomad_node_role: client

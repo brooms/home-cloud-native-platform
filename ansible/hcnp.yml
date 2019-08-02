@@ -1,249 +1,260 @@
 ---
 
-# - hosts: all
+- hosts: all
 
-#   pre_tasks:
+  pre_tasks:
 
-#     - name: "Assert external_iface exists"
-#       assert:
-#         that:
-#             - external_iface in ansible_interfaces
-#         fail_msg: "{{ external_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
-#         success_msg: "external_iface set to {{ external_iface }}"
-#       when: external_iface is defined
+    - name: "Assert external_iface exists"
+      assert:
+        that:
+            - external_iface in ansible_interfaces
+        fail_msg: "{{ external_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
+        success_msg: "external_iface set to {{ external_iface }}"
+      when: external_iface is defined
 
-#     - name: Create hcnp_node_list
-#       set_fact:
-#         hcnp_node_list: "{{ groups['hcnp_nodes'] | map('extract', hostvars, 'ansible_host') | list }}"
-#       when: groups['hcnp_nodes'] is defined
+    - name: Create hcnp_node_list
+      set_fact:
+        hcnp_node_list: "{{ groups['hcnp_nodes'] | map('extract', hostvars, 'ansible_host') | list }}"
+      when: groups['hcnp_nodes'] is defined
 
-#   tasks:
+  tasks:
 
-#     - name: "Update existing packages"
-#       import_role:
-#         name: base
-#         tasks_from: update-packages
-#       tags:
-#         - base
-#         - update
-
-
-# - hosts: ansible-node
-
-#   vars:
-
-#     packages: [
-#       python-pip,
-#       sshpass,
-#       unzip,
-#     ]
-
-#     python_modules: [
-#       { name: netaddr },
-#     ]
-
-#   tasks:
-
-#     - name: "Install dependencies"
-#       import_role:
-#         name: base
-#         tasks_from: install-dependencies
-#       tags:
-#         - base
-#         - dependencies
+    - name: "Update existing packages"
+      import_role:
+        name: base
+        tasks_from: update-packages
+      tags:
+        - base
+        - update
 
 
-# - hosts: hcnp_nodes
+- hosts: ansible-node
+
+  vars:
+
+    packages: [
+      python-pip,
+      sshpass,
+      unzip,
+    ]
+
+    python_modules: [
+      { name: netaddr },
+    ]
+
+  tasks:
+
+    - name: "Install dependencies"
+      import_role:
+        name: base
+        tasks_from: install-dependencies
+      tags:
+        - base
+        - dependencies
+
+
+- hosts: hcnp_nodes
     
-#   vars:
+  vars:
 
-#     packages: [
-#       python-pip,
-#       sshpass,
-#     ]
+    packages: [
+      python-pip,
+      sshpass,
+    ]
 
-#     python_modules: [
-#       { name: docker },
-#       { name: python-consul },
-#     ]
+    python_modules: [
+      { name: docker },
+      { name: python-consul },
+    ]
 
-#     hcnp_node_external_ip: "\
-#       {% if ansible_system == 'FreeBSD' %}\
-#         {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ external_iface ]['ipv4'][0]['address'], true) }}\
-#       {% elif ansible_os_family == 'Windows'  %}\
-#         {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
-#       {% else %}\
-#         {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ external_iface | replace('-', '_')]['ipv4']['address'], true) }}\
-#       {% endif %}"
+    hcnp_node_external_ip: "\
+      {% if ansible_system == 'FreeBSD' %}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ external_iface ]['ipv4'][0]['address'], true) }}\
+      {% elif ansible_os_family == 'Windows'  %}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
+      {% else %}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ external_iface | replace('-', '_')]['ipv4']['address'], true) }}\
+      {% endif %}"
     
-#     # resolv_nameservers: "{{ groups['rpi-hcnp_nodes'].ansible_default_ipv4.address }}"
-#     resolv_nameservers: "{{ groups['hcnp_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
-#     # resolv_domain: "foo.org" # consul domain?
-#     # resolv_search:
-#     #   - "foo.bar"
-#     #   - "foobar.com"
-#     resolv_options:
-#       - "timeout:2"
-#       - "rotate"
+    # resolv_nameservers: "{{ groups['rpi-hcnp_nodes'].ansible_default_ipv4.address }}"
+    resolv_nameservers: "{{ groups['hcnp_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
+    # resolv_domain: "foo.org" # consul domain?
+    # resolv_search:
+    #   - "foo.bar"
+    #   - "foobar.com"
+    resolv_options:
+      - "timeout:2"
+      - "rotate"
 
-#     storage_base: 
+    storage_base: 
  
-#   environment:
+  environment:
 
-#   pre_tasks:
+  pre_tasks:
     
-#     - debug:
-#         msg: "IP address {{ hcnp_node_external_ip }}"
+    - debug:
+        msg: "IP address {{ hcnp_node_external_ip }}"
 
-#   tasks:
+  tasks:
 
-#     - debug:
-#         msg: "Running tasks on {{ ansible_host }}_{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
+    - debug:
+        msg: "Running tasks on {{ ansible_host }}_{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
 
-#     - debug:
-#         var: resolv_nameservers
+    - debug:
+        var: resolv_nameservers
   
-#     - name: "Install dependencies"
-#       import_role:
-#         name: base
-#         tasks_from: install-dependencies
-#       tags:
-#         - base
-#         - dependencies
+    - name: "Install dependencies"
+      import_role:
+        name: base
+        tasks_from: install-dependencies
+      tags:
+        - base
+        - dependencies
 
-#     - name: "Set hostname"
-#       import_role:
-#         name: base
-#         tasks_from: set-hostname
-#       tags:
-#         - base
-#         - hostname
+    - name: "Set hostname"
+      import_role:
+        name: base
+        tasks_from: set-hostname
+      tags:
+        - base
+        - hostname
 
-#     - name: "Update hosts"
-#       import_role:
-#         name: base
-#         tasks_from: update-hosts
-#       tags:
-#         - base
-#         - hosts
-
-
-# # Run role to install and configure consul
-# - hosts: consul_instances
-
-#   vars:
-#     # consul_install_dependencies: false
-#     consul_datacenter: hcnp
-#     consul_domain: 'consul'
-#     consul_acl_datacenter: "consul"
-#     consul_recursors: ['8.8.8.8', '8.8.4.4']
-#     consul_ui: true
-#     consul_dnsmasq_enable: yes
-#     consul_install_remotely: true
-#     consul_client_address: "0.0.0.0"
-#     consul_acl_master_token_display: yes
-#     # consul_debug: yes
-#     # consul_log_level: INFO
-
-#   pre_tasks:
-
-#     - name: "Assert consul_iface interface exists when defined"
-#       assert:
-#         that:
-#             - consul_iface in ansible_interfaces
-#         fail_msg: "{{ consul_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
-#         success_msg: "consul_iface set to {{ consul_iface }}"
-#       when: consul_iface is defined
-
-#   tasks:
-
-#     - name: "Run consul role"
-#       become: yes
-#       import_role:
-#         name: brianshumate.consul
-#       tags:
-#         - consul
+    - name: "Update hosts"
+      import_role:
+        name: base
+        tasks_from: update-hosts
+      tags:
+        - base
+        - hosts
 
 
-# # Run role to install and configure vault
-# - hosts: vault_instances
+# Run role to install and configure consul
+- hosts: consul_instances
 
-#   vars:
-#       vault_datacenter: "hcnp"
-#       vault_domain: "consul"
-#       vault_ui: yes
-#       vault_cluster_disable: yes
+  vars:
+    # consul_install_dependencies: false
+    consul_datacenter: hcnp
+    consul_domain: 'consul'
+    consul_acl_datacenter: "consul"
+    consul_recursors: ['8.8.8.8', '8.8.4.4']
+    consul_ui: true
+    consul_dnsmasq_enable: yes
+    consul_install_remotely: true
+    consul_client_address: "0.0.0.0"
+    consul_acl_master_token_display: yes
+    # consul_debug: yes
+    # consul_log_level: INFO
 
-#   tasks:
+  pre_tasks:
 
-#     - name: "Run vault role"
-#       import_role:
-#         name: vault
-#       tags:
-#         - vault
+    - name: "Assert consul_iface interface exists when defined"
+      assert:
+        that:
+            - consul_iface in ansible_interfaces
+        fail_msg: "{{ consul_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
+        success_msg: "consul_iface set to {{ consul_iface }}"
+      when: consul_iface is defined
 
+  tasks:
 
-# # Run role to install and configure docker
-# - hosts: docker_instances
-
-#   vars:
-#     docker_install_compose: false
-#     docker_users: [
-#       "{{ ansible_user_id }}"
-#     ]
-
-#   tasks:
-
-#     - import_role:
-#         name: docker
-#       tags:
-#         - docker
+    - name: "Run consul role"
+      become: yes
+      import_role:
+        name: brianshumate.consul
+      tags:
+        - consul
 
 
-# # Run role to install and configure nomad
-# - hosts: nomad_instances
+# Run role to install and configure vault
+- hosts: vault_instances
 
-#   vars:
-#     nomad_datacenter: "hcnp"
-#     nomad_domain: "consul"
-#     # nomad_iface: eth1
-#     nomad_network_interface: enp0s8
-#     nomad_servers: ['hcnp-node-120.node.hcnp.consul:4647']
-#     # CONSTANTS
-#     nomad_consul_address: http://127.0.0.1:8500
-#     # nomad_vault_address: http://active.vault.service.lab.consul:8200
-#     nomad_bind_address: "0.0.0.0"
-#     nomad_use_consul: yes
-#     nomad_vault_enabled: no
-#     nomad_options: { 'driver.raw_exec.enable': '1' }
-#     nomad_network_speed: 10
-#     nomad_bootstrap_expect: 1
-#     nomad_docker_enable: yes
-#     permanent: yes
-#     # nomad_ports_http: 4646
-#     # nomad_ports_rpc: 4647
-#     # nomad_ports_serf: 4648
-#     # nomad_debug: yes
-#     # nomad_log_level: "INFO"
+  vars:
+      vault_datacenter: "hcnp"
+      vault_domain: "consul"
+      vault_ui: yes
+      vault_cluster_disable: yes
 
-#   pre_tasks:
+  tasks:
 
-#     - name: "Assert nomad_iface interface exists when defined"
-#       assert:
-#         that:
-#             - nomad_iface in ansible_interfaces
-#         fail_msg: "{{ nomad_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
-#         success_msg: "nomad_iface set to {{ nomad_iface }}"
-#       when: nomad_iface is defined
+    - name: "Run vault role"
+      import_role:
+        name: vault
+      tags:
+        - vault
 
-#   tasks:
 
-#     - name: "Install and configure Nomad"
-#       become: true
-#       import_role:
-#         name: brianshumate.nomad
-#       tags:
-#         - nomad
+# Run role to install and configure docker
+- hosts: docker_instances
+
+  vars:
+    docker_install_compose: false
+    docker_users: [
+      "{{ ansible_user_id }}"
+    ]
+
+  post_tasks:
+
+    - import_role:
+        name: docker
+      tags:
+        - docker
+        - configuration
+
+  tasks:
+
+    - name: install docker
+      become: yes
+      import_role:
+        name: geerlingguy.docker
+      tags:
+        - installation
+        - docker
+
+
+# Run role to install and configure nomad
+- hosts: nomad_instances
+
+  vars:
+    nomad_datacenter: "hcnp"
+    nomad_domain: "consul"
+    # nomad_iface: eth1
+    nomad_network_interface: enp0s8
+    nomad_servers: ['hcnp-node-120.node.hcnp.consul:4647']
+    # CONSTANTS
+    nomad_consul_address: http://127.0.0.1:8500
+    # nomad_vault_address: http://active.vault.service.lab.consul:8200
+    nomad_bind_address: "0.0.0.0"
+    nomad_use_consul: yes
+    nomad_vault_enabled: no
+    nomad_options: { 'driver.raw_exec.enable': '1' }
+    nomad_network_speed: 10
+    nomad_bootstrap_expect: 1
+    nomad_docker_enable: yes
+    permanent: yes
+    # nomad_ports_http: 4646
+    # nomad_ports_rpc: 4647
+    # nomad_ports_serf: 4648
+    # nomad_debug: yes
+    # nomad_log_level: "INFO"
+
+  pre_tasks:
+
+    - name: "Assert nomad_iface interface exists when defined"
+      assert:
+        that:
+            - nomad_iface in ansible_interfaces
+        fail_msg: "{{ nomad_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
+        success_msg: "nomad_iface set to {{ nomad_iface }}"
+      when: nomad_iface is defined
+
+  tasks:
+
+    - name: "Install and configure Nomad"
+      become: true
+      import_role:
+        name: brianshumate.nomad
+      tags:
+        - nomad
 
 
 - hosts: traefik_instances
@@ -252,7 +263,18 @@
     # VARIABLES TO EDIT
     traefik_bind_ip: "172.16.1.120"
     traefik_consul_master: "consul.service.hcnp.consul"
-      
+
+  post_tasks:
+
+    - name: Configure Traefik
+      become: yes
+      import_role:
+        name: traefik
+        tasks_from: post-install.yml
+      tags:
+        - traefik
+        - configuration
+
   tasks:
 
     - name: Install and configure Traefik
@@ -264,16 +286,6 @@
         - nomad
         - traefik
     
-  post_tasks:
-
-    - name: Configure Traefik
-      become: yes
-      import_role:
-        name: traefik
-      tags:
-        - traefik
-        - configuration
-
 
 # Run up core services
 - hosts: hcnp_nodes
@@ -287,53 +299,53 @@
 
   pre_tasks:
 
-    - name: "Collect facts about system services"
-      service_facts:
-      register: services_state
+    # - name: "Collect facts about system services"
+    #   service_facts:
+    #   register: services_state
 
-    - name: "Check required services are running"
-      assert:
-        that:
-          - "ansible_facts.services['{{ item }}'].state == 'running'"
-        fail_msg: "{{ item }} is not running"
-        success_msg: "{{ item }} is running"
-      loop:
-        - consul.service
-        - docker.service
-        - nomad.service
+    # - name: "Check required services are running"
+    #   assert:
+    #     that:
+    #       - "ansible_facts.services['{{ item }}'].state == 'running'"
+    #     fail_msg: "{{ item }} is not running"
+    #     success_msg: "{{ item }} is running"
+    #   loop:
+    #     - consul.service
+    #     - docker.service
+    #     - nomad.service
 
-    - name: "Set running services facts"
-      set_fact:
-        service_consul_running: yes
-        service_docker_running: yes
-        service_nomad_running: yes
+    # - name: "Set running services facts"
+    #   set_fact:
+    #     service_consul_running: yes
+    #     service_docker_running: yes
+    #     service_nomad_running: yes
 
-    - name: "Ensure required modules are installed"
-      become: yes
-      pip:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - python-consul
-        - docker
+    # - name: "Ensure required modules are installed"
+    #   become: yes
+    #   pip:
+    #     name: "{{ item }}"
+    #     state: present
+    #   loop:
+    #     - python-consul
+    #     - docker
 
-    - debug:
-        var: consul_iface
+    # - debug:
+    #     var: consul_iface
 
-    - debug:
-        var: consul_bind_address
+    # - debug:
+    #     var: consul_bind_address
 
-    - debug:
-        var: consul_advertise_address
+    # - debug:
+    #     var: consul_advertise_address
         
-    - debug:
-        var: nomad_iface
+    # - debug:
+    #     var: nomad_iface
 
-    - debug:
-        var: nomad_bind_address
+    # - debug:
+    #     var: nomad_bind_address
 
-    - debug:
-        var: nomad_advertise_address
+    # - debug:
+    #     var: nomad_advertise_address
 
   tasks:
 

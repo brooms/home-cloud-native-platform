@@ -53,17 +53,22 @@ all:
 
     nomad_instances:
       hosts:
-        # hcnp-node-120.consul:
-        #   nomad_iface: enp0s8
-        #   nomad_node_role: server
-        # hcnp-node-121.consul:
-        #   nomad_iface: enp0s8
-        #   nomad_node_role: server
-        # hcnp-node-122.consul:
-        #   nomad_iface: enp0s8
-        #   nomad_node_role: client
+        hcnp-node-120.consul:
+          nomad_iface: enp0s8
+          nomad_node_role: server
+        hcnp-node-121.consul:
+          nomad_iface: enp0s8
+          nomad_node_role: server
+        hcnp-node-122.consul:
+          nomad_iface: enp0s8
+          nomad_node_role: client
+
+    traefik_instances:
+      hosts:
+        hcnp-node-120.consul:
 
     vault_instances:
       hosts:
         # hcnp-node-120.consul:
         # hcnp-node-121.consul:
+        # hcnp-node-122.consul:

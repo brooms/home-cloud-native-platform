@@ -3,6 +3,7 @@ brianshumate.*/
 cloudalchemy.*/
 geerlingguy.*/
 indigo-dc.*/
+kibatic.*/
 
 #ensure ansible retry files are not added to repo
 *.retry

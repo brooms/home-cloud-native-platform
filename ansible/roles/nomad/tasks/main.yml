@@ -1,8 +1,0 @@
----
-
-- name: "Install and configure nomad"
-  become: yes
-  import_role:
-    name: brianshumate.nomad
-  tags:
-    nomad

@@ -1,0 +1,14 @@
+---
+
+- name: Copy Traefik Config File
+  become: yes
+  template:
+    src: traefik.toml.j2
+    dest: /etc/traefik.toml
+
+- name: Restart service traefik, in all cases
+  become: yes
+  service:
+    name: traefik
+    state: restarted
+    

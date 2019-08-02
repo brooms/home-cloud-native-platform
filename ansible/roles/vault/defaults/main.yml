@@ -1,8 +1,1 @@
 ---
-
-vault_version: "1.0.3"
-vault_checksum: "sha256:a475946872b1a4a2bd8ea79ea1dd00fe65aa502f45d734a07afc022bf2ba8bcf"
-vault_install_prerequisites: ['unzip']
-vault_user: "vault"
-vault_group: "vault"
-vault_config_path: "/etc/vault.d"

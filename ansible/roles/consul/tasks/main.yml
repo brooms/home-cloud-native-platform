@@ -1,8 +1,0 @@
----
-
-- name: "Install and configure consul" 
-  become: yes
-  import_role:
-    name: brianshumate.consul
-  tags:
-    - consul

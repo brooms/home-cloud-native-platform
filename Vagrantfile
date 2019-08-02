@@ -168,7 +168,7 @@ Vagrant.configure("2") do |config|
         ansible.compatibility_mode = "2.0"
         ansible.install = true
         ansible.limit = "all"
-        ansible.verbose = "vv"
+        ansible.verbose = "v"
 
         ansible.config_file = "ansible/ansible.cfg"
         ansible.inventory_path = "ansible/hosts-vagrant.yml"

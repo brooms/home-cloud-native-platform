@@ -1,52 +1,42 @@
-logLevel = "ERROR" #DEBUG, INFO, WARN, ERROR, FATAL, PANIC
-defaultEntryPoints = ["https", "http"]
+# Entrypoints to be used by frontends that do not specify any entrypoint.
+# Each frontend can specify its own entrypoints.
+#
+# Optional
+# Default: ["http"]
+#
+defaultEntryPoints = ["http"]
 
-# WEB interface of Traefik - it will show web page with overview of frontend and backend configurations 
+# Entrypoints definition
+#
+# Optional
+# Default:
+[entryPoints]
+    [entryPoints.http]
+    address = "{{ traefik_bind_ip }}:80"
+    [entryPoints.traefik]
+    address = "{{ traefik_bind_ip }}:8081"
+
+logLevel = "INFO"
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+domain = "consul"
+watch = true
+
+[consul]
+endpoint = "{{ traefik_consul_master }}:8500"
+watch = true
+prefix = "traefik"
+
+[consulCatalog]
+endpoint = "{{ traefik_consul_master }}:8500"
+domain = "service.consul"
+exposedByDefault = true
+prefix = "traefik"
+
+# Activate API and Dashboard
 [api]
   entryPoint = "traefik"
   dashboard = true
-  address = ":8080"
   debug = true
-
-# Force HTTPS
-[entryPoints]
-  [entryPoints.http]
-  address = ":80"
-  #   [entryPoints.http.redirect]
-  #   entryPoint = "https"
-  # [entryPoints.https]
-  # address = ":443"
-  #   [entryPoints.https.tls]
-
-# [file]
-#   watch = true
-#   filename = "/etc/traefik/rules.toml"
-
-# # Let's encrypt configuration
-# [acme]
-# email = "greenthegarden@gmail.com" #any email id will work
-# storage="/etc/traefik/acme.json"
-# entryPoint = "https"
-# acmeLogging=true 
-# onDemand = false #create certificate when container is created
-# onHostRule = true
-#   # Use a HTTP-01 acme challenge rather than TLS-SNI-01 challenge
-#   [acme.httpChallenge]
-#   entryPoint = "http"
-   
-# Connection to docker host system (docker.sock)
-[docker]
-endpoint = "unix:///var/run/docker.sock"
-# domain = "{{ domain_name }}"
-watch = true
-# This will hide all docker containers that don't have explicitly  
-# set label to "enable"
-exposedbydefault = false
-
-# Enable Consul Catalog Provider.
-[consulCatalog]
-endpoint = "{{ ansible_default_ipv4.address }}:8500"
-exposedByDefault = false
-stale = false
-domain = "consul.localhost"
-prefix = "traefik"
+  

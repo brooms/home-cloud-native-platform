@@ -347,6 +347,29 @@
     # - debug:
     #     var: nomad_advertise_address
 
+    - name: Create hcnp_node_list
+      set_fact:
+        hcnp_node_list: "{{ groups['hcnp_nodes'] | map('extract', hostvars, 'ansible_host') | list }}"
+      when: groups['hcnp_nodes'] is defined
+
+    - name: "Configure portainer"
+      import_role:
+        name: portainer
+        tasks_from: configuration.yml
+      tags:
+        - portainer
+      when: run_portainer
+
+  tasks:
+
+    - name: "Run Portainer Nomad job"
+      import_role:
+        name: portainer
+        tasks_from: nomad.yml
+      tags:
+        - portainer
+      when: nomad_node_role == 'server' and run_portainer
+
   tasks:
 
     - name: "Run Portainer Nomad job"

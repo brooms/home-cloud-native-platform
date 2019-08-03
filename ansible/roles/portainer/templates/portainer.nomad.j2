@@ -46,11 +46,16 @@ job "portainer-job" {
         name = "portainer"
         port = "http"
         tags = [
+          "traefik.frontend.rule=PathPrefixStrip:/portainer",
+          "traefik.backend=portainer",
+          "traefik.port=9000",
           "traefik.enable=true",
-          "traefik.frontend.rule=Host:172.16.1.121;PathPrefix:/portainer;ReplacePathRegex: ^/portainer/(.*) /$1",
-          "traefik.fontend.redirect.replacement='$1/portainer'",
-          "traefik.frontend.redirect.regex='^(.*)/portainer$'",
-          ]
+          "traefik.passHostHeader=true",
+          "traefik.frontend.entryPoints=http",
+          "traefik.frontend.redirect.regex=^(.*)/portainer$$",
+          "traefik.frontend.redirect.replacement=$$1/portainer/",
+          "traefik.frontend.rule=PathPrefix:/portainer;ReplacePathRegex: ^/portainer/(.*) /$$1",
+        ]
         check {
           name     = "alive"
           type     = "http"

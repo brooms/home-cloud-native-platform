@@ -30,7 +30,8 @@ prefix = "traefik"
 
 [consulCatalog]
 endpoint = "{{ traefik_consul_master }}:8500"
-domain = "service.consul"
+#domain = "service.consul"
+domain = "consul"
 exposedByDefault = true
 prefix = "traefik"
 

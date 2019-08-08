@@ -14,3 +14,6 @@ vagrant_ansible_inventory_default
 
 # ensure log files are not retained
 *.log
+
+# ensure a hosts.yml file is not retained
+hosts.yml

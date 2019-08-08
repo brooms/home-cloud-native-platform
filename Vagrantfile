@@ -35,7 +35,12 @@ Vagrant.configure("2") do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
-#  vagrant_root = File.dirname(__FILE__)
+  if ARGV[1] == 'confluence'
+    ARGV.delete_at(1)
+    confluence = true
+  else
+    confluence = false
+  end
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.

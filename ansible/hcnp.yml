@@ -33,7 +33,7 @@
         - update
 
 
-- hosts: ansible-node
+- hosts: ansible-node.consul
 
   vars:
 
@@ -364,16 +364,6 @@
       tags:
         - portainer
       when: run_portainer
-
-  tasks:
-
-    - name: "Run Portainer Nomad job"
-      import_role:
-        name: portainer
-        tasks_from: nomad.yml
-      tags:
-        - portainer
-      when: nomad_node_role == 'server' and run_portainer
 
   tasks:
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 extension="yml"
-inventory="hosts"
+inventory="../hosts"
 remote_host="localhost"
 
 read -p "Enter inventory file name [${inventory}]: " inventory_input

@@ -160,45 +160,45 @@ Vagrant.configure("2") do |config|
     #   apt-get update
     #   apt-get install -y apache2
     # SHELL
-    if Vagrant::Util::Platform.windows?
+    # if Vagrant::Util::Platform.windows?
   #    config.vm.provision :guest_ansible do |ansible|
-      ansible_node.vm.provision :ansible_local do |ansible|
+    ansible_node.vm.provision :ansible_local do |ansible|
 
-        ansible_node.vm.synced_folder ".", "/vagrant",
-          owner: "vagrant",
-          mount_options: ["dmode=775,fmode=600"]
+      ansible_node.vm.synced_folder ".", "/vagrant",
+        owner: "vagrant",
+        mount_options: ["dmode=775,fmode=600"]
 
-        # ansible.install_mode = "pip"
-        # ansible.version = "2.8.3"
-        ansible.compatibility_mode = "2.0"
-        ansible.install = true
-        ansible.limit = "all"
-        ansible.verbose = "v"
+      # ansible.install_mode = "pip"
+      # ansible.version = "2.8.3"
+      ansible.compatibility_mode = "2.0"
+      ansible.install = true
+      ansible.limit = "all"
+      ansible.verbose = "v"
 
-        ansible.config_file = "ansible/ansible.cfg"
-        ansible.inventory_path = "ansible/hosts-vagrant.yml"
-        ansible.playbook = "ansible/hcnp.yml"
+      ansible.config_file = "ansible/ansible.cfg"
+      ansible.inventory_path = "ansible/hosts-vagrant.yml"
+      ansible.playbook = "ansible/hcnp.yml"
 
-        ansible.galaxy_role_file = "ansible/requirements.yml"
-        ansible.galaxy_roles_path = "ansible/roles"
+      ansible.galaxy_role_file = "ansible/requirements.yml"
+      ansible.galaxy_roles_path = "ansible/roles"
 
-        # ansible.groups = {
-        #   "hcnp_nodes" => ["hcnp_test_node"],
-        #   "consul_instances" => [],
-        #   "docker_instances" => ["hcnp_test_node"],
-        # }
+      # ansible.groups = {
+      #   "hcnp_nodes" => ["hcnp_test_node"],
+      #   "consul_instances" => [],
+      #   "docker_instances" => ["hcnp_test_node"],
+      # }
 
-        ansible.extra_vars = {
-        #   node_list: generate_node_hostnames(config_file)
-          # consul_log_level: "DEBUG",
-          # consul_iface: "enp0s8"
-        }
-      end
-    else
-      config.vm.provision :ansible do |ansible|
-        ansible.playbook = "hcnp.yml"
-      end
+      ansible.extra_vars = {
+      #   node_list: generate_node_hostnames(config_file)
+        # consul_log_level: "DEBUG",
+        # consul_iface: "enp0s8"
+      }
     end
+    # else
+    #   config.vm.provision :ansible do |ansible|
+    #     ansible.playbook = "hcnp.yml"
+    #   end
+    # end
 
   end
 

@@ -78,4 +78,3 @@ all:
     traefik_instances:
       hosts:
         hcnp-node-1.consul:
-

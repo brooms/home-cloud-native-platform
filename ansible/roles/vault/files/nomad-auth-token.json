@@ -1,0 +1,8 @@
+{
+  "policies": [
+    "nomad-server"
+  ],
+  "no_parent": true,
+  "period": "72h",
+  "renewable": true
+}

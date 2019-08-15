@@ -1,16 +1,31 @@
 ---
 
+#- name: Update all packages to the latest version using apt
+#  become: yes
+#  apt:
+#    cache_valid_time: 3600
+#    upgrade: dist
+#    update_cache: yes
+#  when: ansible_pkg_mgr == 'apt'
+
+#- name: upgrade all packages to the latest version using yum
+#  become: yes
+#  yum:
+#    name: '*'
+#    state: latest
+#  when: ansible_pkg_mgr == 'yum'
+
 - name: Update all packages to the latest version using apt
   become: yes
   apt:
     cache_valid_time: 3600
-    upgrade: dist
+#    upgrade: dist
     update_cache: yes
   when: ansible_pkg_mgr == 'apt'
 
-- name: upgrade all packages to the latest version using yum
+- name: update yum cache
   become: yes
   yum:
-    name: '*'
+    update_cache: yes
     state: latest
   when: ansible_pkg_mgr == 'yum'

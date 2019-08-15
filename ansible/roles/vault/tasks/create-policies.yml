@@ -1,0 +1,48 @@
+---
+
+- name: Write Vault Nomad policy
+  uri:
+    url: "http://{{ vault_address }}:8200/v1/sys/policies/acl/nomad-server"
+    method: POST
+    body: "{{ lookup('file', 'nomad-server-policy.json') }}"
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+      X-Vault-Token: "{{ vault_root_token }}"
+    status_code: 200, 204
+  environment:
+    VAULT_ADDR: http://{{ vault_address }}:8200
+    VAULT_TOKEN: "{{ vault_root_token }}"
+
+- name: Write Vault Nomad cluster role
+  uri:
+    url: "http://{{ vault_address }}:8200/v1/auth/token/roles/nomad-cluster"
+    method: POST
+    body: "{{ lookup('file', 'nomad-cluster-role.json') }}"
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+      X-Vault-Token: "{{ vault_root_token }}"
+    status_code: 200, 204
+  environment:
+    VAULT_ADDR: http://{{ vault_address }}:8200
+    VAULT_TOKEN: "{{ vault_root_token }}"
+
+- name: Issue Vault Nomad token
+  uri:
+    url: "http://{{ vault_address }}:8200/v1/auth/token/create-orphan"
+    method: POST
+    body: "{{ lookup('file', 'nomad-auth-token.json') }}"
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+      X-Vault-Token: "{{ vault_root_token }}"
+    status_code: 200, 204
+  register: nomad_vault_token_response
+  environment:
+    VAULT_ADDR: http://{{ vault_address }}:8200
+    VAULT_TOKEN: "{{ vault_root_token }}"
+
+- name: Set Nomad client token as fact
+  set_fact:
+    nomad_vault_token: "{{ nomad_vault_token_response.json.auth.client_token }}"

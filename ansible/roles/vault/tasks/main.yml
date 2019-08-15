@@ -6,3 +6,23 @@
     name: brianshumate.vault
   tags:
     - vault
+
+- name: "Initialise and configure Vault keys"
+  become: yes
+  import_tasks: configure-vault-keys.yml
+  tags:
+    - vault
+  when: _vault_node_bootstrap | bool
+
+- name: "Unseal Vault"
+  become: yes
+  import_tasks: unseal-vault.yml
+  tags:
+    - vault
+
+- name: "Initialise and configure Vault keys"
+  become: yes
+  import_tasks: create-policies.yml
+  tags:
+    - vault
+  when: _vault_node_bootstrap | bool

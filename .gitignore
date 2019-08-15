@@ -17,3 +17,6 @@ vagrant_ansible_inventory_default
 
 # ensure a hosts.yml file is not retained
 hosts.yml
+
+# intellij idea project directory
+.idea/**

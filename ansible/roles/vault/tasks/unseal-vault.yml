@@ -1,0 +1,19 @@
+
+- name: Read vault keys from file
+  slurp:
+    src: "{{ vault_keyfile_path }}/keyfile.json"
+  register: vault_key_file_contents
+  delegate_to: ansible-node.consul
+
+- name: Load Vault keys
+  set_fact:
+      vault_key_file: "{{ vault_key_file_contents['content'] | b64decode }}"
+
+- name: Set Vault key facts
+  set_fact: { "vault_{{ item.key }}":"{{ item.value }}" }
+  with_dict: "{{ vault_key_file }}"
+
+- name: Unseal Vault using master key
+  command: "vault operator unseal {{ vault_unseal_keys_hex[0] }}"
+  environment:
+    VAULT_ADDR: http://{{ vault_address }}:8200

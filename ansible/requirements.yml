@@ -24,11 +24,6 @@
   cms: git
   src: git+https://github.com/geerlingguy/ansible-role-pip.git
   version: origin/master
-  
-- name: cloudalchemy.prometheus
-  cms: git
-  src: git+https://github.com/cloudalchemy/ansible-prometheus.git
-  version: origin/master
 
 - name: kibatic.traefik
   cms: git

@@ -8,19 +8,19 @@ all:
       ansible_connection: local
       ansible_host: localhost
       external_iface: enp0s8
-    hcnp-node-120.consul:
+    hcnp-node-1.consul:
       ansible_ssh_host: 172.16.1.120
-      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-120/virtualbox/private_key
+      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-1/virtualbox/private_key
       ansible_ssh_user: vagrant
       external_iface: enp0s8
-    hcnp-node-121.consul:
+    hcnp-node-2.consul:
       ansible_ssh_host: 172.16.1.121
-      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-121/virtualbox/private_key
+      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-2/virtualbox/private_key
       ansible_ssh_user: vagrant
       external_iface: enp0s8
-    hcnp-node-122.consul:
+    hcnp-node-3.consul:
       ansible_ssh_host: 172.16.1.122
-      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-122/virtualbox/private_key
+      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-3/virtualbox/private_key
       ansible_ssh_user: vagrant
       external_iface: enp0s8
 
@@ -29,46 +29,53 @@ all:
   
     hcnp_nodes:
       hosts:
-        hcnp-node-120.consul:
-        hcnp-node-121.consul:
-        hcnp-node-122.consul:
+        hcnp-node-1.consul:
+        hcnp-node-2.consul:
+        hcnp-node-3.consul:
 
     consul_instances:
       hosts:
-        hcnp-node-120.consul:
+        hcnp-node-1.consul:
           consul_iface: enp0s8
           consul_node_role: bootstrap
-        hcnp-node-121.consul:
+        hcnp-node-2.consul:
           consul_iface: enp0s8
           consul_node_role: server
-        hcnp-node-122.consul:
+        hcnp-node-3.consul:
           consul_iface: enp0s8
           consul_node_role: server
+
+    vault_instances:
+      hosts:
+        hcnp-node-1.consul:
+          vault_iface: enp0s8
+          vault_node_role: bootstrap
+        hcnp-node-2.consul:
+          vault_iface: enp0s8
+          vault_node_role: server
+        hcnp-node-3.consul:
+          vault_iface: enp0s8
+          vault_node_role: server
 
     docker_instances:
       hosts:
-        hcnp-node-120.consul:
-        hcnp-node-121.consul:
-        hcnp-node-122.consul:
+        hcnp-node-1.consul:
+        hcnp-node-2.consul:
+        hcnp-node-3.consul:
 
     nomad_instances:
       hosts:
-        hcnp-node-120.consul:
+        hcnp-node-1.consul:
           nomad_iface: enp0s8
           nomad_node_role: server
-        hcnp-node-121.consul:
+        hcnp-node-2.consul:
           nomad_iface: enp0s8
           nomad_node_role: client
-        hcnp-node-122.consul:
+        hcnp-node-3.consul:
           nomad_iface: enp0s8
           nomad_node_role: client
 
     traefik_instances:
       hosts:
-        hcnp-node-120.consul:
+        hcnp-node-1.consul:
 
-    vault_instances:
-      hosts:
-        # hcnp-node-120.consul:
-        # hcnp-node-121.consul:
-        # hcnp-node-122.consul:

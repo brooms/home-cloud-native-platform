@@ -1,0 +1,32 @@
+---
+
+- name: Check if the Vault keyfile exists
+  stat:
+    path: "{{ vault_keyfile_path }}/keyfile.json"
+  delegate_to: ansible-node.consul
+  register: key_file_exists
+
+- name: Create destination directory if it doesn't exist
+  file:
+    path: "{{ vault_keyfile_path }}"
+    state: directory
+    mode: '0755'
+  delegate_to: ansible-node.consul
+  when: key_file_exists.stat.exists == False
+
+- name: Initialise Vault key set
+  command: "vault operator init -key-shares=1 -key-threshold=1 -format json"
+  register: vault_keys
+  failed_when: vault_keys.stderr != '' and vault_keys.stderr.find("Vault is already initialized") == -1
+  environment:
+    VAULT_ADDR: http://{{ vault_address }}:8200
+
+- debug: msg="{{ vault_keys.stdout }}"
+
+- name: Write Vault keys to json file
+  copy:
+    content: "{{ vault_keys.stdout }}"
+    dest: "{{ vault_keyfile_path }}/keyfile.json"
+  delegate_to: ansible-node.consul
+  when: vault_keys.stdout != ''
+

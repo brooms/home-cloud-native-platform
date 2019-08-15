@@ -1,0 +1,4 @@
+---
+
+_vault_node_server: "{{ (vault_node_role == 'server') }}"
+_vault_node_bootstrap: "{{ (vault_node_role == 'bootstrap') }}"

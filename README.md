@@ -2,7 +2,7 @@
 
 ## Project Description
 
-Infrastucture-as-code [Ansible](https://www.ansible.com/) scripts to provision a network of virtual nodes or hardware nodes with the Hashicorp Consul, Vault and Nomad stack, DOcker and Traefik, as a foundation to support hosting of containerised services. The stack is both horizontally and vertically scalable having been tested on ARM based Raspberry Pi (versions 2 and 3) as well as Intel 64 systems.
+This projects provides infrastucture-as-code to [Ansible](https://www.ansible.com/) scripts to automate the provisioning of a network of virtual nodes or hardware nodes with a development cluster utilising the Hashicorp Consul, Vault and Nomad stack, Docker and Traefik, as a foundation to support hosting of containerised services. The stack is both horizontally and vertically scalable having been tested on ARM based Raspberry Pi (versions 2 and 3) as well as Intel 64 systems.
 
 The following core services are installed on each node:
 
@@ -12,10 +12,13 @@ The following core services are installed on each node:
 * [Hashicorp Nomad](https://www.hashicorp.com/products/nomad) for orchestrating services.
 * [Traefik](https://traefik.io/) as a reverse proxy and gateway.
 
+The default topology of the cluster is as shown in the following figure.
+
+![hcnp default topology](docs/topology.png "HCNP Default Topology")
+
 ## Deployment
 
 ### Using Vagrant
-
 
 Vagrant will provision virtual machines. On one, Ansible will be installed and the playbook [`self-hosted-registry-repository.yml`](ansible/self-hosted-registry-repository.yml) run to install the services on the other host. Configurations for both VirtualBox and Azure are included as providers.
 

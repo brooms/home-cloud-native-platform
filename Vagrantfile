@@ -176,7 +176,7 @@ Vagrant.configure("2") do |config|
       ansible.verbose = "v"
 
       ansible.config_file = "ansible/ansible.cfg"
-      ansible.inventory_path = "ansible/hosts-vagrant.yml"
+      ansible.inventory_path = "hosts-vagrant.yml"
       ansible.playbook = "ansible/hcnp.yml"
 
       ansible.galaxy_role_file = "ansible/requirements.yml"

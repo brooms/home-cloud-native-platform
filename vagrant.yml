@@ -21,3 +21,10 @@ hcnp_node:
   cpus: 1
   external_network: "private_network"
   external_ip_base: 120
+
+gateway_node:
+  name: "gateway-node"
+  memory: 1024
+  cpus: 1
+  external_network: "private_network"
+  external_ip_base: 200

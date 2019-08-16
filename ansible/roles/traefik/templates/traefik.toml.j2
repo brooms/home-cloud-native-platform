@@ -12,9 +12,9 @@ defaultEntryPoints = ["http"]
 # Default:
 [entryPoints]
     [entryPoints.http]
-    address = "{{ traefik_bind_ip }}:80"
+    address = "{{ traefik_address }}:80"
     [entryPoints.traefik]
-    address = "{{ traefik_bind_ip }}:8081"
+    address = "{{ traefik_address }}:8081"
 
 logLevel = "INFO"
 
@@ -40,4 +40,7 @@ prefix = "traefik"
   entryPoint = "traefik"
   dashboard = true
   debug = true
-  
+
+[traefikLog]
+  filePath = "/var/log/traefik.log"
+  format   = "json"

@@ -19,7 +19,7 @@
 
     - name: Create hcnp_node_list
       set_fact:
-        hcnp_node_list: "{{ groups['hcnp_nodes'] | map('extract', hostvars, 'ansible_host') | list }}"
+        hcnp_node_list: "{{ groups['hcnp_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
       when: groups['hcnp_nodes'] is defined
 
   tasks:
@@ -255,12 +255,11 @@
       tags:
         - nomad
 
-- hosts: traefik_instances
+- hosts: gateway_instances
 
   vars:
     # VARIABLES TO EDIT
-    traefik_bind_ip: "172.16.1.120"
-    traefik_consul_master: "consul.service.hcnp.consul"
+    traefik_consul_master: "http://{{ consul_host }}"
 
   post_tasks:
 

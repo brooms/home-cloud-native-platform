@@ -98,7 +98,7 @@ def createAnsibleNode(config, ansible_node_settings, base_settings)
       ansible.verbose = "v"
 
       ansible.config_file = "ansible/ansible.cfg"
-      ansible.inventory_path = "ansible/hosts-vagrant.yml"
+      ansible.inventory_path = "hosts-vagrant.yml"
       ansible.playbook = "ansible/hcnp.yml"
 
       ansible.galaxy_role_file = "ansible/requirements.yml"

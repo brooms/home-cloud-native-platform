@@ -4,6 +4,7 @@
 extension="yml"
 inventory="hosts"
 playbook="hcnp"
+requirements="requirements"
 use_retry=false
 use_sudo=false
 verbose_level="v"
@@ -66,6 +67,13 @@ if [ ! -z ${verbose_level+x} ] ;
 then
   verbose_arg="-${verbose_level}"
   echo "Verbose level set to ${verbose_level}"
+fi
+
+requirements_file="${requirements}.${extension}"
+if [ -f "${requirements_file}" ] ;
+then
+  echo "Getting dependent roles defined in ${requirements_file} ..."
+  ansible-galaxy install -r ${requirements_file}
 fi
 
 echo "Running playbook ${playbook_file} with inventory ${inventory_file} with options ${options}"

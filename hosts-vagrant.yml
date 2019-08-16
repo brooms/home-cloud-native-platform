@@ -88,4 +88,3 @@ all:
         gateway-node.consul:
           traefik_iface: eth1
           consul_host: 172.16.1.120
-

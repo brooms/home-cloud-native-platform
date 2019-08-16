@@ -1,6 +1,8 @@
 # Home Cloud Native Platform
 
-Infrastucture-as-code scripts to provision multiple services to support home automation on either networked virtual nodes or hardware nodes. The services installed allow provisioning on hardware such as [Raspberry Pis](https://www.raspberrypi.org/) to Intel x64 based machines. The scipts utilise [Hashicorp Vagrant](https://vagrant.io) to provision on etither VirtualBox or Azure Virtual Machines, and [Ansible](https://www.ansible.com/) to provision the nodes.
+## Project Description
+
+This projects provides infrastucture-as-code to [Ansible](https://www.ansible.com/) scripts to automate the provisioning of a network of virtual nodes or hardware nodes with a development cluster utilising the Hashicorp Consul, Vault and Nomad stack, Docker and Traefik, as a foundation to support hosting of containerised services. The stack is both horizontally and vertically scalable having been tested on ARM based Raspberry Pi (versions 2 and 3) as well as Intel 64 systems.
 
 The following core services are installed on each node:
 
@@ -10,13 +12,25 @@ The following core services are installed on each node:
 * [Hashicorp Nomad](https://www.hashicorp.com/products/nomad) for orchestrating services.
 * [Traefik](https://traefik.io/) as a reverse proxy and gateway.
 
-## Dependencies
+The default topology of the cluster is as shown in the following figure.
 
-[Hashicorp Vagrant](https://vagrant.io) is required to be installed on the machine from which the scripts are run in order to provision virtual nodes.
+![hcnp default topology](docs/topology.png "HCNP Default Topology")
 
-## Installing
+## Deployment
 
-### Virtual Nodes through Vagrant
+### Using Vagrant
+
+Vagrant will provision virtual machines. On one, Ansible will be installed and the playbook [`self-hosted-registry-repository.yml`](ansible/self-hosted-registry-repository.yml) run to install the services on the other host. Configurations for both VirtualBox and Azure are included as providers.
+
+[Vagrant](https://www.vagrantup.com/) must also be installed on the host machine following the instructions at https://www.vagrantup.com/intro/getting-started/index.html. Using Vagrant enables the project to be run on Linux, Mac OS and Windows based hosts.
+
+#### VirtualBox
+
+To utilise [VirtualBox](https://www.virtualbox.org) as the provider so is required to be install on the host machine follwoing the instructions at https://www.virtualbox.org/wiki/Downloads. To deploy the service, run the following command from within the project directory:
+
+```bash
+vagrant up
+```
 
 #### Azure
 
@@ -26,16 +40,15 @@ Requires the Vagrant Azure plugin from https://github.com/Azure/vagrant-azure. [
 vagrant plugin install vagrant-azure
 ```
 
+To deploy the service, run the following command from within the project directory:
+
 ```bash
  vagrant box add azure https://github.com/azure/vagrant-azure/raw/v2.0/dummy.box --provider azure
 $ vagrant plugin install vagrant-azure
 $ vagrant up --provider=azure
 ```
 
-#### Virtualbox
-
-
-### Physical Nodes
+### Using Physical Nodes
 
 Create an ssh key using [`scripts/create_keys.sh`](scripts/create_keys.sh) and copy is across to the nodes using [`scripts/copy_keys.sh`](scripts/copy_keys.sh).
 
@@ -45,6 +58,9 @@ Copy the example [Ansible Inventory](https://docs.ansible.com/ansible/latest/use
 
 Create an [Ansible Playbook](https://docs.ansible.com/ansible/latest/user_guide/playbooks.html) to run required roles on specified hosts. Test the playbook syntax using [`ansible/ansible-check-playbook-syntax.sh`](ansible/ansible-check-playbook-syntax.sh). Run the Ansible playbook using [`ansible/ansible-run-play.sh`](ansible/ansible-run-play.sh).
 
-### Playbooks
+[Ansible](https://www.ansible.com/) is required to be installed on the host that scripts are being run from. Ensure the inventory file [`hosts.yml`](ansible/hosts.yml) is correctly configured. Run the playbook using
 
-* [`hcnp.yml`](hcnp.yml) will provision a node with a base OS with the core services defined above.
+```bash
+cd ansible
+./run-ansible-play.sh
+```

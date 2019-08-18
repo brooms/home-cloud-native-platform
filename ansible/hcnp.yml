@@ -84,7 +84,7 @@
 
 
 # Ensure HCNP Compute Nodes are in the required state for installation
-- hosts: hcnp_compute_nodes
+- hosts: hcnp_compute_nodes2
     
   vars:
 
@@ -144,7 +144,7 @@
 
 
 # Run role to install and configure consul
-- hosts: consul_instances
+- hosts: consul_instances2
 
   vars:
     # consul_install_dependencies: false
@@ -181,7 +181,7 @@
 
 
 # Run role to install and configure vault
-- hosts: vault_instances
+- hosts: vault_instances2
 
   vars:
       vault_datacenter: "hcnp"
@@ -202,7 +202,7 @@
 
 
 # Run role to install and configure docker
-- hosts: docker_instances
+- hosts: docker_instances2
 
   vars:
     docker_install_compose: no
@@ -230,7 +230,7 @@
 
 
 # Run role to install and configure nomad
-- hosts: nomad_instances
+- hosts: nomad_instances2
 
   vars:
     nomad_datacenter: "hcnp"
@@ -265,13 +265,17 @@
       tags:
         - nomad
 
+
+# Run role to install and configure Traefik
 - hosts: gateway_instances
 
   vars:
     # VARIABLES TO EDIT
-    traefik_version: "{{ lookup('env','TRAEFIK_VERSION') | default('v1.7.14', true) }}"
-    # assume running on linux
+    traefik_consul_master: "http://{{ consul_host }}"
     traefik_host_os: linux
+    traefik_version: "{{ lookup('env','TRAEFIK_VERSION') | default('v1.7.14', true) }}"
+
+    traefik_address: "{{ hostvars[inventory_hostname]['ansible_' + traefik_iface]['ipv4']['address'] }}"
     # architecture map idea taken from https://github.com/brianshumate/ansible-consul/blob/master/defaults/main.yml
     traefik_architecture_map:
       # this first entry seems redundant
@@ -286,19 +290,25 @@
     traefik_architecture: "{{ traefik_architecture_map[ansible_architecture] }}"
     # For releases see https://github.com/containous/traefik/releases
     traefik_binary_url: "https://github.com/containous/traefik/releases/download/{{ traefik_version }}/traefik_{{ traefik_host_os }}-{{ traefik_architecture }}"
+    traefik_template: "{{ playbook_dir }}/roles/traefik/templates/traefik.toml"
 
-    traefik_consul_master: "http://{{ consul_host }}"
+  pre_tasks:
 
-  post_tasks:
+    - name: Pre-install message
+      debug:
+        msg: "Installing Traefik {{ traefik_version }} for achitecture {{ traefik_architecture }} on host {{ ansible_host }}"
+  
+  # post_tasks:
 
-    - name: Configure Traefik
-      become: yes
-      import_role:
-        name: traefik
-        tasks_from: post-install.yml
-      tags:
-        - traefik
-        - configuration
+  #   - name: Configure Traefik
+  #     become: yes
+  #     ignore_errors: yes
+  #     import_role:
+  #       name: traefik
+  #       tasks_from: post-install.yml
+  #     tags:
+  #       - traefik
+  #       - configuration
 
   tasks:
 

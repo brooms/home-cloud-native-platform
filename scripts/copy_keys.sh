@@ -5,7 +5,7 @@ source ./key_vars.sh
 remote_user=${USER}
 
 # create an array of remote hosts
-declare -A remote_hosts
+# declare -A remote_hosts
 
 remote_hosts=(
   rpi-hcnp-node-50
@@ -20,8 +20,8 @@ key_file=${key_file_input:-${key_file}}
 read -p "Enter key file directory [${key_file_dir}]: " key_file_dir_input
 key_file_dir=${key_file_dir_input:-${key_file_dir}}
 
-# read -p "Enter remote host [localhost]: " remote_host_input
-# remote_host=${remote_host_input:-localhost}
+read -p "Enter remote hosts [${remote_hosts}]: " remote_hosts_input
+remote_hosts=${remote_hosts_input:-remote_hosts}
 
 read -p "Enter user  for remote hosts [${remote_user}]: " remote_user_input
 remote_user=${remote_user_input:-${remote_user}}

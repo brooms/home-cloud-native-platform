@@ -1,0 +1,56 @@
+---
+
+- name: "Assert interface {{ public_iface}} defined as public_iface exists on host"
+  assert:
+    that:
+      - public_iface in ansible_interfaces
+    fail_msg: "{{ public_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for host"
+    success_msg: "public_iface set to {{ public_iface }}"
+  when: public_iface is defined
+
+- name: "Assert interface {{ cluster_iface }} defined as cluster_iface exists on host"
+  assert:
+    that:
+      - cluster_iface in ansible_interfaces
+    fail_msg: "{{ cluster_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for host"
+    success_msg: "cluster_iface set to {{ cluster_iface }}"
+  when: cluster_iface is defined
+
+- name: Asset required services are installed and running
+  block:
+
+  - name: Get running services
+    service_facts:
+
+  - name: Debug variable ansible_facts.services
+    debug:
+      var: ansible_facts.services
+      verbosity: 2
+
+  # - name: Assert necessary services are installed and running
+  #   assert:
+  #     that:
+  #       - "'docker.service' in ansible_facts.services"
+  #       - ansible_facts.services['docker.service']['state'] == 'running'
+  #     fail_msg: "Docker must be installed and running"
+  #     success_msg: "Docker is installed and running"
+  #   with_items: "{{ required_service_states }}"
+  #   when: required_services is defined and (required_services | length > 0 )
+
+  - name: Assert necessary services are installed and running
+    assert:
+      that:
+        - "item.service in ansible_facts.services"
+        - ansible_facts.services[item.service]['state'] == item.state
+      fail_msg: "Service {{ item.service }} must be installed and running"
+      success_msg: "Service {{ item.service }} is installed and running"
+    with_items: "{{ required_service_states }}"
+
+  # should move to host state
+  - name: Check whether firewalld is running
+    set_fact:
+      manage_firewall: yes
+    ignore_errors: yes
+    when: ('firewalld.service' in ansible_facts.services) or (ansible_facts.services['firewalld.service']['state'] == 'running')
+
+  when: required_service_states is defined and (required_service_states | length > 0 )

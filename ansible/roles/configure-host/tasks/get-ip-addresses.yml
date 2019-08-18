@@ -1,0 +1,50 @@
+---
+
+# this code may be useful in future
+# - name: debug print all interface ipv4 data
+#   when: "{{ hostvars[ansible_fqdn]['ansible_'~item]['ipv4'] is defined }}"
+#   debug:
+#      msg: "{{ hostvars[ansible_fqdn]['ansible_'~item]['ipv4'] | pprint }}"
+#   with_items:
+#      - "{{ ansible_interfaces | map('replace', '-','_') | list }}"
+
+# should use interface rather than IP range to get this!!
+# - name: Get external IP address
+#   set_fact:
+#     external_ip_addr: "{{ item }}"
+#   when: "item | ipaddr('10.0.0.0/16')"
+#   with_items: "{{ ansible_all_ipv4_addresses }}"
+
+# - name: Assert IP address found
+#   assert:
+#     that:
+#       - external_ip_addr is defined
+#     fail_msg: "'external_ip_addr' not found for specified IP range"
+#     success_msg: "'external_ip_addr' found and set to {{ external_ip_addr }}"
+  
+# - name: Get public IP address
+#   set_fact:
+#     public_ip_addr: "{{ item }}"
+#   when: "item | ipaddr('23.101.212.1/24')"
+#   with_items: "{{ ansible_all_ipv4_addresses }}"
+
+# - name: Assert public IP address found
+#   assert:
+#     that:
+#       - public_ip_addr is defined
+#     fail_msg: "'public_ip_addr' not found for specified IP range"
+#     success_msg: "'public_ip_addr' found and set to {{ public_ip_addr }}"
+
+- name: Get cluster IP address
+  set_fact:
+    cluster_ip_addr: "{{ item }}"
+  when: "item | ipaddr('10.0.0.0/16')"
+  with_items: "{{ ansible_all_ipv4_addresses }}"
+
+- name: Assert cluster IP address found
+  assert:
+    that:
+      - cluster_ip_addr is defined
+    fail_msg: "'cluster_ip_addr' not found for specified IP range"
+    success_msg: "'cluster_ip_addr' found and set to {{ cluster_ip_addr }}"
+  

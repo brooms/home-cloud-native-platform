@@ -4,113 +4,91 @@ all:
 
   hosts:
 
-    hcnp-node-50:
-      ansible_connection: ssh
-      ansible_host: 192.168.1.50
-      ansible_user: pi
-    hcnp-node-51:
-      ansible_connection: ssh
-      ansible_host: 192.168.1.51
-      ansible_user: pi
-    # hcnp-node-52:
-    #   ansible_connection: ssh
-    #   ansible_host: 192.168.1.52
-    #   ansible_user: pi
-    hcnp-node-53:
-      ansible_connection: ssh
-      ansible_host: 192.168.1.53
-      ansible_user: pi
-    hcnp-node-54:
-      ansible_connection: ssh
-      ansible_host: 192.168.1.54
-      ansible_user: pi
-    hcnp-node-55:
-      ansible_connection: ssh
-      ansible_host: 192.168.1.55
-      ansible_user: pi
-    local-system:
+    ansible-node:
       ansible_connection: local
       ansible_host: localhost
       ansible_user: philip
-      consul_mode: server
-    camera-test:
+      public_iface: wlp3s0
+    hcnp-node-0:
       ansible_connection: ssh
-      ansible_host: 192.168.1.5
+      ansible_host: rpi-hcnp-node-50
       ansible_user: pi
-    wb-node-48:
+      public_iface: eth0
+      cluster_iface: eth0
+    hcnp-node-1:
       ansible_connection: ssh
-      ansible_host: 192.168.100.48
-      ansible_user: ubuntu
-      consul_mode: server
+      ansible_host: rpi-hcnp-node-53
+      ansible_user: pi
+      public_iface: eth0
+      cluster_iface: eth0
+    hcnp-node-2:
+      ansible_connection: ssh
+      ansible_host: rpi-hcnp-node-54
+      ansible_user: pi
+      public_iface: eth0
+      cluster_iface: eth0
+    hcnp-node-3:
+      ansible_connection: ssh
+      ansible_host: rpi-hcnp-node-55
+      ansible_user: pi
+      public_iface: eth0
+      cluster_iface: eth0
 
   children:
   
-    hcnp_nodes:
+    hcnp_compute_nodes:
       hosts:
-        # hcnp-node-50:
-        # hcnp-node-51:
-        # hcnp-node-52:
-        hcnp-node-53:
-        # hcnp-node-54:
-        # hcnp-node-55:
+        hcnp-node-1:
+        hcnp-node-2:
+        hcnp-node-3:
 
     consul_instances:
       hosts:
-        # hcnp-node-50:
-        #   consul_iface: eth0
-          # consul_node_role: client
-        # hcnp-node-51:
-        #   consul_addresses_http: '0.0.0.0'
-        #   # consul_iface: eth0
-        #   consul_node_role: server
-        #   consul_bootstrap_expect: yes
-        # hcnp-node-53:
-        #   consul_addresses_http: '0.0.0.0'
-        #   # consul_iface: eth0
-        #   consul_node_role: server
-        #   consul_bootstrap_expect: yes
-        hcnp-node-53:
-          consul_addresses_http: '0.0.0.0'
-          # consul_iface: eth0
+        hcnp-node-1:
+          consul_iface: eth0
+          consul_node_role: bootstrap
+        hcnp-node-2:
+          consul_iface: eth0
           consul_node_role: server
-          consul_bootstrap_expect: yes
-        # hcnp-node-54:
-        #   consul_addresses_http: '0.0.0.0'
-        #   # consul_iface: eth0
-        #   consul_node_role: server
-        #   consul_bootstrap_expect: yes
-        # hcnp-node-55:
-        #   consul_iface: eth0
-        #   consul_node_role: server
-          # consul_bootstrap_expect: yes
-        # local-system:
-        #   consul_iface: eth0
-        #   consul_node_role: bootstrap
+        hcnp-node-3:
+          consul_iface: eth0
+          consul_node_role: server
+      vars:
+        consul_dnsmasq_enable: true
 
     docker_instances:
       hosts:
-        # hcnp-node-51:
-        # hcnp-node-53:
-        hcnp-node-53:
-        # hcnp-node-54:
-        # local-system:
+        hcnp-node-1:
+        hcnp-node-2:
+        hcnp-node-3:
+
+    gateway_instances:
+      hosts:
+        hcnp-node-0:
+          traefik_iface: eth0
+          consul_host: 192.168.1.53
+          traefik_binary_url: https://github.com/containous/traefik/releases/download/v1.7.14/traefik_linux-arm
 
     nomad_instances:
       hosts:
-        # hcnp-node-51:
-        #   nomad_node_role: both
-        # hcnp-node-53:
-        #   nomad_node_role: both
-        # hcnp-node-54:
-        #   nomad_node_role: both
-        # hcnp-node-55:
-        #   nomad_node_role: server
-        # local-system:
-        #   nomad_node_role: server
+        hcnp-node-1:
+          consul_iface: eth0
+          consul_node_role: server
+        hcnp-node-2:
+          consul_iface: eth0
+          consul_node_role: client
+        hcnp-node-3:
+          consul_iface: eth0
+          consul_node_role: client
 
     vault_instances:
       hosts:
-        # hcnp-node-51:
-        # hcnp-node-53:
-        # hcnp-node-54:
-        # hcnp-node-55:
+        hcnp-node-1:
+          consul_iface: eth0
+          consul_node_role: bootstrap
+        hcnp-node-2:
+          consul_iface: eth0
+          consul_node_role: server
+        hcnp-node-3:
+          consul_iface: eth0
+          consul_node_role: server

@@ -2,6 +2,10 @@
 
 - hosts: all
 
+  vars:
+
+    update_cache_only: yes
+
   environment:
     http_proxy: "{{ lookup('env', 'http_proxy') }}"
     https_proxy: "{{ lookup('env', 'https_proxy') }}"
@@ -9,35 +13,46 @@
 
   pre_tasks:
 
-    - name: "Assert external_iface exists"
-      assert:
-        that:
-            - external_iface in ansible_interfaces
-        fail_msg: "{{ external_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
-        success_msg: "external_iface set to {{ external_iface }}"
-      when: external_iface is defined
+    - name: Run asserts
+      import_role:
+        name: configure-host
+        tasks_from: run-asserts
+      tags:
+        - asserts
 
+    # does this need to be here?
     - name: Create hcnp_node_list
       set_fact:
-        hcnp_node_list: "{{ groups['hcnp_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
-      when: groups['hcnp_nodes'] is defined
+        hcnp_node_list: "{{ groups['hcnp_compute_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
+      when: groups['hcnp_compute_nodes'] is defined
 
   tasks:
 
-    - name: "Update existing packages"
+    - name: Update host packages
       import_role:
-        name: base
-        tasks_from: update-packages
+        name: configure-host
+        tasks_from: run-package-update
       tags:
         - base
         - update
 
 
-- hosts: ansible-node.consul
+# ensure Ansible dependencies are installed on the Ansible controller
+- hosts: ansible-node2
 
   vars:
 
+    # "ansible_version": {
+    #     "full": "2.1.1.0", 
+    #     "major": 2, 
+    #     "minor": 1, 
+    #     "revision": 1, 
+    #     "string": "2.1.1.0"
+    # }
+    ansible_minimum_version: 2.8
+
     packages: [
+      python-apt,
       python-pip,
       sshpass,
       unzip,
@@ -47,24 +62,36 @@
       { name: netaddr },
     ]
 
+  pre_tasks:
+
+    # Check Ansible version before proceeding
+    - name: Assert Ansible version meets minimum requirements
+      assert:
+        that:
+          - ansible_version.full is version_compare({{ ansible_minimum_version }}, '>=')
+        fail_msg: "Ansible must be version {{ ansible_minimum_version }} or greater to run this play. Install Ansible using pip to ensure the latest version."
+        success_msg: "Ansible version {{ ansible_version.full }} is installed"
+
   tasks:
 
-    - name: "Install dependencies"
+    - name: Install dependencies
       import_role:
-        name: base
+        name: configure-host
         tasks_from: install-dependencies
       tags:
         - base
         - dependencies
 
 
-- hosts: hcnp_nodes
+# Ensure HCNP Compute Nodes are in the required state for installation
+- hosts: hcnp_compute_nodes
     
   vars:
 
     packages: [
-      python-pip,
-      sshpass,
+      { name: python-apt },
+      { name: python-pip },
+      { name: sshpass },
     ]
 
     python_modules: [
@@ -72,17 +99,17 @@
       { name: python-consul },
     ]
 
-    hcnp_node_external_ip: "\
+    hcnp_node_public_ip: "\
       {% if ansible_system == 'FreeBSD' %}\
-        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ external_iface ]['ipv4'][0]['address'], true) }}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ public_iface ]['ipv4'][0]['address'], true) }}\
       {% elif ansible_os_family == 'Windows'  %}\
         {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
       {% else %}\
-        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ external_iface | replace('-', '_')]['ipv4']['address'], true) }}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ public_iface | replace('-', '_')]['ipv4']['address'], true) }}\
       {% endif %}"
     
-    # resolv_nameservers: "{{ groups['rpi-hcnp_nodes'].ansible_default_ipv4.address }}"
-    resolv_nameservers: "{{ groups['hcnp_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
+    # resolv_nameservers: "{{ groups['rpi-hcnp_compute_nodes'].ansible_default_ipv4.address }}"
+    resolv_nameservers: "{{ groups['hcnp_compute_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
     # resolv_domain: "foo.org" # consul domain?
     # resolv_search:
     #   - "foo.bar"
@@ -91,16 +118,14 @@
       - "timeout:2"
       - "rotate"
 
-    storage_base: 
+    # storage_base: 
  
   environment:
 
   pre_tasks:
     
     - debug:
-        msg: "IP address {{ hcnp_node_external_ip }}"
-
-  tasks:
+        msg: "IP address {{ hcnp_node_public_ip }}"
 
     - debug:
         msg: "Running tasks on {{ ansible_host }}_{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
@@ -108,29 +133,14 @@
     - debug:
         var: resolv_nameservers
   
-    - name: "Install dependencies"
+  tasks:
+
+    - name: Configure host
       import_role:
-        name: base
-        tasks_from: install-dependencies
+        name: configure-host
       tags:
         - base
         - dependencies
-
-    - name: "Set hostname"
-      import_role:
-        name: base
-        tasks_from: set-hostname
-      tags:
-        - base
-        - hostname
-
-    - name: "Update hosts"
-      import_role:
-        name: base
-        tasks_from: update-hosts
-      tags:
-        - base
-        - hosts
 
 
 # Run role to install and configure consul
@@ -195,7 +205,7 @@
 - hosts: docker_instances
 
   vars:
-    docker_install_compose: false
+    docker_install_compose: no
     docker_users: [
       "{{ ansible_user_id }}"
     ]
@@ -259,6 +269,24 @@
 
   vars:
     # VARIABLES TO EDIT
+    traefik_version: "{{ lookup('env','TRAEFIK_VERSION') | default('v1.7.14', true) }}"
+    # assume running on linux
+    traefik_host_os: linux
+    # architecture map idea taken from https://github.com/brianshumate/ansible-consul/blob/master/defaults/main.yml
+    traefik_architecture_map:
+      # this first entry seems redundant
+      # (but it's required for reasons)
+      amd64: amd64
+      x86_64: amd64
+      armv6l: arm
+      armv7l: arm
+      aarch64: arm64
+      32-bit: "386"
+      64-bit: amd64
+    traefik_architecture: "{{ traefik_architecture_map[ansible_architecture] }}"
+    # For releases see https://github.com/containous/traefik/releases
+    traefik_binary_url: "https://github.com/containous/traefik/releases/download/{{ traefik_version }}/traefik_{{ traefik_host_os }}-{{ traefik_architecture }}"
+
     traefik_consul_master: "http://{{ consul_host }}"
 
   post_tasks:
@@ -279,90 +307,88 @@
       import_role:
         name: kibatic.traefik
       tags:
-        - docker
-        - nomad
         - traefik
     
 
-# Run up core services
-- hosts: hcnp_nodes
+# # Run up core services
+# - hosts: hcnp_compute_nodes
 
-  vars:
+#   vars:
 
-    # domain_name: 'greenthegarden.net'
-    # hcnp_network: 'hcnp'
+#     # domain_name: 'greenthegarden.net'
+#     # hcnp_network: 'hcnp'
 
-    run_portainer: yes
+#     run_portainer: yes
 
-  pre_tasks:
+#   pre_tasks:
 
-    # - name: "Collect facts about system services"
-    #   service_facts:
-    #   register: services_state
+#     # - name: "Collect facts about system services"
+#     #   service_facts:
+#     #   register: services_state
 
-    # - name: "Check required services are running"
-    #   assert:
-    #     that:
-    #       - "ansible_facts.services['{{ item }}'].state == 'running'"
-    #     fail_msg: "{{ item }} is not running"
-    #     success_msg: "{{ item }} is running"
-    #   loop:
-    #     - consul.service
-    #     - docker.service
-    #     - nomad.service
+#     # - name: "Check required services are running"
+#     #   assert:
+#     #     that:
+#     #       - "ansible_facts.services['{{ item }}'].state == 'running'"
+#     #     fail_msg: "{{ item }} is not running"
+#     #     success_msg: "{{ item }} is running"
+#     #   loop:
+#     #     - consul.service
+#     #     - docker.service
+#     #     - nomad.service
 
-    # - name: "Set running services facts"
-    #   set_fact:
-    #     service_consul_running: yes
-    #     service_docker_running: yes
-    #     service_nomad_running: yes
+#     # - name: "Set running services facts"
+#     #   set_fact:
+#     #     service_consul_running: yes
+#     #     service_docker_running: yes
+#     #     service_nomad_running: yes
 
-    # - name: "Ensure required modules are installed"
-    #   become: yes
-    #   pip:
-    #     name: "{{ item }}"
-    #     state: present
-    #   loop:
-    #     - python-consul
-    #     - docker
+#     # - name: "Ensure required modules are installed"
+#     #   become: yes
+#     #   pip:
+#     #     name: "{{ item }}"
+#     #     state: present
+#     #   loop:
+#     #     - python-consul
+#     #     - docker
 
-    # - debug:
-    #     var: consul_iface
+#     # - debug:
+#     #     var: consul_iface
 
-    # - debug:
-    #     var: consul_bind_address
+#     # - debug:
+#     #     var: consul_bind_address
 
-    # - debug:
-    #     var: consul_advertise_address
+#     # - debug:
+#     #     var: consul_advertise_address
         
-    # - debug:
-    #     var: nomad_iface
+#     # - debug:
+#     #     var: nomad_iface
 
-    # - debug:
-    #     var: nomad_bind_address
+#     # - debug:
+#     #     var: nomad_bind_address
 
-    # - debug:
-    #     var: nomad_advertise_address
+#     # - debug:
+#     #     var: nomad_advertise_address
 
-    - name: Create hcnp_node_list
-      set_fact:
-        hcnp_node_list: "{{ groups['hcnp_nodes'] | map('extract', hostvars, 'ansible_host') | list }}"
-      when: groups['hcnp_nodes'] is defined
+#     - name: Create hcnp_node_list
+#       set_fact:
+#         hcnp_node_list: "{{ groups['hcnp_compute_nodes'] | map('extract', hostvars, 'ansible_host') | list }}"
+#       when: groups['hcnp_compute_nodes'] is defined
 
-    - name: "Configure portainer"
-      import_role:
-        name: portainer
-        tasks_from: configuration.yml
-      tags:
-        - portainer
-      when: run_portainer
+#     - name: "Configure portainer"
+#       import_role:
+#         name: portainer
+#         tasks_from: configuration.yml
+#       tags:
+#         - portainer
+#       when: run_portainer
 
-  tasks:
+#   tasks:
 
-    - name: "Run Portainer Nomad job"
-      import_role:
-        name: portainer
-        tasks_from: nomad.yml
-      tags:
-        - portainer
-      when: nomad_node_role == 'server' and run_portainer
+#     - name: "Run Portainer Nomad job"
+#       import_role:
+#         name: portainer
+#         tasks_from: nomad.yml
+#       tags:
+#         - portainer
+#       when: nomad_node_role == 'server' and run_portainer

@@ -4,35 +4,35 @@ all:
 
   hosts:
 
-    ansible-node.consul:
+    ansible-node:
       ansible_connection: local
       ansible_host: localhost
-      external_iface: enp0s8
+      public_iface: enp0s8
     gateway-node.consul:
       ansible_ssh_host: 172.16.1.200
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/gateway-node/virtualbox/private_key
       ansible_ssh_user: vagrant
-      external_iface: eth1
+      public_iface: eth1
     hcnp-node-1.consul:
       ansible_ssh_host: 172.16.1.120
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-1/virtualbox/private_key
       ansible_ssh_user: vagrant
-      external_iface: enp0s8
+      public_iface: enp0s8
     hcnp-node-2.consul:
       ansible_ssh_host: 172.16.1.121
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-2/virtualbox/private_key
       ansible_ssh_user: vagrant
-      external_iface: enp0s8
+      public_iface: enp0s8
     hcnp-node-3.consul:
       ansible_ssh_host: 172.16.1.122
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-3/virtualbox/private_key
       ansible_ssh_user: vagrant
-      external_iface: enp0s8
+      public_iface: enp0s8
 
 
   children:
   
-    hcnp_nodes:
+    hcnp_compute_nodes:
       hosts:
         hcnp-node-1.consul:
         hcnp-node-2.consul:

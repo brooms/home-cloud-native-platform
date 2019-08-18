@@ -1,42 +1,5 @@
 ---
 
-- hosts: all
-
-  vars:
-
-    update_cache_only: yes
-
-  environment:
-    http_proxy: "{{ lookup('env', 'http_proxy') }}"
-    https_proxy: "{{ lookup('env', 'https_proxy') }}"
-    no_proxy: "{{ lookup('env', 'no_proxy') }}"
-
-  pre_tasks:
-
-    - name: Run asserts
-      import_role:
-        name: configure-host
-        tasks_from: run-asserts
-      tags:
-        - asserts
-
-    # does this need to be here?
-    - name: Create hcnp_node_list
-      set_fact:
-        hcnp_node_list: "{{ groups['hcnp_compute_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
-      when: groups['hcnp_compute_nodes'] is defined
-
-  tasks:
-
-    - name: Update host packages
-      import_role:
-        name: configure-host
-        tasks_from: run-package-update
-      tags:
-        - base
-        - update
-
-
 # ensure Ansible dependencies are installed on the Ansible controller
 - hosts: ansible-node2
 
@@ -83,9 +46,9 @@
         - dependencies
 
 
-# Ensure HCNP Compute Nodes are in the required state for installation
-- hosts: hcnp_compute_nodes2
-    
+# Ensure HCNP Compute Nodes are in the required state for installation of services
+- hosts: hcnp_compute_nodes
+  
   vars:
 
     packages: [
@@ -118,12 +81,28 @@
       - "timeout:2"
       - "rotate"
 
-    # storage_base: 
- 
+    # storage_base:       update_cache_only: yes
+
   environment:
+    http_proxy: "{{ lookup('env', 'http_proxy') }}"
+    https_proxy: "{{ lookup('env', 'https_proxy') }}"
+    no_proxy: "{{ lookup('env', 'no_proxy') }}"
 
   pre_tasks:
-    
+
+    - name: Run asserts
+      import_role:
+        name: configure-host
+        tasks_from: run-asserts
+      tags:
+        - asserts
+
+    # does this need to be here?
+    - name: Create hcnp_node_list
+      set_fact:
+        hcnp_node_list: "{{ groups['hcnp_compute_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
+      when: groups['hcnp_compute_nodes'] is defined
+
     - debug:
         msg: "IP address {{ hcnp_node_public_ip }}"
 
@@ -135,6 +114,14 @@
   
   tasks:
 
+    - name: Update host packages
+      import_role:
+        name: configure-host
+        tasks_from: run-package-update
+      tags:
+        - base
+        - update
+
     - name: Configure host
       import_role:
         name: configure-host
@@ -143,8 +130,8 @@
         - dependencies
 
 
-# Run role to install and configure consul
-- hosts: consul_instances2
+# Run role to install and configure Hashicorp Consul on hosts specified as consul_instances
+- hosts: consul_instances
 
   vars:
     # consul_install_dependencies: false
@@ -172,7 +159,7 @@
 
   tasks:
 
-    - name: "Run consul role"
+    - name: Run consul role
       become: yes
       import_role:
         name: brianshumate.consul
@@ -180,7 +167,7 @@
         - consul
 
 
-# Run role to install and configure vault
+# Run role to install and configure Hashicorp Vault on hosts specified as vault_instances
 - hosts: vault_instances2
 
   vars:
@@ -192,7 +179,7 @@
 
   tasks:
 
-    - name: "Run vault role"
+    - name: Run vault role
       become: true
       become_user: root
       import_role:
@@ -201,10 +188,21 @@
         - vault
 
 
-# Run role to install and configure docker
-- hosts: docker_instances2
+# Run role to install and configure Docker on hosts specified as docker_instances
+- hosts: docker_instances
 
   vars:
+    # architecture map idea taken from https://github.com/brianshumate/ansible-consul/blob/master/defaults/main.yml
+    docker_apt_arch_map:
+      # this first entry seems redundant
+      # (but it's required for reasons)
+      amd64: amd64
+      x86_64: amd64
+      armv6l: armhf
+      armv7l: armhf
+      aarch64: arm64
+      64-bit: amd64
+    docker_apt_arch: "{{ docker_apt_arch_map[ansible_architecture] }}"
     docker_install_compose: no
     docker_users: [
       "{{ ansible_user_id }}"
@@ -212,15 +210,16 @@
 
   post_tasks:
 
-    - import_role:
-        name: docker
+    - name: Configure Docker
+      import_role:
+        name: configure-docker
       tags:
         - docker
         - configuration
 
   tasks:
 
-    - name: install docker
+    - name: Install Docker
       become: yes
       import_role:
         name: geerlingguy.docker
@@ -229,8 +228,8 @@
         - docker
 
 
-# Run role to install and configure nomad
-- hosts: nomad_instances2
+# Run role to install and configure Hashicorp Nomad on hosts specified as nomad_instances
+- hosts: nomad_instances
 
   vars:
     nomad_datacenter: "hcnp"
@@ -266,7 +265,7 @@
         - nomad
 
 
-# Run role to install and configure Traefik
+# Run role to install and configure Containous Traefik on hosts specified as gateway_instances
 - hosts: gateway_instances
 
   vars:
@@ -290,7 +289,7 @@
     traefik_architecture: "{{ traefik_architecture_map[ansible_architecture] }}"
     # For releases see https://github.com/containous/traefik/releases
     traefik_binary_url: "https://github.com/containous/traefik/releases/download/{{ traefik_version }}/traefik_{{ traefik_host_os }}-{{ traefik_architecture }}"
-    traefik_template: "{{ playbook_dir }}/roles/traefik/templates/traefik.toml"
+    traefik_template: "{{ playbook_dir }}/templates/traefik.toml"
 
   pre_tasks:
 
@@ -298,18 +297,6 @@
       debug:
         msg: "Installing Traefik {{ traefik_version }} for achitecture {{ traefik_architecture }} on host {{ ansible_host }}"
   
-  # post_tasks:
-
-  #   - name: Configure Traefik
-  #     become: yes
-  #     ignore_errors: yes
-  #     import_role:
-  #       name: traefik
-  #       tasks_from: post-install.yml
-  #     tags:
-  #       - traefik
-  #       - configuration
-
   tasks:
 
     - name: Install and configure Traefik

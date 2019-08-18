@@ -1,0 +1,13 @@
+---
+
+- name: Get host IP addresses
+  import_tasks: get-ip-addresses.yml
+
+- name: Get services running on host
+  import_tasks: get-host-services.yml
+
+- name: Check whether firewalld is running
+  set_fact:
+    manage_firewall: yes
+  ignore_errors: yes
+  when: ('firewalld.service' in ansible_facts.services) or (ansible_facts.services['firewalld.service']['state'] == 'running')

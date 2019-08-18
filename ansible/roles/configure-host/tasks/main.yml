@@ -7,9 +7,6 @@
     - base
     - dependencies
 
-# - name: Get IP address
-#   import_tasks: get-ip-addresses.yml
-
 - name: Set hostname
   import_tasks: set-hostname.yml
   tags:

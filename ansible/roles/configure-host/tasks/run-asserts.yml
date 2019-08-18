@@ -19,23 +19,8 @@
 - name: Asset required services are installed and running
   block:
 
-  - name: Get running services
-    service_facts:
-
-  - name: Debug variable ansible_facts.services
-    debug:
-      var: ansible_facts.services
-      verbosity: 2
-
-  # - name: Assert necessary services are installed and running
-  #   assert:
-  #     that:
-  #       - "'docker.service' in ansible_facts.services"
-  #       - ansible_facts.services['docker.service']['state'] == 'running'
-  #     fail_msg: "Docker must be installed and running"
-  #     success_msg: "Docker is installed and running"
-  #   with_items: "{{ required_service_states }}"
-  #   when: required_services is defined and (required_services | length > 0 )
+  - name: Get services running on host
+    import_tasks: get-host-services.yml
 
   - name: Assert necessary services are installed and running
     assert:
@@ -45,12 +30,5 @@
       fail_msg: "Service {{ item.service }} must be installed and running"
       success_msg: "Service {{ item.service }} is installed and running"
     with_items: "{{ required_service_states }}"
-
-  # should move to host state
-  - name: Check whether firewalld is running
-    set_fact:
-      manage_firewall: yes
-    ignore_errors: yes
-    when: ('firewalld.service' in ansible_facts.services) or (ansible_facts.services['firewalld.service']['state'] == 'running')
 
   when: required_service_states is defined and (required_service_states | length > 0 )

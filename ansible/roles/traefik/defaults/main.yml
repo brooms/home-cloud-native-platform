@@ -1,3 +1,0 @@
----
-
-traefik_address: "{{ hostvars[inventory_hostname]['ansible_' + traefik_iface]['ipv4']['address'] }}"

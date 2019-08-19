@@ -1,0 +1,9 @@
+---
+
+- name: Get running services
+  service_facts:
+
+- name: Debug variable ansible_facts.services
+  debug:
+    var: ansible_facts.services
+    verbosity: 2

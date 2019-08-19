@@ -1,9 +1,6 @@
 ---
 
-- debug:
-    msg: "Set hostname to {{ inventory_hostname }}"
-
-- name: Set hostname
+- name: "Set hostname to {{ inventory_hostname }}"
   become: yes
   hostname:
     name: "{{ inventory_hostname }}"

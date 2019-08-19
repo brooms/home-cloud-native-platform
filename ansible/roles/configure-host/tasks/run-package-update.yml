@@ -1,0 +1,32 @@
+---
+
+# Upgrading all packages here means the package manager cache is updated
+# so subsequent package installs work.
+- name: Update all packages
+  block:
+
+  - name: Update all packages to the latest version using apt
+    become: yes
+    apt:
+      cache_valid_time: 3600
+      upgrade: dist
+      update_cache: yes
+    when: ansible_pkg_mgr == 'apt'
+
+  - name: upgrade all packages to the latest version using yum
+    become: yes
+    yum:
+      name: '*'
+      state: latest
+    when: ansible_pkg_mgr == 'yum'
+    
+  when: not update_cache_only
+
+- name: Run the equivalent of "apt-get update" as a separate step
+  become: yes
+  apt:
+    update_cache: yes
+  when:
+    - update_cache_only is not defined
+    - update_cache_only
+    - ansible_pkg_mgr == 'apt'

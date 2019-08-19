@@ -1,0 +1,26 @@
+---
+
+
+- name: Install base dependencies
+  import_tasks: install-dependencies.yml
+  tags:
+    - base
+    - dependencies
+
+- name: Set hostname
+  import_tasks: set-hostname.yml
+  tags:
+    - base
+    - hostname
+
+- name: Update hosts file
+  import_tasks: update-hosts-file.yml
+  tags:
+    - base
+    - hosts
+
+- name: Configure local storage
+  import_tasks: configure-storage.yml
+  tags:
+    - base
+    - storage

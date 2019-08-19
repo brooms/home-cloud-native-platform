@@ -1,0 +1,34 @@
+---
+
+- name: "Assert interface {{ public_iface}} defined as public_iface exists on host"
+  assert:
+    that:
+      - public_iface in ansible_interfaces
+    fail_msg: "{{ public_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for host"
+    success_msg: "public_iface set to {{ public_iface }}"
+  when: public_iface is defined
+
+- name: "Assert interface {{ cluster_iface }} defined as cluster_iface exists on host"
+  assert:
+    that:
+      - cluster_iface in ansible_interfaces
+    fail_msg: "{{ cluster_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for host"
+    success_msg: "cluster_iface set to {{ cluster_iface }}"
+  when: cluster_iface is defined
+
+- name: Asset required services are installed and running
+  block:
+
+  - name: Get services running on host
+    import_tasks: get-host-services.yml
+
+  - name: Assert necessary services are installed and running
+    assert:
+      that:
+        - "item.service in ansible_facts.services"
+        - ansible_facts.services[item.service]['state'] == item.state
+      fail_msg: "Service {{ item.service }} must be installed and running"
+      success_msg: "Service {{ item.service }} is installed and running"
+    with_items: "{{ required_service_states }}"
+
+  when: required_service_states is defined and (required_service_states | length > 0 )

@@ -9,8 +9,9 @@
     line: '127.0.1.1    {{ inventory_hostname }}'
     state: present
 
-- debug:
-    var: groups['hcnp_nodes']
+- name: Debug variable groups['hcnp_compute_nodes']
+  debug:
+    var: groups['hcnp_compute_nodes']
 
 # src: https://gist.github.com/rothgar/8793800
 - name: "Build hosts file"
@@ -22,4 +23,4 @@
     state: present
     backup: yes
   when: hostvars[item].ansible_default_ipv4.address is defined
-  loop: "{{ groups['hcnp_nodes']|flatten(levels=1) }}"
+  loop: "{{ groups['hcnp_compute_nodes']|flatten(levels=1) }}"

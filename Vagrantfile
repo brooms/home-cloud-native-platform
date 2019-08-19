@@ -30,7 +30,7 @@ end
 
 def createNodes(config, ansible_node_settings, base_settings, hcnp_node_settings)
 
-  # Set up hcnp_nodes
+  # Set up hcnp_compute_nodes
   (1..base_settings['hcnp_node_count']).each do |i|
 
     hcnp_node_ip_base = Integer(hcnp_node_settings['external_ip_base']) + (i-1)

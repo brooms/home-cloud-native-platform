@@ -1,0 +1,26 @@
+---
+
+# "ansible_version": {
+#     "full": "2.1.1.0", 
+#     "major": 2, 
+#     "minor": 1, 
+#     "revision": 1, 
+#     "string": "2.1.1.0"
+# }
+ansible_minimum_version: 2.8
+
+update_cache_only: yes
+
+packages: []
+
+python_modules: []
+
+storage_base: "/hcnp"
+
+required_service_states: []
+
+resolv_nameservers: []
+resolv_domain: ""
+resolv_search: []
+resolv_sortlist: []
+resolv_options: []

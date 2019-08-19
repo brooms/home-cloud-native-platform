@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
 # see https://www.ssh.com/ssh/keygen for details
-key_algorithm="rsa" # one of rsa, dsa, ecdsa, ed25519
-key_size="4096"
-key_comment="wb-cloud-native-platform"
-key_file="id_${key_algorithm}_hcnp"
-key_file_dir="${HOME}/.ssh"
+
+source ./key_vars.sh
 
 if [ -f ${key_file_dir}/${key_file} ] ; then
   echo "key file ${key_file_dir}/${key_file} already exists"

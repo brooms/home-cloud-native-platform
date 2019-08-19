@@ -5,6 +5,9 @@
 - name: Update all packages
   block:
 
+  - debug:
+      msg: "Ansible package manager {{ ansible_pkg_mgr }}"
+
   - name: Update all packages to the latest version using apt
     become: yes
     apt:
@@ -26,7 +29,5 @@
   become: yes
   apt:
     update_cache: yes
-  when:
-    - update_cache_only is not defined
-    - update_cache_only
-    - ansible_pkg_mgr == 'apt'
+  when: (update_cache_only is not defined or update_cache_only) and
+        ansible_pkg_mgr == 'apt'

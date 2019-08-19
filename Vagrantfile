@@ -163,10 +163,10 @@ Vagrant.configure("2") do |config|
     v.gui = false
   end
 
-  createAnsibleNode(config, ansible_node_settings, base_settings)
-
   createNodes(config, ansible_node_settings, base_settings, hcnp_node_settings)
 
   createGatewayNode(config, ansible_node_settings, base_settings, gateway_node_settings)
+
+  createAnsibleNode(config, ansible_node_settings, base_settings)
 
 end

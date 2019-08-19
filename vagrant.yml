@@ -16,7 +16,7 @@ ansible_node:
   external_ip_base: 100
 
 hcnp_node:
-  name: "hcnp-node"
+  name: "compute-node"
   memory: 1024
   cpus: 1
   external_network: "private_network"

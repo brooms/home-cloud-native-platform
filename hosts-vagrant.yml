@@ -4,7 +4,7 @@ all:
 
   hosts:
 
-    ansible-node:
+    ansible-node.consul:
       ansible_connection: local
       ansible_host: localhost
       public_iface: enp0s8
@@ -13,73 +13,73 @@ all:
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/gateway-node/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: eth1
-    hcnp-node-1.consul:
+    compute-node-1.consul:
       ansible_ssh_host: 172.16.1.120
-      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-1/virtualbox/private_key
+      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/compute-node-1/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: enp0s8
-    hcnp-node-2.consul:
+    compute-node-2.consul:
       ansible_ssh_host: 172.16.1.121
-      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-2/virtualbox/private_key
+      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/compute-node-2/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: enp0s8
-    hcnp-node-3.consul:
+    compute-node-3.consul:
       ansible_ssh_host: 172.16.1.122
-      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/hcnp-node-3/virtualbox/private_key
+      ansible_ssh_private_key_file: /vagrant/.vagrant/machines/compute-node-3/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: enp0s8
 
 
   children:
   
-    hcnp_compute_nodes:
+    compute_nodes:
       hosts:
-        hcnp-node-1.consul:
-        hcnp-node-2.consul:
-        hcnp-node-3.consul:
+        compute-node-1.consul:
+        compute-node-2.consul:
+        compute-node-3.consul:
 
     consul_instances:
       hosts:
-        hcnp-node-1.consul:
+        compute-node-1.consul:
           consul_iface: enp0s8
           consul_node_role: bootstrap
           consul_dnsmasq_enable: true
-        hcnp-node-2.consul:
+        compute-node-2.consul:
           consul_iface: enp0s8
           consul_node_role: server
           consul_dnsmasq_enable: true
-        hcnp-node-3.consul:
+        compute-node-3.consul:
           consul_iface: enp0s8
           consul_node_role: server
           consul_dnsmasq_enable: true
 
     vault_instances:
       hosts:
-        hcnp-node-1.consul:
+        compute-node-1.consul:
           vault_iface: enp0s8
           vault_node_role: bootstrap
-        hcnp-node-2.consul:
+        compute-node-2.consul:
           vault_iface: enp0s8
           vault_node_role: server
-        hcnp-node-3.consul:
+        compute-node-3.consul:
           vault_iface: enp0s8
           vault_node_role: server
 
     docker_instances:
       hosts:
-        hcnp-node-1.consul:
-        hcnp-node-2.consul:
-        hcnp-node-3.consul:
+        compute-node-1.consul:
+        compute-node-2.consul:
+        compute-node-3.consul:
 
     nomad_instances:
       hosts:
-        hcnp-node-1.consul:
+        compute-node-1.consul:
           nomad_iface: enp0s8
           nomad_node_role: server
-        hcnp-node-2.consul:
+        compute-node-2.consul:
           nomad_iface: enp0s8
           nomad_node_role: client
-        hcnp-node-3.consul:
+        compute-node-3.consul:
           nomad_iface: enp0s8
           nomad_node_role: client
 

@@ -1,7 +1,7 @@
 ---
 
 # Install and configure docker
-- hosts: hcnp_compute_nodes
+- hosts: compute_nodes
 
   vars:
      docker_upgrade: false
@@ -13,7 +13,7 @@
 
     - name: "Get list of IP addresses"
       set_fact:
-        node_ip_addresses: "{{ groups['hcnp_compute_nodes'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}"
+        node_ip_addresses: "{{ groups['compute_nodes'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}"
 
     - debug:
         var: node_ip_addresses

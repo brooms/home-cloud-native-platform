@@ -1,17 +1,10 @@
 ---
 
 # ensure Ansible dependencies are installed on the Ansible controller
-- hosts: ansible-node2
+- hosts: ansible-node.consul
 
   vars:
 
-    # "ansible_version": {
-    #     "full": "2.1.1.0", 
-    #     "major": 2, 
-    #     "minor": 1, 
-    #     "revision": 1, 
-    #     "string": "2.1.1.0"
-    # }
     ansible_minimum_version: 2.8
 
     packages: [
@@ -47,7 +40,7 @@
 
 
 # Ensure HCNP Compute Nodes are in the required state for installation of services
-- hosts: hcnp_compute_nodes
+- hosts: compute_nodes
   
   vars:
 
@@ -62,7 +55,7 @@
       { name: python-consul },
     ]
 
-    hcnp_node_public_ip: "\
+    compute_node_public_ip: "\
       {% if ansible_system == 'FreeBSD' %}\
         {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ public_iface ]['ipv4'][0]['address'], true) }}\
       {% elif ansible_os_family == 'Windows'  %}\
@@ -72,7 +65,7 @@
       {% endif %}"
     
     # resolv_nameservers: "{{ groups['rpi-hcnp_compute_nodes'].ansible_default_ipv4.address }}"
-    resolv_nameservers: "{{ groups['hcnp_compute_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
+    resolv_nameservers: "{{ groups['compute_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
     # resolv_domain: "foo.org" # consul domain?
     # resolv_search:
     #   - "foo.bar"
@@ -98,13 +91,13 @@
         - asserts
 
     # does this need to be here?
-    - name: Create hcnp_node_list
+    - name: Create compute_node_list
       set_fact:
-        hcnp_node_list: "{{ groups['hcnp_compute_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
-      when: groups['hcnp_compute_nodes'] is defined
+        compute_node_list: "{{ groups['compute_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
+      when: groups['compute_nodes'] is defined
 
     - debug:
-        msg: "IP address {{ hcnp_node_public_ip }}"
+        msg: "IP address {{ compute_node_public_ip }}"
 
     - debug:
         msg: "Running tasks on {{ ansible_host }}_{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
@@ -168,7 +161,7 @@
 
 
 # Run role to install and configure Hashicorp Vault on hosts specified as vault_instances
-- hosts: vault_instances2
+- hosts: vault_instances
 
   vars:
       vault_datacenter: "hcnp"
@@ -234,11 +227,11 @@
   vars:
     nomad_datacenter: "hcnp"
     nomad_domain: "consul"
-    nomad_network_interface: enp0s8
+    nomad_bind_address: "{{ hostvars[inventory_hostname]['ansible_' + nomad_iface]['ipv4']['address'] }}"
+#    nomad_network_interface: enp0s8
     # CONSTANTS
-    nomad_consul_address: http://127.0.0.1:8500
-    nomad_bind_address: "0.0.0.0"
     nomad_use_consul: yes
+    nomad_consul_address: http://127.0.0.1:8500
     nomad_vault_enabled: yes
     # Vault address is set dynamically
     nomad_vault_address: "http://{{ hostvars[inventory_hostname]['ansible_' + nomad_iface]['ipv4']['address'] }}:8200"
@@ -305,87 +298,3 @@
         name: kibatic.traefik
       tags:
         - traefik
-    
-
-# # Run up core services
-# - hosts: hcnp_compute_nodes
-
-#   vars:
-
-#     # domain_name: 'greenthegarden.net'
-#     # hcnp_network: 'hcnp'
-
-#     run_portainer: yes
-
-#   pre_tasks:
-
-#     # - name: "Collect facts about system services"
-#     #   service_facts:
-#     #   register: services_state
-
-#     # - name: "Check required services are running"
-#     #   assert:
-#     #     that:
-#     #       - "ansible_facts.services['{{ item }}'].state == 'running'"
-#     #     fail_msg: "{{ item }} is not running"
-#     #     success_msg: "{{ item }} is running"
-#     #   loop:
-#     #     - consul.service
-#     #     - docker.service
-#     #     - nomad.service
-
-#     # - name: "Set running services facts"
-#     #   set_fact:
-#     #     service_consul_running: yes
-#     #     service_docker_running: yes
-#     #     service_nomad_running: yes
-
-#     # - name: "Ensure required modules are installed"
-#     #   become: yes
-#     #   pip:
-#     #     name: "{{ item }}"
-#     #     state: present
-#     #   loop:
-#     #     - python-consul
-#     #     - docker
-
-#     # - debug:
-#     #     var: consul_iface
-
-#     # - debug:
-#     #     var: consul_bind_address
-
-#     # - debug:
-#     #     var: consul_advertise_address
-        
-#     # - debug:
-#     #     var: nomad_iface
-
-#     # - debug:
-#     #     var: nomad_bind_address
-
-#     # - debug:
-#     #     var: nomad_advertise_address
-
-#     - name: Create hcnp_node_list
-#       set_fact:
-#         hcnp_node_list: "{{ groups['hcnp_compute_nodes'] | map('extract', hostvars, 'ansible_host') | list }}"
-#       when: groups['hcnp_compute_nodes'] is defined
-
-#     - name: "Configure portainer"
-#       import_role:
-#         name: portainer
-#         tasks_from: configuration.yml
-#       tags:
-#         - portainer
-#       when: run_portainer
-
-#   tasks:
-
-#     - name: "Run Portainer Nomad job"
-#       import_role:
-#         name: portainer
-#         tasks_from: nomad.yml
-#       tags:
-#         - portainer
-#       when: nomad_node_role == 'server' and run_portainer

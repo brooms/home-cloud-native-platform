@@ -30,8 +30,6 @@ end
 
 def createNodes(config, ansible_node_settings, base_settings, hcnp_node_settings)
 
-  config.vm.box = "ubuntu/xenial64"
-
   # Set up hcnp_nodes
   (1..base_settings['hcnp_node_count']).each do |i|
 
@@ -40,6 +38,8 @@ def createNodes(config, ansible_node_settings, base_settings, hcnp_node_settings
     hcnp_node_name = hcnp_node_settings['name'] + "-" + String(i)
 
     config.vm.define hcnp_node_name do |hcnp_node|
+
+      hcnp_node.vm.box = "ubuntu/xenial64"
 
       puts "Node name set to %s" % hcnp_node_name
       puts "Node IP address set to %s" % hcnp_node_ip
@@ -64,13 +64,15 @@ end
 
 def createAnsibleNode(config, ansible_node_settings, base_settings)
 
-  config.vm.box = "ubuntu/xenial64"
+
   # Create a machine to run ansible
   ansible_node_ip_base = Integer(ansible_node_settings['external_ip_base'])
   ansible_node_ip = generate_node_ip(base_settings, ansible_node_ip_base)
   ansible_node_name = ansible_node_settings['name']
 
   config.vm.define ansible_node_name do |ansible_node|
+
+    ansible_node.vm.box = "ubuntu/xenial64"
 
     ansible_node.vm.network ansible_node_settings['external_network'], ip: ansible_node_ip, netmask: base_settings["external_netmask"]
     # ansible_node.vm.network "private_network", ip: "172.16.1.1", netmask: "255.255.255.0"
@@ -113,13 +115,13 @@ end
 
 def createGatewayNode(config, ansible_node_settings, base_settings, gateway_node_settings)
 
-  config.vm.box = "debian/jessie64"
-
   gateway_node_ip_base = Integer(gateway_node_settings['external_ip_base'])
   gateway_node_ip = generate_node_ip(base_settings, gateway_node_ip_base)
   gateway_node_name = gateway_node_settings['name']
 
   config.vm.define gateway_node_name do |gateway_node|
+
+  gateway_node.vm.box = "debian/jessie64"
 
   gateway_node.vm.network ansible_node_settings['external_network'], ip: gateway_node_ip, netmask: base_settings["external_netmask"]
     gateway_node.vm.provider "virtualbox" do |vb|

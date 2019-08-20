@@ -227,9 +227,10 @@
   vars:
     nomad_datacenter: "hcnp"
     nomad_domain: "consul"
-    nomad_bind_address: "{{ hostvars[inventory_hostname]['ansible_' + nomad_iface]['ipv4']['address'] }}"
-#    nomad_network_interface: enp0s8
+    nomad_bind_address: "0.0.0.0"
     # CONSTANTS
+    # Bootstrap expect must be set when using Consul, this is the initial count of servers to wait for before electing a leader
+    nomad_bootstrap_expect: 1
     nomad_use_consul: yes
     nomad_consul_address: http://127.0.0.1:8500
     nomad_vault_enabled: yes

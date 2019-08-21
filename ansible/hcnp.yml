@@ -16,6 +16,7 @@
 
     python_modules: [
       { name: netaddr },
+      { name: python-consul },
     ]
 
   pre_tasks:
@@ -137,8 +138,9 @@
     consul_install_remotely: true
     consul_client_address: "0.0.0.0"
     consul_acl_master_token_display: yes
-    # consul_debug: yes
-    # consul_log_level: INFO
+    # Consul bug 6346 to do with ui-content-path in config - leave in, harmless for now but will work when it is fixed
+    consul_custom_config:
+      ui-content-path: '/consul-ui/'
 
   pre_tasks:
 
@@ -293,9 +295,10 @@
   
   tasks:
 
-    - name: Install and configure Traefik
+    - name: Run Traefik role
       become: true
+      become_user: root
       import_role:
-        name: kibatic.traefik
+        name: traefik
       tags:
         - traefik

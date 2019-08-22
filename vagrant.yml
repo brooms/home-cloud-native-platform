@@ -13,18 +13,25 @@ ansible_node:
   memory: 1024
   cpus: 1
   external_network: "private_network"
-  external_ip_base: 100
+  external_ip_base: 3
 
 hcnp_node:
   name: "compute-node"
   memory: 1024
   cpus: 1
   external_network: "private_network"
-  external_ip_base: 120
+  external_ip_base: 10
 
 gateway_node:
   name: "gateway-node"
   memory: 1024
   cpus: 1
   external_network: "private_network"
-  external_ip_base: 200
+  external_ip_base: 2
+
+dns_node:
+  name: "dns-node"
+  memory: 1024
+  cpus: 1
+  external_network: "private_network"
+  external_ip_base: 254

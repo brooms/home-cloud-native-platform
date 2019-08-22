@@ -17,6 +17,7 @@ base_settings = config_file['configs'][config_file['configs']['use']]
 ansible_node_settings = config_file['ansible_node']
 hcnp_node_settings = config_file['hcnp_node']
 gateway_node_settings = config_file['gateway_node']
+dns_node_settings = config_file['dns_node']
 
 puts "%s" % base_settings
 
@@ -141,6 +142,34 @@ def createGatewayNode(config, ansible_node_settings, base_settings, gateway_node
 
 end
 
+def createDNSNode(config, ansible_node_settings, base_settings, dns_node_settings)
+
+  dns_node_ip_base = Integer(dns_node_settings['external_ip_base'])
+  dns_node_ip = generate_node_ip(base_settings, dns_node_ip_base)
+  dns_node_name = dns_node_settings['name']
+
+  config.vm.define dns_node_name do |dns_node|
+
+    dns_node.vm.box = "debian/jessie64"
+
+    dns_node.vm.network ansible_node_settings['external_network'], ip: dns_node_ip, netmask: base_settings["external_netmask"]
+    dns_node.vm.provider "virtualbox" do |vb|
+      vb.name = dns_node_name
+      vb.memory = dns_node_settings['memory']
+      vb.cpus = dns_node_settings['cpus']
+      vb.linked_clone = true
+      vb.customize ["modifyvm", :id, "--ioapic", "on"]
+      # Enable NAT hosts DNS resolver
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    end
+
+    dns_node.vm.post_up_message = "DNS node spun up!"
+
+  end
+
+end
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -164,6 +193,8 @@ Vagrant.configure("2") do |config|
   end
 
   createNodes(config, ansible_node_settings, base_settings, hcnp_node_settings)
+
+  createDNSNode(config, ansible_node_settings, base_settings, dns_node_settings)
 
   createGatewayNode(config, ansible_node_settings, base_settings, gateway_node_settings)
 

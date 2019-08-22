@@ -9,22 +9,27 @@ all:
       ansible_host: localhost
       public_iface: enp0s8
     gateway-node.consul:
-      ansible_ssh_host: 172.16.1.200
+      ansible_ssh_host: 172.16.1.1
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/gateway-node/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: eth1
+    dns-node.consul:
+        ansible_ssh_host: 172.16.1.254
+        ansible_ssh_private_key_file: /vagrant/.vagrant/machines/dns-node/virtualbox/private_key
+        ansible_ssh_user: vagrant
+        public_iface: eth1
     compute-node-1.consul:
-      ansible_ssh_host: 172.16.1.120
+      ansible_ssh_host: 172.16.1.10
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/compute-node-1/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: enp0s8
     compute-node-2.consul:
-      ansible_ssh_host: 172.16.1.121
+      ansible_ssh_host: 172.16.1.11
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/compute-node-2/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: enp0s8
     compute-node-3.consul:
-      ansible_ssh_host: 172.16.1.122
+      ansible_ssh_host: 172.16.1.12
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/compute-node-3/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: enp0s8
@@ -87,4 +92,9 @@ all:
       hosts:
         gateway-node.consul:
           traefik_iface: eth1
-          consul_host: 172.16.1.120
+          consul_host: 172.16.1.10
+
+    dns_instances:
+      hosts:
+        dns-node.consul:
+          dns_iface: eth1

@@ -26,7 +26,7 @@ Vagrant will provision virtual machines. On one, Ansible will be installed and t
 
 #### VirtualBox
 
-To utilise [VirtualBox](https://www.virtualbox.org) as the provider so is required to be install on the host machine follwoing the instructions at https://www.virtualbox.org/wiki/Downloads. To deploy the service, run the following command from within the project directory:
+To utilise [VirtualBox](https://www.virtualbox.org) as the provider so is required to be install on the host machine following the instructions at https://www.virtualbox.org/wiki/Downloads. To deploy the service, run the following command from within the project directory:
 
 ```bash
 vagrant up

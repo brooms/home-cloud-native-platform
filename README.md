@@ -1,8 +1,12 @@
-# Home Cloud Native Platform
+# Sherpa - The Home Cloud Native Platform
 
 ## Project Description
 
-This projects provides infrastucture-as-code to [Ansible](https://www.ansible.com/) scripts to automate the provisioning of a network of virtual nodes or hardware nodes with a development cluster utilising the Hashicorp Consul, Vault and Nomad stack, Docker and Traefik, as a foundation to support hosting of containerised services. The stack is both horizontally and vertically scalable having been tested on ARM based Raspberry Pi (versions 2 and 3) as well as Intel 64 systems.
+The Sherpa project provides infrastucture-as-code, as [Ansible](https://www.ansible.com/) scripts, to automate the provisioning of a network of virtual nodes or hardware nodes as a development cluster as a foundation to support the distributed hosting of services. Sherpa takes the hard work out of deploying services across a cluster of nodes, by provisioning a set of services which manage where services get deployed and interact. The primary objective of Sherpa is to provide a technology stack which is both horizontally and vertically scalable, requires a low entry point to utilise and allows the cluster to be moved between networks, or removed from an external network.
+
+## 
+
+ from the end user,  having been tested on ARM based Raspberry Pi (versions 2 and 3) as well as Intel 64 systems.
 
 The following core services are installed on each node:
 
@@ -14,7 +18,7 @@ The following core services are installed on each node:
 
 The default topology of the cluster is as shown in the following figure.
 
-![hcnp default topology](docs/topology.png "HCNP Default Topology")
+![hcnp default topology](docs/diagrams/topology.png "HCNP Default Topology")
 
 ## Deployment
 

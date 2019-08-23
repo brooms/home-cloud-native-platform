@@ -1,5 +1,10 @@
 ---
 
+- name: isc.bind
+  cms: git
+  src: git+https://github.com/bertvv/ansible-role-bind.git
+  version: origin/master
+
 - name: brianshumate.consul
   cms: git
   src: git+https://github.com/brianshumate/ansible-consul.git

@@ -1,5 +1,5 @@
 ---
 
 vault_keyfile_path: "{{ lookup('env','VAULT_KEYFILE_PATH') | default('/var/vault/keyfiles', true) }}"
-vault_address: "{{ hostvars[inventory_hostname]['ansible_'+vault_iface]['ipv4']['address'] }}"
+vault_address: "{{ hostvars[inventory_hostname]['ansible_'+ vault_iface]['ipv4']['address'] }}"
 vault_policy_path: "{{ lookup('env','VAULT_POLICY_PATH') | default('/var/vault/policies', true) }}"

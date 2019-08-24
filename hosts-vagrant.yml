@@ -4,7 +4,7 @@ all:
 
   hosts:
 
-    ansible-node.consul:
+    ansible-node:
       ansible_connection: local
       ansible_host: localhost
       public_iface: enp0s8
@@ -99,7 +99,7 @@ all:
           # Fix me: derive from consul server instances
           consul_host: 172.16.1.10
 
-    dns_nodes:
+    dns_instances:
       hosts:
         dns-node.consul:
           dns_iface: eth1

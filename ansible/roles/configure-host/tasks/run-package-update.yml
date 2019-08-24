@@ -29,5 +29,6 @@
   become: yes
   apt:
     update_cache: yes
-  when: (update_cache_only is not defined or update_cache_only) and
-        ansible_pkg_mgr == 'apt'
+  when:
+    - (update_cache_only is not defined or update_cache_only)
+    - ansible_pkg_mgr == 'apt'

@@ -42,6 +42,13 @@ all:
         hcnp-node-2:
         hcnp-node-3:
 
+    dns_instances:
+      hosts:
+        dns-node.consul:
+          dns_iface: eth0
+          consul_datacenter: hcnp
+          consul_iface: eth0
+
     consul_instances:
       hosts:
         hcnp-node-1:

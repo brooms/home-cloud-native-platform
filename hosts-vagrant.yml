@@ -4,7 +4,7 @@ all:
 
   hosts:
 
-    ansible-node.consul:
+    ansible-node:
       ansible_connection: local
       ansible_host: localhost
       public_iface: enp0s8
@@ -46,17 +46,21 @@ all:
     consul_instances:
       hosts:
         compute-node-1.consul:
-          consul_iface: enp0s8
           consul_node_role: bootstrap
           consul_dnsmasq_enable: true
         compute-node-2.consul:
-          consul_iface: enp0s8
           consul_node_role: server
           consul_dnsmasq_enable: true
         compute-node-3.consul:
-          consul_iface: enp0s8
           consul_node_role: server
           consul_dnsmasq_enable: true
+      vars:
+        # vars required to generate DNS settings, do not move
+        consul_iface: enp0s8
+        consul_datacenter: hcnp
+        consul_domain: 'consul'
+        consul_acl_datacenter: "consul"
+        consul_recursors: ['8.8.8.8', '8.8.4.4']
 
     vault_instances:
       hosts:
@@ -92,9 +96,12 @@ all:
       hosts:
         gateway-node.consul:
           traefik_iface: eth1
+          # Fix me: derive from consul server instances
           consul_host: 172.16.1.10
 
     dns_instances:
       hosts:
         dns-node.consul:
           dns_iface: eth1
+          consul_datacenter: hcnp
+          consul_iface: enp0s8

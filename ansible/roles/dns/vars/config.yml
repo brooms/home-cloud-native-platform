@@ -1,0 +1,43 @@
+bind_zone_dir: /var/local/named-zones
+bind_zone_file_mode: '0660'
+bind_allow_query:
+  - any
+bind_listen_ipv4:
+  - any
+bind_acls:
+  - name: acl1
+    match_list:
+      - 172.16.1.0/24
+bind_forwarders:
+  - 8.8.8.8
+  - 8.8.4.4
+bind_recursion: true
+bind_query_log: 'data/query.log'
+bind_check_names: 'master ignore'
+bind_zone_master_server_ip: 172.16.1.254
+bind_zone_minimum_ttl: "2D"
+bind_zone_ttl: "2W"
+bind_zone_time_to_refresh: "2D"
+bind_zone_time_to_retry: "2H"
+bind_zone_time_to_expire: "2W"
+bind_zone_domains:
+  - name: 'consul'
+    networks:
+      - '172.16'
+    name_servers:
+      - compute-node-2.consul
+      - compute-node-3.consul
+      - compute-node-1.consul
+    hosts:
+      - name: gateway-node.consul
+        ip: 172.16.1.2
+      - name: dns-node.consul
+        ip: 172.16.1.254
+      - name: ansible-node.consul
+        ip: 172.16.1.3
+      - name: compute-node-3.consul
+        ip: 172.16.1.12
+      - name: compute-node-2.consul
+        ip: 172.16.1.11
+      - name: compute-node-1.consul
+        ip: 172.16.1.10

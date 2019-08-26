@@ -1,0 +1,59 @@
+#jinja2:lstrip_blocks: True
+bind_zone_dir: /var/local/named-zones
+bind_zone_file_mode: '0660'
+bind_allow_query:
+  - any
+{% if bind_ipv4 %}
+bind_listen_ipv4:
+  - any
+{% endif %}
+{% if bind_ipv6 %}
+bind_listen_ipv6:
+  - any
+{% endif %}
+bind_acls:
+  {% for acl in bind_acls %}
+  - name: {{ acl.name }}
+    match_list:
+      {% for match_list in acl.match_list %}
+      - {{ match_list }}
+      {% endfor %}
+  {% endfor %}
+bind_forwarders:
+{% for forwarder in bind_forwarders %}
+  - {{ forwarder.ip }}
+{% endfor %}
+bind_recursion: true
+bind_query_log: 'data/query.log'
+bind_check_names: 'master ignore'
+bind_zone_master_server_ip: {{ master_server.ip }}
+bind_zone_minimum_ttl: "2D"
+bind_zone_ttl: "2W"
+bind_zone_time_to_refresh: "2D"
+bind_zone_time_to_retry: "2H"
+bind_zone_time_to_expire: "2W"
+bind_zone_domains:
+  - name: '{{ domain.name }}'
+    {% if bind_ipv4 %}
+    networks:
+      {% for network in domain.networks %}
+      - '{{ network.ipv4 }}'
+      {% endfor %}
+    {% endif %}
+    {% if bind_ipv6 %}
+    ipv6_networks:
+      {% for network in domain.networks %}
+      {% if network.ipv6 is defined %}
+      - '{{ network.ipv6 }}'
+      {% endif %}
+      {% endfor %}
+    {% endif %}
+    name_servers:
+      {% for host in domain.dns_servers %}
+      - {{ host.name }}
+      {% endfor %}
+    hosts:
+      {% for host in domain.hosts %}
+      - name: {{ host.name }}
+        ip: {{ host.ip }}
+      {% endfor %}

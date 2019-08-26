@@ -1,7 +1,7 @@
 ---
 
 # ensure Ansible dependencies are installed on the Ansible controller
-- hosts: ansible-node.consul
+- hosts: ansible-node
 
   vars:
 
@@ -39,6 +39,55 @@
         - base
         - dependencies
 
+# Run role to install and configure ISC Bind as an authoritative DNS on hosts specified as dns_nodes
+- hosts: dns_instances
+
+  vars:
+    isc_bind_acls:
+      - name: acl1
+        match_list:
+          - 172.16.1.0/24
+    isc_bind_forwarders:
+      - name: google1
+        ip: 8.8.8.8
+      - name: google2
+        ip: 8.8.4.4
+    isc_bind_master_server:
+      ip: 172.16.1.254
+    isc_bind_domain:
+      name: consul
+      networks:
+        - ipv4: 172.16
+    isc_bind_ipv4: true
+    isc_bind_ipv6: false
+
+    packages: [
+      resolvconf
+    ]
+
+  pre_tasks:
+
+    - name: Pre-install message
+      debug:
+        msg: "Installing ISC Bind on host {{ ansible_host }}"
+
+  tasks:
+
+    - name: Install dependencies
+      import_role:
+        name: configure-host
+        tasks_from: install-dependencies
+      tags:
+        - base
+        - dependencies
+
+    - name: Run DNS role
+      become: true
+      become_user: root
+      import_role:
+        name: dns
+      tags:
+        - dns
 
 # Ensure HCNP Compute Nodes are in the required state for installation of services
 - hosts: compute_nodes
@@ -129,10 +178,10 @@
 
   vars:
     # consul_install_dependencies: false
-    consul_datacenter: hcnp
-    consul_domain: 'consul'
-    consul_acl_datacenter: "consul"
-    consul_recursors: ['8.8.8.8', '8.8.4.4']
+#    consul_datacenter: hcnp
+#    consul_domain: 'consul'
+#    consul_acl_datacenter: "consul"
+#    consul_recursors: ['8.8.8.8', '8.8.4.4']
     consul_ui: true
     consul_dnsmasq_enable: yes
     consul_install_remotely: true

@@ -20,3 +20,4 @@
     name: geerlingguy.pip
   tags:
     - pip
+  when: python_modules is defined and ( python_modules | length > 0 )

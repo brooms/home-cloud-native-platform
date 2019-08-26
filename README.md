@@ -6,6 +6,8 @@ The Sherpa project provides infrastucture-as-code, as [Ansible](https://www.ansi
 
 ## 
 
+Why needed. Scale. Do not want to be tied to specific technology (no lock-in), only Docker containers. Utilise existing technology. Configuration and architexture across multiple infrastructure types. 
+
  from the end user,  having been tested on ARM based Raspberry Pi (versions 2 and 3) as well as Intel 64 systems.
 
 The following core services are installed on each node:

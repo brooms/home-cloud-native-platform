@@ -15,7 +15,7 @@
     tags:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:{{ traefik_address }};PathPrefix:/;"
-  delegate_to: ansible-node.consul
+  delegate_to: "{{ ansible_controller }}"
 
 - name: Register Consul dashboard service with Consul
   consul:
@@ -27,7 +27,7 @@
       - "traefik.frontend.rule=Host:{{ traefik_address }};PathPrefix:/consul;ReplacePathRegex: ^/consul/(.*) /$1"
       - "traefik.frontend.redirect.replacement='$1/consul/'"
       - "traefik.frontend.redirect.regex='^(.*)/consul$'"
-  delegate_to: ansible-node.consul
+  delegate_to: "{{ ansible_controller }}"
 
 - name: Register Nomad dashboard service with Consul
   consul:
@@ -39,4 +39,4 @@
       - "traefik.frontend.rule=Host:{{ traefik_address }};PathPrefix:/nomad;ReplacePathRegex: ^/nomad/(.*) /$1"
       - "traefik.frontend.redirect.replacement='$1/nomad/'"
       - "traefik.frontend.redirect.regex='^(.*)/nomad$'"
-  delegate_to: ansible-node.consul
+  delegate_to: "{{ ansible_controller }}"

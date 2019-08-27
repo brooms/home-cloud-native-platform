@@ -3,7 +3,7 @@
 - name: Check if the Vault keyfile exists
   stat:
     path: "{{ vault_keyfile_path }}/keyfile.json"
-  delegate_to: ansible-node.consul
+  delegate_to: "{{ ansible_controller }}"
   register: key_file_exists
 
 - name: Create destination directory if it doesn't exist
@@ -11,7 +11,7 @@
     path: "{{ vault_keyfile_path }}"
     state: directory
     mode: '0755'
-  delegate_to: ansible-node.consul
+  delegate_to: "{{ ansible_controller }}"
   when: key_file_exists.stat.exists == False
 
 - name: Initialise Vault key set
@@ -27,6 +27,6 @@
   copy:
     content: "{{ vault_keys.stdout }}"
     dest: "{{ vault_keyfile_path }}/keyfile.json"
-  delegate_to: ansible-node.consul
+  delegate_to: "{{ ansible_controller }}"
   when: vault_keys.stdout != ''
 

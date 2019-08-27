@@ -3,7 +3,7 @@
   slurp:
     src: "{{ vault_keyfile_path }}/keyfile.json"
   register: vault_key_file_contents
-  delegate_to: ansible-node.consul
+  delegate_to: "{{ ansible_controller }}"
 
 - name: Load Vault keys
   set_fact:

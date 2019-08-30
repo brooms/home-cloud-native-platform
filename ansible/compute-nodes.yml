@@ -25,15 +25,15 @@
         {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ public_iface | replace('-', '_')]['ipv4']['address'], true) }}\
       {% endif %}"
     
-    # resolv_nameservers: "{{ groups['rpi-hcnp_compute_nodes'].ansible_default_ipv4.address }}"
-    resolv_nameservers: "{{ groups['compute_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
-    # resolv_domain: "foo.org" # consul domain?
-    # resolv_search:
-    #   - "foo.bar"
-    #   - "foobar.com"
-    resolv_options:
-      - "timeout:2"
-      - "rotate"
+    # # resolv_nameservers: "{{ groups['rpi-hcnp_compute_nodes'].ansible_default_ipv4.address }}"
+    # resolv_nameservers: "{{ groups['compute_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
+    # # resolv_domain: "foo.org" # consul domain?
+    # # resolv_search:
+    # #   - "foo.bar"
+    # #   - "foobar.com"
+    # resolv_options:
+    #   - "timeout:2"
+    #   - "rotate"
 
     # storage_base:       update_cache_only: yes
 
@@ -51,11 +51,11 @@
       tags:
         - asserts
 
-    # does this need to be here?
-    - name: Create compute_node_list
-      set_fact:
-        compute_node_list: "{{ groups['compute_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
-      when: groups['compute_nodes'] is defined
+    # # does this need to be here?
+    # - name: Create compute_node_list
+    #   set_fact:
+    #     compute_node_list: "{{ groups['compute_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
+    #   when: groups['compute_nodes'] is defined
 
     - debug:
         msg: "IP address {{ compute_node_public_ip }}"
@@ -63,8 +63,8 @@
     - debug:
         msg: "Running tasks on {{ ansible_host }}_{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
 
-    - debug:
-        var: resolv_nameservers
+    # - debug:
+    #     var: resolv_nameservers
   
   tasks:
 

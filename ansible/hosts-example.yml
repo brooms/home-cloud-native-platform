@@ -13,26 +13,26 @@ all:
       ansible_connection: ssh
       ansible_host: rpi-hcnp-node-50
       ansible_user: pi
-      public_iface: eth0
       cluster_iface: eth0
+      public_iface: eth0
     hcnp-node-1:
       ansible_connection: ssh
       ansible_host: rpi-hcnp-node-53
       ansible_user: pi
-      public_iface: eth0
       cluster_iface: eth0
+      public_iface: eth0
     hcnp-node-2:
       ansible_connection: ssh
       ansible_host: rpi-hcnp-node-54
       ansible_user: pi
-      public_iface: eth0
       cluster_iface: eth0
+      public_iface: eth0
     hcnp-node-3:
       ansible_connection: ssh
       ansible_host: rpi-hcnp-node-55
       ansible_user: pi
-      public_iface: eth0
       cluster_iface: eth0
+      public_iface: eth0
 
   children:
   
@@ -42,30 +42,35 @@ all:
         hcnp-node-2:
         hcnp-node-3:
 
-    dns_instances:
-      hosts:
-        dns-node.consul:
-          dns_iface: eth0
-          consul_datacenter: hcnp
-          consul_iface: eth0
-
     consul_instances:
       hosts:
         hcnp-node-1:
-          consul_iface: eth0
+          consul_dnsmasq_enable: true
           consul_node_role: bootstrap
         hcnp-node-2:
-          consul_iface: eth0
+          consul_dnsmasq_enable: true
           consul_node_role: server
         hcnp-node-3:
-          consul_iface: eth0
+          consul_dnsmasq_enable: true
           consul_node_role: server
       vars:
-        consul_dnsmasq_enable: true
+        # vars required to generate DNS settings, do not move
+        consul_acl_datacenter: "hcnp"
+        consul_datacenter: hcnp
+        consul_dnsmasq_servers: ['192.168.1.254']
+        consul_domain: "hcnp"
+        consul_iface: eth0
+        consul_recursors: ['192.168.1.254']
 
     controller_instance:
       hosts:
         localhost:
+
+    dns_instances:
+      hosts:
+        dns-node.consul:
+          consul_datacenter: hcnp
+          consul_iface: eth0
 
     docker_instances:
       hosts:
@@ -83,23 +88,23 @@ all:
     nomad_instances:
       hosts:
         hcnp-node-1:
-          consul_iface: eth0
-          consul_node_role: server
+          nomad_iface: eth0
+          nomad_node_role: server
         hcnp-node-2:
-          consul_iface: eth0
-          consul_node_role: client
+          nomad_iface: eth0
+          nomad_node_role: client
         hcnp-node-3:
-          consul_iface: eth0
-          consul_node_role: client
+          nomad_iface: eth0
+          nomad_node_role: client
 
     vault_instances:
       hosts:
         hcnp-node-1:
-          consul_iface: eth0
-          consul_node_role: bootstrap
+          vault_iface: eth0
+          vault_node_role: bootstrap
         hcnp-node-2:
-          consul_iface: eth0
-          consul_node_role: server
+          vault_iface: eth0
+          vault_node_role: server
         hcnp-node-3:
-          consul_iface: eth0
-          consul_node_role: server
+          vault_iface: eth0
+          vault_node_role: server

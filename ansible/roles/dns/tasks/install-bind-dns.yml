@@ -1,0 +1,50 @@
+---
+
+- name: Set up Authoritative DNS
+  block:
+    - name: Include Bind vars
+      include_vars:
+        dir: vars
+        files_matching: isc-bind.yml
+      tags:
+        - dns
+
+    - name: Gather facts from ALL hosts (regardless of limit or tags)
+      setup:
+      delegate_to: "{{ item }}"
+      delegate_facts: true
+      when: hostvars[item]['ansible_default_ipv4'] is not defined
+      with_items: "{{ groups['all'] }}"
+      tags:
+        - dns
+
+    - name: Generate Bind configuration file
+      template:
+        src: config.yml.j2
+        dest: "{{ playbook_dir }}/roles/dns/vars/config.yml"
+      delegate_to: "{{ ansible_controller }}"
+      tags:
+        - dns
+
+    - name: Include generated Bind vars
+      include_vars:
+        dir: vars
+        files_matching: config.yml
+      tags:
+        - dns
+
+    - name: Install and configure ISC Bind
+      become: true
+      import_role:
+        name: isc.bind
+      tags:
+        - dns
+
+    - name: "Configure primary DNS"
+      become: yes
+      import_tasks: configure-primary-dns.yml
+      tags:
+        - configure-dns
+
+  when: primary_dns is defined
+

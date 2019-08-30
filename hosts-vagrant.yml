@@ -4,31 +4,33 @@ all:
 
   hosts:
 
-    ansible-node:
+    controller-node.testdomain:
+      controller: true
       ansible_connection: local
       ansible_host: localhost
       public_iface: enp0s8
-    gateway-node.consul:
+    gateway-node.testdomain:
       ansible_ssh_host: 172.16.1.2
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/gateway-node/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: eth1
-    dns-node.consul:
+    dns-node.testdomain:
       ansible_ssh_host: 172.16.1.254
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/dns-node/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: eth1
-    compute-node-1.consul:
+      primary_dns: true
+    compute-node-1.testdomain:
       ansible_ssh_host: 172.16.1.10
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/compute-node-1/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: enp0s8
-    compute-node-2.consul:
+    compute-node-2.testdomain:
       ansible_ssh_host: 172.16.1.11
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/compute-node-2/virtualbox/private_key
       ansible_ssh_user: vagrant
       public_iface: enp0s8
-    compute-node-3.consul:
+    compute-node-3.testdomain:
       ansible_ssh_host: 172.16.1.12
       ansible_ssh_private_key_file: /vagrant/.vagrant/machines/compute-node-3/virtualbox/private_key
       ansible_ssh_user: vagrant
@@ -36,72 +38,76 @@ all:
 
 
   children:
-  
+
+    controller_instance:
+      hosts:
+        controller-node.testdomain:
+
     compute_nodes:
       hosts:
-        compute-node-1.consul:
-        compute-node-2.consul:
-        compute-node-3.consul:
+        compute-node-1.testdomain:
+        compute-node-2.testdomain:
+        compute-node-3.testdomain:
 
     consul_instances:
       hosts:
-        compute-node-1.consul:
+        compute-node-1.testdomain:
           consul_node_role: bootstrap
           consul_dnsmasq_enable: true
-        compute-node-2.consul:
+        compute-node-2.testdomain:
           consul_node_role: server
           consul_dnsmasq_enable: true
-        compute-node-3.consul:
+        compute-node-3.testdomain:
           consul_node_role: server
           consul_dnsmasq_enable: true
       vars:
         # vars required to generate DNS settings, do not move
         consul_iface: enp0s8
         consul_datacenter: hcnp
-        consul_domain: 'consul'
-        consul_acl_datacenter: "consul"
-        consul_recursors: ['8.8.8.8', '8.8.4.4']
+        consul_domain: 'hcnp'
+        consul_acl_datacenter: "hcnp"
+        consul_recursors: ['172.16.1.254']
+        consul_dnsmasq_servers: ['172.16.1.254']
 
     vault_instances:
       hosts:
-        compute-node-1.consul:
+        compute-node-1.testdomain:
           vault_iface: enp0s8
           vault_node_role: bootstrap
-        compute-node-2.consul:
+        compute-node-2.testdomain:
           vault_iface: enp0s8
           vault_node_role: server
-        compute-node-3.consul:
+        compute-node-3.testdomain:
           vault_iface: enp0s8
           vault_node_role: server
 
     docker_instances:
       hosts:
-        compute-node-1.consul:
-        compute-node-2.consul:
-        compute-node-3.consul:
+        compute-node-1.testdomain:
+        compute-node-2.testdomain:
+        compute-node-3.testdomain:
 
     nomad_instances:
       hosts:
-        compute-node-1.consul:
+        compute-node-1.testdomain:
           nomad_iface: enp0s8
           nomad_node_role: server
-        compute-node-2.consul:
+        compute-node-2.testdomain:
           nomad_iface: enp0s8
           nomad_node_role: client
-        compute-node-3.consul:
+        compute-node-3.testdomain:
           nomad_iface: enp0s8
           nomad_node_role: client
 
     gateway_instances:
       hosts:
-        gateway-node.consul:
+        gateway-node.testdomain:
           traefik_iface: eth1
           # Fix me: derive from consul server instances
           consul_host: 172.16.1.10
 
     dns_instances:
       hosts:
-        dns-node.consul:
-          dns_iface: eth1
+        dns-node.testdomain:
           consul_datacenter: hcnp
           consul_iface: enp0s8

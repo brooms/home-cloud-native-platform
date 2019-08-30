@@ -21,23 +21,23 @@ bind_zone_time_to_refresh: "2D"
 bind_zone_time_to_retry: "2H"
 bind_zone_time_to_expire: "2W"
 bind_zone_domains:
-  - name: 'consul'
+  - name: 'testdomain'
     networks:
       - '172.16'
     name_servers:
-      - compute-node-2.consul
-      - compute-node-3.consul
-      - compute-node-1.consul
+      - compute-node-2.testdomain
+      - compute-node-1.testdomain
+      - compute-node-3.testdomain
     hosts:
-      - name: gateway-node.consul
-        ip: 172.16.1.2
-      - name: dns-node.consul
-        ip: 172.16.1.254
-      - name: ansible-node.consul
+      - name: controller-node.testdomain
         ip: 172.16.1.3
-      - name: compute-node-3.consul
-        ip: 172.16.1.12
-      - name: compute-node-2.consul
-        ip: 172.16.1.11
-      - name: compute-node-1.consul
+      - name: gateway-node.testdomain
+        ip: 172.16.1.2
+      - name: compute-node-1.testdomain
         ip: 172.16.1.10
+      - name: dns-node.testdomain
+        ip: 172.16.1.254
+      - name: compute-node-2.testdomain
+        ip: 172.16.1.11
+      - name: compute-node-3.testdomain
+        ip: 172.16.1.12

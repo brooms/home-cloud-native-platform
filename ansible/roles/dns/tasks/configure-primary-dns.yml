@@ -1,0 +1,29 @@
+---
+
+- name: Configure primary DNS
+  block:
+
+  - name: Configure DNS name server in network interfaces configuration
+    interfaces_file:
+      dest: /etc/network/interfaces
+      iface: "{{ public_iface }}"
+      option: dns-search
+      value: "{{ _dns_domain }}"
+      backup: yes
+      state: present
+
+  - name: Configure DNS search network interfaces configuration
+    interfaces_file:
+      dest: /etc/network/interfaces
+      iface: "{{ public_iface }}"
+      option: dns-nameservers
+      value: "{{ _dns_master_address.ip }}"
+      backup: yes
+      state: present
+
+  # Is there a better way to do this? We are trying to get resolvconf to re-generate the resolv.conf file
+  - name: Restart network interface
+    become: true
+    shell: "ifdown {{ public_iface }} && ifup {{ public_iface }}"
+  tags:
+    - configure-dns

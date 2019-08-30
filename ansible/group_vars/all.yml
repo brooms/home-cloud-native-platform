@@ -1,4 +1,24 @@
 ---
 
-# consul_server: 192.168.1.14
 storage_base: "/hcnp"
+
+default_ansible_controller: 127.0.0.1
+ansible_controller: "\
+  {% set _ansible_controller = { 'host': default_ansible_controller } %}\
+  {% for host in groups['all'] %}\
+    {% set _is_ansible_controller = hostvars[host]['controller'] | default(false, true) %}\
+    {% if (_is_ansible_controller) %}\
+      {% if _ansible_controller.update({'host': hostvars[host]['inventory_hostname']}) %}{% endif %}\
+    {% endif %}\
+  {% endfor %}\
+  {{ _ansible_controller.host }}"
+
+primary_dns: "\
+  {% set _primary_dns = { 'host': '' } %}\
+  {% for host in groups['all'] %}\
+    {% set _is_primary_dns = hostvars[host]['primary_dns'] | default(false, true) %}\
+    {% if (_is_primary_dns) %}\
+      {% if _primary_dns.update({'host': hostvars[host]['inventory_hostname'] }) %}{% endif %}\
+    {% endif %}\
+  {% endfor %}\
+  {{ _primary_dns.host }}"

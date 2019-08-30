@@ -1,23 +1,4 @@
 ---
-consul_group_name: "{{ lookup('env','CONSUL_GROUP_NAME') | default('consul_instances', true) }}"
-consul_servers: "\
-  {% set _consul_servers = [] %}\
-  {% for host in groups[consul_group_name] %}\
-    {% set _consul_node_role = hostvars[host]['consul_node_role'] | default('client', true) %}\
-    {% if ( _consul_node_role == 'server' or _consul_node_role == 'bootstrap') %}\
-      {% if _consul_servers.append(host) %}{% endif %}\
-    {% endif %}\
-  {% endfor %}\
-  {{ _consul_servers }}"
 
-main_inventory_group: "{{ lookup('env','HOSTS_GROUP_NAME') | default('all', true) }}"
-inventory_servers: "\
-  {% set _inventory_servers = [] %}\
-  {% for host in groups[main_inventory_group] %}\
-    {% if _inventory_servers.append(host) %}{% endif %}\
-  {% endfor %}\
-  {{ _inventory_servers }}"
-
-bind_ipv4: "{{ isc_bind_ipv4 | default(true, true) }}"
-bind_ipv6: "{{ isc_bind_ipv6  | default(false, true) }}"
-primary_network_interface: "{{ hostvars[inventory_hostname]['ansible_'+ vault_iface] }}"
+# Primary network interface of current host
+primary_network_interface: "{{ hostvars[inventory_hostname]['ansible_'+ public_iface] | default ('eth1', true) }}"

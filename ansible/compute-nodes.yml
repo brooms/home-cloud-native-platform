@@ -1,0 +1,84 @@
+---
+
+# Ensure Compute Nodes are in the required state for installation of services
+- hosts: compute_nodes
+  
+  vars:
+
+    packages: [
+      { name: python-apt },
+      { name: python-pip },
+      { name: sshpass },
+    ]
+
+    python_modules: [
+      { name: docker },
+      { name: python-consul },
+    ]
+
+    compute_node_public_ip: "\
+      {% if ansible_system == 'FreeBSD' %}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ public_iface ]['ipv4'][0]['address'], true) }}\
+      {% elif ansible_os_family == 'Windows'  %}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_ip_addresses'][0], true) }}\
+      {% else %}\
+        {{ lookup('env','HCNP_NODE_EXTERNAL_IP') | default(hostvars[inventory_hostname]['ansible_'+ public_iface | replace('-', '_')]['ipv4']['address'], true) }}\
+      {% endif %}"
+    
+    # resolv_nameservers: "{{ groups['rpi-hcnp_compute_nodes'].ansible_default_ipv4.address }}"
+    resolv_nameservers: "{{ groups['compute_nodes'] | map('extract', hostvars, ['ansible_default', 'ipv4', 'address']) | join(',') }}"
+    # resolv_domain: "foo.org" # consul domain?
+    # resolv_search:
+    #   - "foo.bar"
+    #   - "foobar.com"
+    resolv_options:
+      - "timeout:2"
+      - "rotate"
+
+    # storage_base:       update_cache_only: yes
+
+  environment:
+    http_proxy: "{{ lookup('env', 'http_proxy') }}"
+    https_proxy: "{{ lookup('env', 'https_proxy') }}"
+    no_proxy: "{{ lookup('env', 'no_proxy') }}"
+
+  pre_tasks:
+
+    - name: Run asserts
+      import_role:
+        name: configure-host
+        tasks_from: run-asserts
+      tags:
+        - asserts
+
+    # does this need to be here?
+    - name: Create compute_node_list
+      set_fact:
+        compute_node_list: "{{ groups['compute_nodes'] | map('extract', hostvars, 'ansible_ssh_host') | list }}"
+      when: groups['compute_nodes'] is defined
+
+    - debug:
+        msg: "IP address {{ compute_node_public_ip }}"
+
+    - debug:
+        msg: "Running tasks on {{ ansible_host }}_{{ ansible_hostname }} at {{ ansible_default_ipv4.interface }}:{{ ansible_default_ipv4.address }} as user {{ ansible_user_id }}"
+
+    - debug:
+        var: resolv_nameservers
+  
+  tasks:
+
+    - name: Update host packages
+      import_role:
+        name: configure-host
+        tasks_from: run-package-update
+      tags:
+        - base
+        - update
+
+    - name: Configure host
+      import_role:
+        name: configure-host
+      tags:
+        - base
+        - dependencies

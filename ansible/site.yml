@@ -1,0 +1,18 @@
+---
+
+# ensure Ansible dependencies are installed on the Ansible controller
+- import_playbook: controller.yml
+# Ensure Compute Nodes are in the required state for installation of services
+- import_playbook: compute-nodes.yml
+# Run role to install and configure Hashicorp Consul on hosts specified as consul_instances
+- import_playbook: consul.yml
+# Run role to install and configure Hashicorp Vault on hosts specified as vault_instances
+- import_playbook: vault.yml
+# Run role to install and configure Docker on hosts specified as docker_instances
+- import_playbook: docker.yml
+# Run role to install and configure Hashicorp Nomad on hosts specified as nomad_instances
+- import_playbook: nomad.yml
+# Run role to install and configure Containous Traefik on hosts specified as gateway_instances
+- import_playbook: gateway.yml
+# Run role to install and configure ISC Bind as an authoritative DNS on hosts specified as dns_nodes
+- import_playbook: dns.yml

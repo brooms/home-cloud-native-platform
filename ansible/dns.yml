@@ -1,0 +1,54 @@
+---
+
+# Run role to install and configure ISC Bind as an authoritative DNS on hosts specified as dns_nodes
+- hosts: dns_instances
+
+  # Todo: Move vars to defaults in the DNS role, ip addresses should reside in the inventory perhaps?
+  vars:
+    isc_bind_acls:
+      - name: acl1
+        match_list:
+          - 172.16.1.0/24
+    isc_bind_forwarders:
+      - name: google1
+        ip: 8.8.8.8
+      - name: google2
+        ip: 8.8.4.4
+    isc_bind_master_server:
+      ip: 172.16.1.254
+    isc_bind_domain:
+      name: testdomain
+      networks:
+        - ipv4: 172.16
+    isc_bind_ipv4: true
+    isc_bind_ipv6: false
+
+    packages: [
+      resolvconf
+    ]
+
+  pre_tasks:
+
+    - name: Pre-install message
+      debug:
+        msg: "Installing ISC Bind on host {{ ansible_host }}"
+
+  tasks:
+
+    - name: Install dependencies
+      import_role:
+        name: configure-host
+        tasks_from: install-dependencies
+      tags:
+        - base
+        - dependencies
+
+    - name: "Install and configure authoritative DNS"
+      become: true
+      become_user: root
+      import_role:
+        name: dns
+        tasks_from: install-bind-dns
+      tags:
+        - dns
+        - configure-dns

@@ -1,0 +1,40 @@
+---
+
+# Run role to install and configure Docker on hosts specified as docker_instances
+- hosts: docker_instances
+
+  vars:
+    # architecture map idea taken from https://github.com/brianshumate/ansible-consul/blob/master/defaults/main.yml
+    docker_apt_arch_map:
+      # this first entry seems redundant
+      # (but it's required for reasons)
+      amd64: amd64
+      x86_64: amd64
+      armv6l: armhf
+      armv7l: armhf
+      aarch64: arm64
+      64-bit: amd64
+    docker_apt_arch: "{{ docker_apt_arch_map[ansible_architecture] }}"
+    docker_install_compose: no
+    docker_users: [
+      "{{ ansible_user_id }}"
+    ]
+
+  post_tasks:
+
+    - name: Configure Docker
+      import_role:
+        name: configure-docker
+      tags:
+        - docker
+        - configuration
+
+  tasks:
+
+    - name: Install Docker
+      become: yes
+      import_role:
+        name: geerlingguy.docker
+      tags:
+        - installation
+        - docker

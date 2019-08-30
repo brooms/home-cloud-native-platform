@@ -1,0 +1,43 @@
+---
+
+# Run role to install and configure Containous Traefik on hosts specified as gateway_instances
+- hosts: gateway_instances
+
+  vars:
+    # VARIABLES TO EDIT
+    traefik_consul_master: "http://{{ consul_host }}"
+    traefik_host_os: linux
+    traefik_version: "{{ lookup('env','TRAEFIK_VERSION') | default('v1.7.14', true) }}"
+
+    traefik_address: "{{ hostvars[inventory_hostname]['ansible_' + traefik_iface]['ipv4']['address'] }}"
+    # architecture map idea taken from https://github.com/brianshumate/ansible-consul/blob/master/defaults/main.yml
+    traefik_architecture_map:
+      # this first entry seems redundant
+      # (but it's required for reasons)
+      amd64: amd64
+      x86_64: amd64
+      armv6l: arm
+      armv7l: arm
+      aarch64: arm64
+      32-bit: "386"
+      64-bit: amd64
+    traefik_architecture: "{{ traefik_architecture_map[ansible_architecture] }}"
+    # For releases see https://github.com/containous/traefik/releases
+    traefik_binary_url: "https://github.com/containous/traefik/releases/download/{{ traefik_version }}/traefik_{{ traefik_host_os }}-{{ traefik_architecture }}"
+    traefik_template: "{{ playbook_dir }}/templates/traefik.toml"
+
+  pre_tasks:
+
+    - name: Pre-install message
+      debug:
+        msg: "Installing Traefik {{ traefik_version }} for achitecture {{ traefik_architecture }} on host {{ ansible_host }}"
+  
+  tasks:
+
+    - name: Run Traefik role
+      become: true
+      become_user: root
+      import_role:
+        name: traefik
+      tags:
+        - traefik

@@ -3,7 +3,7 @@
 # default values
 extension="yml"
 inventory="hosts"
-playbook="hcnp"
+playbook="site"
 requirements="requirements"
 use_retry=false
 use_sudo=false

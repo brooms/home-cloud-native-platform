@@ -1,0 +1,38 @@
+---
+
+# Run role to install and configure Hashicorp Consul on hosts specified as consul_instances
+- hosts: consul_instances
+
+  vars:
+    # consul_install_dependencies: false
+#    consul_datacenter: hcnp
+#    consul_domain: 'consul'
+#    consul_acl_datacenter: "consul"
+#    consul_recursors: ['8.8.8.8', '8.8.4.4']
+    consul_ui: true
+    consul_dnsmasq_enable: yes
+    consul_install_remotely: true
+    consul_client_address: "0.0.0.0"
+    consul_acl_master_token_display: yes
+    # Consul bug 6346 to do with ui-content-path in config - leave in, harmless for now but will work when it is fixed
+    consul_custom_config:
+      ui-content-path: '/consul-ui/'
+
+  pre_tasks:
+
+    - name: "Assert consul_iface interface exists when defined"
+      assert:
+        that:
+            - consul_iface in ansible_interfaces
+        fail_msg: "{{ consul_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
+        success_msg: "consul_iface set to {{ consul_iface }}"
+      when: consul_iface is defined
+
+  tasks:
+
+    - name: Run consul role
+      become: yes
+      import_role:
+        name: brianshumate.consul
+      tags:
+        - consul

@@ -4,7 +4,7 @@ all:
 
   hosts:
 
-    ansible-node:
+    localhost:
       ansible_connection: local
       ansible_host: localhost
       ansible_user: philip
@@ -36,7 +36,7 @@ all:
 
   children:
   
-    hcnp_compute_nodes:
+    compute_nodes:
       hosts:
         hcnp-node-1:
         hcnp-node-2:
@@ -62,6 +62,10 @@ all:
           consul_node_role: server
       vars:
         consul_dnsmasq_enable: true
+
+    controller_instance:
+      hosts:
+        localhost:
 
     docker_instances:
       hosts:

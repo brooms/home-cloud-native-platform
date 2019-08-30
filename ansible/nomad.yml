@@ -1,0 +1,38 @@
+---
+
+# Run role to install and configure Hashicorp Nomad on hosts specified as nomad_instances
+- hosts: nomad_instances
+
+  vars:
+    nomad_datacenter: "hcnp"
+    nomad_domain: "hcnp"
+    nomad_bind_address: "0.0.0.0"
+    # CONSTANTS
+    # Bootstrap expect must be set when using Consul, this is the initial count of servers to wait for before electing a leader
+    nomad_bootstrap_expect: 1
+    nomad_use_consul: yes
+    nomad_consul_address: http://127.0.0.1:8500
+    nomad_vault_enabled: yes
+    # Vault address is set dynamically
+    nomad_vault_address: "http://{{ hostvars[inventory_hostname]['ansible_' + nomad_iface]['ipv4']['address'] }}:8200"
+    nomad_vault_create_from_role: "nomad-cluster"
+
+
+  pre_tasks:
+
+    - name: "Assert nomad_iface interface exists when defined"
+      assert:
+        that:
+            - nomad_iface in ansible_interfaces
+        fail_msg: "{{ nomad_iface}} is not detected on {{ ansible_host }}. Ensure interface is correctly defined for environment"
+        success_msg: "nomad_iface set to {{ nomad_iface }}"
+      when: nomad_iface is defined
+
+  tasks:
+
+    - name: "Install and configure Nomad"
+      become: true
+      import_role:
+        name: brianshumate.nomad
+      tags:
+        - nomad

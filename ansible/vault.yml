@@ -1,0 +1,21 @@
+---
+
+# Run role to install and configure Hashicorp Vault on hosts specified as vault_instances
+- hosts: vault_instances
+
+  vars:
+      vault_datacenter: "hcnp"
+      vault_domain: "hcnp"
+      vault_ui: yes
+      vault_cluster_disable: false
+      vault_backend: consul
+
+  tasks:
+
+    - name: Run vault role
+      become: true
+      become_user: root
+      import_role:
+        name: vault
+      tags:
+        - vault

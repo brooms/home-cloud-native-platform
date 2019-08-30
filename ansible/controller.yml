@@ -1,0 +1,48 @@
+---
+
+# ensure Ansible dependencies are installed on the Ansible controller
+- hosts: controller_instance
+
+  vars:
+
+    ansible_minimum_version: 2.8
+
+    packages: [
+      python-apt,
+      python-pip,
+      sshpass,
+      unzip,
+    ]
+
+    python_modules: [
+      { name: netaddr },
+      { name: python-consul },
+    ]
+
+  pre_tasks:
+
+    # Check Ansible version before proceeding
+    - name: Assert Ansible version meets minimum requirements
+      assert:
+        that:
+          - ansible_version.full is version_compare({{ ansible_minimum_version }}, '>=')
+        fail_msg: "Ansible must be version {{ ansible_minimum_version }} or greater to run this play. Install Ansible using pip to ensure the latest version."
+        success_msg: "Ansible version {{ ansible_version.full }} is installed"
+
+  tasks:
+
+    - name: Install dependencies
+      import_role:
+        name: configure-host
+        tasks_from: install-dependencies
+      tags:
+        - base
+        - dependencies
+
+    - name: Configure host
+      import_role:
+        name: configure-host
+        tasks_from: update-hosts-file.yml
+      tags:
+        - base
+        - dependencies
